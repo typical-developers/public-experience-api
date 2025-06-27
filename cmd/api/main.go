@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/typical-developers/public-experience-api/api"
+	_ "github.com/typical-developers/public-experience-api/internal/docs"
 )
 
 func main() {

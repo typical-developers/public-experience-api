@@ -3,10 +3,16 @@ version: '3'
 dotenv: ['.env']
 
 tasks:
+  build:docs:
+    cmds:
+      - swag fmt
+      - swag init --parseDependency -dir ./api --output ./internal/docs
+
   build:api: go build -ldflags "-w -s" -o bin/api-backend.exe cmd/api/main.go
   build:tasks: go build -ldflags "-w -s" -o bin/tasks.exe cmd/tasks/main.go
+
   dev:api:
-    cmd: air --build.cmd "task build:api" --build.bin "bin\\api-backend.exe"
+    cmd: air --build.cmd "task build:docs && task build:api" --build.bin "bin\\api-backend.exe" --build.exclude_dir "internal\\db,internal\\docs"
     env:
       ENVIRONMENT: development
   dev:tasks:

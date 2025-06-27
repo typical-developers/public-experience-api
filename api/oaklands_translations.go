@@ -8,6 +8,17 @@ import (
 	"github.com/typical-developers/public-experience-api/internal/cache"
 )
 
+//	@Router		/v1/oaklands/translations/keys [GET]
+//
+//	@Tags		Oaklands, Oaklands - Translations
+//
+//	@Param		language	query		string	false	"The language to fetch the translation keys for. Only supports 'en_us'."
+//	@Param		search		query		string	false	"A search term to filter the translation keys by."
+//	@Param		omit		query		string	false	"A omit term to filter the translation keys by."
+//
+//	@Success	200			{object}	OaklandsTranslationKeys
+//
+// nolint:staticcheck
 func OaklandsTranslationKeysV1(c *fiber.Ctx) error {
 	keys := []string{}
 	lang := c.Query("language", "en_us")
@@ -17,9 +28,9 @@ func OaklandsTranslationKeysV1(c *fiber.Ctx) error {
 	var translations *cache.Translations
 	if translations = cache.GetCached[cache.Translations](c.Context(), "oaklands:translations", "$"); translations == nil {
 		c.Status(fiber.StatusServiceUnavailable)
-		return c.JSON(APIResponse[any]{
+		return c.JSON(ErrorAPIResponse{
 			Success: false,
-			Message: Ptr("Unable to fetch translations."),
+			Message: "Unable to fetch translations",
 		})
 	}
 
@@ -45,19 +56,29 @@ func OaklandsTranslationKeysV1(c *fiber.Ctx) error {
 
 	if len(keys) <= 0 {
 		c.Status(fiber.StatusNotFound)
-		return c.JSON(APIResponse[any]{
+		return c.JSON(ErrorAPIResponse{
 			Success: false,
-			Message: Ptr("No translation keys found."),
+			Message: "No translation keys found.",
 		})
 	}
 
 	sort.Strings(keys)
-	return c.JSON(APIResponse[[]string]{
+	return c.JSON(OaklandsTranslationKeys{
 		Success: true,
-		Data:    Ptr(keys),
+		Data:    keys,
 	})
 }
 
+//	@Router		/v1/oaklands/translations [GET]
+//
+//	@Tags		Oaklands, Oaklands - Translations
+//
+//	@Param		language	query		string		false	"The language to translate the strings into. Only supports 'en_us'."
+//	@Param		strings		query		[]string	true	"A comma-separated list of strings return translations for."
+//
+//	@Success	200			{object}	OaklandsTranslations
+//
+// nolint:staticcheck
 func OaklandsTranslationsV1(c *fiber.Ctx) error {
 	strs := c.Query("strings")
 	lang := c.Query("language", "en_us")
@@ -66,33 +87,33 @@ func OaklandsTranslationsV1(c *fiber.Ctx) error {
 
 	if len(keys) <= 1 && keys[0] == "" {
 		c.Status(fiber.StatusBadRequest)
-		return c.JSON(APIResponse[any]{
+		return c.JSON(ErrorAPIResponse{
 			Success: false,
-			Message: Ptr("No strings provided."),
+			Message: "No strings provided.",
 		})
 	}
 
 	var translations *cache.Translations
 	if translations = cache.GetCached[cache.Translations](c.Context(), "oaklands:translations", "$"); translations == nil {
 		c.Status(fiber.StatusServiceUnavailable)
-		return c.JSON(APIResponse[any]{
+		return c.JSON(ErrorAPIResponse{
 			Success: false,
-			Message: Ptr("Unable to fetch translations."),
+			Message: "Unable to fetch translations.",
 		})
 	}
 
 	langTranslations := (*translations)[lang]
-	filteredKeys := make(map[string]any)
+	filteredKeys := make(map[string]string)
 	for _, key := range keys {
 		if _, ok := langTranslations[key]; !ok {
 			continue
 		}
 
-		filteredKeys[key] = langTranslations[key]
+		filteredKeys[key] = langTranslations[key].(string)
 	}
 
-	return c.JSON(APIResponse[map[string]any]{
+	return c.JSON(OaklandsTranslations{
 		Success: true,
-		Data:    Ptr(filteredKeys),
+		Data:    filteredKeys,
 	})
 }
