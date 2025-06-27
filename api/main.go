@@ -27,7 +27,7 @@ func Register(app *fiber.App) {
 
 	oaklands := v1.Group("/oaklands")
 	{
-		oaklands.Get("/translations/keys", OaklandsTranslationKeysV1)
-		oaklands.Get("/translations", OaklandsTranslationsV1)
+		oaklands.Get("/translations/keys", OaklandsV1TranslationKeys)
+		oaklands.Get("/translations", OaklandsV1Translations)
 	}
 }

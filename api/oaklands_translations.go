@@ -19,7 +19,7 @@ import (
 //	@Success	200			{object}	OaklandsTranslationKeys
 //
 // nolint:staticcheck
-func OaklandsTranslationKeysV1(c *fiber.Ctx) error {
+func OaklandsV1TranslationKeys(c *fiber.Ctx) error {
 	keys := []string{}
 	lang := c.Query("language", "en_us")
 	search := c.Query("search")
@@ -79,7 +79,7 @@ func OaklandsTranslationKeysV1(c *fiber.Ctx) error {
 //	@Success	200			{object}	OaklandsTranslations
 //
 // nolint:staticcheck
-func OaklandsTranslationsV1(c *fiber.Ctx) error {
+func OaklandsV1Translations(c *fiber.Ctx) error {
 	strs := c.Query("strings")
 	lang := c.Query("language", "en_us")
 
