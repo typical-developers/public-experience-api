@@ -1,0 +1,15 @@
+version: '3'
+
+dotenv: ['.env']
+
+tasks:
+  build:api: go build -ldflags "-w -s" -o bin/api-backend.exe cmd/api/main.go
+  build:tasks: go build -ldflags "-w -s" -o bin/tasks.exe cmd/tasks/main.go
+  dev:api:
+    cmd: air --build.cmd "task build:api" --build.bin "bin\\api-backend.exe"
+    env:
+      ENVIRONMENT: development
+  dev:tasks:
+    cmd: air --build.cmd "task build:tasks" --build.bin "bin\\tasks.exe"
+    env:
+      ENVIRONMENT: development

@@ -1,0 +1,11 @@
+# Environmental
+.env
+/tmp
+/bin
+
+# Generated Code
+internal/docs
+internal/db/*.sql.go
+internal/db/db.go
+internal/db/models.go
+internal/db/querier.go
