@@ -1,0 +1,2 @@
+# Public Experience API
+Services relating to Typical Developers' Public Experience API. This is a monorepo that contains the API service itself, as well as scheduled cron tasks to keep resources up to date.
