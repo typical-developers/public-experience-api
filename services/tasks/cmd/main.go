@@ -4,56 +4,34 @@ import (
 	"runtime"
 	"time"
 
+	. "github.com/luckfire-go/cron-scheduler"
 	"github.com/robfig/cron/v3"
+	log "github.com/sirupsen/logrus"
+	_ "github.com/typical-developers/public-experience-api/internal/logger"
 	"github.com/typical-developers/public-experience-api/services/tasks/jobs"
 )
 
-type JobRegistryEntry struct {
-	Name             string
-	RunOnceAtStartup bool
-	Disabled         bool
-	Interval         string
-	Task             func()
-}
-
-var JobRegistry = []JobRegistryEntry{
-	{
-		Name:             "Oaklands Updates",
-		RunOnceAtStartup: true,
-		Disabled:         false,
-		Interval:         "0 0 * * *",
-		Task:             jobs.CheckOaklandsUpdates,
-	},
-}
-
-var Cron = cron.New(cron.WithLocation(time.UTC))
-
-// func functionName(i interface{}) string {
-// 	funcName := runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
-// 	pieces := strings.Split(funcName, "/")
-
-// 	return pieces[len(pieces)-1]
-// }
-
 func main() {
-	Cron.Start()
+	registry := NewRegistry(cron.WithLocation(time.UTC))
 
-	for _, job := range JobRegistry {
-		// jobName := functionName(job.Task)
-
-		if job.Disabled {
-			continue
-		}
-
-		_, err := Cron.AddFunc(job.Interval, job.Task)
-		if err != nil {
-			println(err.Error())
-		}
-
-		if job.RunOnceAtStartup {
-			go job.Task()
-		}
+	registry.OnJobAddSuccess = func(job *RegistryItem) {
+		log.WithFields(log.Fields{
+			"Name": job.Name(),
+			"Spec": job.Spec,
+		}).Infof("Job has successfully been registered.")
+	}
+	registry.OnJobAddFailure = func(job *RegistryItem, err error) {
+		log.WithError(err).Error("Failed to add job")
 	}
 
+	registry.AddJobs([]RegistryItem{
+		{
+			Enabled:  true,
+			Spec:     "0 0 * * *",
+			TaskFunc: jobs.CheckOaklandsUpdates,
+		},
+	})
+
+	registry.Start()
 	runtime.Goexit()
 }

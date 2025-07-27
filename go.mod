@@ -6,6 +6,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.52.8
 	github.com/gofiber/swagger v1.1.1
 	github.com/jackc/pgx/v5 v5.7.5
+	github.com/luckfire-go/cron-scheduler v0.0.0-20250717005514-ba0cee70c7c8
 	github.com/redis/go-redis/v9 v9.10.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/sirupsen/logrus v1.9.3
