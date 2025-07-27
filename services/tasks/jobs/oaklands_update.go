@@ -6,9 +6,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"maps"
+	"strconv"
 	"strings"
 	"time"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/internal/cache"
 	"github.com/typical-developers/public-experience-api/internal/experiences"
@@ -69,10 +71,31 @@ func inputUpload(ctx context.Context) (*string, error) {
 
 func CheckOaklandsUpdates() {
 	ctx := context.Background()
+	lastUpdatedEpoch := cache.Client.Get(ctx, "oaklands:last_updated").Val()
+	parsedLastUpdatedEpoch, err := strconv.ParseInt(lastUpdatedEpoch, 10, 64)
+	if err != nil {
+		log.WithError(err).Error("Failed to parse last updated epoch")
+		return
+	}
+
+	details, _, err := experiences.Opencloud.UniverseAndPlaces.GetPlace(ctx, "3666294218", "9938675423")
+	if err != nil {
+		log.WithError(err).Error("Failed to fetch place details")
+		return
+	}
+	lastUpdatedTime, err := time.Parse(time.RFC3339, details.UpdateTime)
+	if err != nil {
+		log.WithError(err).Error("Failed to parse last updated time")
+		return
+	}
+	if lastUpdatedTime.Unix() == parsedLastUpdatedEpoch {
+		log.Info("No recent Oaklands update detected.")
+		return
+	}
 
 	binaryInput, err := inputUpload(ctx)
 	if err != nil {
-		println(err.Error())
+		log.WithError(err).Error("Failed to upload binary input")
 		return
 	}
 
@@ -81,7 +104,7 @@ func CheckOaklandsUpdates() {
 		BinaryInput:        binaryInput,
 	})
 	if err != nil {
-		println(err.Error())
+		log.WithError(err).Error("Failed to run Oaklands updates")
 		return
 	}
 
@@ -151,5 +174,5 @@ func CheckOaklandsUpdates() {
 	cache.SetCached(ctx, "oaklands:ore_rarity_v1", "$", binary.OreRarityV1, nil)
 	// ---
 
-	cache.Client.Set(ctx, "oaklands:last_updated", time.Now().Unix(), 0)
+	cache.Client.Set(ctx, "oaklands:last_updated", lastUpdatedTime.Unix(), 0)
 }
