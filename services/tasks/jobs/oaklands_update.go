@@ -11,6 +11,7 @@ import (
 
 	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/internal/cache"
+	"github.com/typical-developers/public-experience-api/internal/experiences"
 	"github.com/typical-developers/public-experience-api/internal/luau"
 )
 
@@ -51,14 +52,14 @@ func inputUpload(ctx context.Context) (*string, error) {
 	}
 	input := buff.Bytes()
 
-	binaryInput, _, err := luau.Opencloud.LuauExecution.CreateLuauExecutionSessionTaskBinaryInput(ctx, "3666294218", opencloud.LuauExecutionSessionTaskBinaryInputCreate{
+	binaryInput, _, err := experiences.Opencloud.LuauExecution.CreateLuauExecutionSessionTaskBinaryInput(ctx, "3666294218", opencloud.LuauExecutionSessionTaskBinaryInputCreate{
 		Size: opencloud.Pointer(len(input)),
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = luau.Opencloud.LuauExecution.UploadLuauExecutionSessionTaskBinaryInput(ctx, binaryInput.UploadURI, input)
+	_, err = experiences.Opencloud.LuauExecution.UploadLuauExecutionSessionTaskBinaryInput(ctx, binaryInput.UploadURI, input)
 	if err != nil {
 		return nil, err
 	}

@@ -9,12 +9,11 @@ import (
 
 	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/goblox/pkg/methodutil"
+	"github.com/typical-developers/public-experience-api/internal/experiences"
 )
 
 var (
 	scriptsPath = "./internal/luau/scripts"
-
-	Opencloud = opencloud.NewClient().WithAPIKey(os.Getenv("OPENCLOUD_API_KEY"))
 )
 
 type ScriptPath string
@@ -45,7 +44,7 @@ func Run[R any, B any](ctx context.Context, universeId, placeId string, scriptPa
 		runOpts = *opts
 	}
 
-	task, _, err := Opencloud.LuauExecution.CreateLuauExecutionSessionTask(ctx, universeId, placeId, nil, opencloud.LuauExecutionTaskCreate{
+	task, _, err := experiences.Opencloud.LuauExecution.CreateLuauExecutionSessionTask(ctx, universeId, placeId, nil, opencloud.LuauExecutionTaskCreate{
 		Script:             opencloud.Pointer(string(file)),
 		BinaryInput:        runOpts.BinaryInput,
 		EnableBinaryOutput: runOpts.EnableBinaryOutput,
@@ -56,7 +55,7 @@ func Run[R any, B any](ctx context.Context, universeId, placeId string, scriptPa
 
 	universeId, placeId, versionId, sessionId, taskId := task.TaskInfo()
 	methodutil.PollMethod(func(done func()) {
-		task, resp, err := Opencloud.LuauExecution.GetLuauExecutionSessionTask(ctx, universeId, placeId, versionId, sessionId, taskId)
+		task, resp, err := experiences.Opencloud.LuauExecution.GetLuauExecutionSessionTask(ctx, universeId, placeId, versionId, sessionId, taskId)
 		if err != nil {
 			tError = err
 			done()
