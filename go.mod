@@ -8,6 +8,7 @@ require (
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/redis/go-redis/v9 v9.10.0
 	github.com/robfig/cron/v3 v3.0.1
+	github.com/sirupsen/logrus v1.9.3
 	github.com/swaggo/swag v1.16.4
 	github.com/typical-developers/goblox v0.0.0-20250711205313-724a51513294
 )
