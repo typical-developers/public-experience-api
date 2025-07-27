@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/robfig/cron/v3"
-	tasks "github.com/typical-developers/public-experience-api/scheduled-tasks"
+	"github.com/typical-developers/public-experience-api/services/tasks/jobs"
 )
 
 type JobRegistryEntry struct {
@@ -22,7 +22,7 @@ var JobRegistry = []JobRegistryEntry{
 		RunOnceAtStartup: true,
 		Disabled:         false,
 		Interval:         "0 0 * * *",
-		Task:             tasks.CheckOaklandsUpdates,
+		Task:             jobs.CheckOaklandsUpdates,
 	},
 }
 

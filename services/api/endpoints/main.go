@@ -1,4 +1,4 @@
-package api
+package endpoints
 
 import (
 	"github.com/gofiber/fiber/v2"
@@ -29,5 +29,9 @@ func Register(app *fiber.App) {
 	{
 		oaklands.Get("/translations/keys", OaklandsV1TranslationKeys)
 		oaklands.Get("/translations", OaklandsV1Translations)
+
+		oaklands.Get("/economy/ore-rarity", OaklandsV1EconomyOreRarity)
+		oaklands.Get("/economy/stock-market", OaklandsV1EconomyStockMarket)
+		oaklands.Get("/economy/stock-market/:materialType", OaklandsV1EconomyStockMarketMaterial)
 	}
 }

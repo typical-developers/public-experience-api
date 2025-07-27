@@ -1,4 +1,4 @@
-package api
+package endpoints
 
 type APIResponse[T any] struct {
 	Success bool `json:"success"`
