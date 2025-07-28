@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/goblox/pkg/methodutil"
 	"github.com/typical-developers/public-experience-api/internal/experiences"
@@ -63,6 +64,7 @@ func Run[R any, B any](ctx context.Context, universeId, placeId string, scriptPa
 		}
 
 		if resp.StatusCode == 429 {
+			log.Warn("LuauExecutionTask[", taskId, "]: 429, will keep retrying.")
 			return
 		}
 
