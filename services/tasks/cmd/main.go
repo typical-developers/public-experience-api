@@ -7,11 +7,16 @@ import (
 	. "github.com/luckfire-go/cron-scheduler"
 	"github.com/robfig/cron/v3"
 	log "github.com/sirupsen/logrus"
+	"github.com/typical-developers/public-experience-api/internal/experiences"
 	_ "github.com/typical-developers/public-experience-api/internal/logger"
+	"github.com/typical-developers/public-experience-api/services/tasks/config"
 	"github.com/typical-developers/public-experience-api/services/tasks/jobs"
 )
 
 func main() {
+	config.Load()
+	experiences.Opencloud.WithAPIKey(config.OpencloudAPIKey)
+
 	registry := NewRegistry(cron.WithLocation(time.UTC))
 
 	registry.OnJobAddSuccess = func(job *RegistryItem) {
