@@ -8,11 +8,11 @@ tasks:
       - swag fmt
       - swag init --parseDependency -dir ./services/api/endpoints --output ./internal/docs
 
-  build:api: go build -ldflags "-w -s" -o bin/api.exe services/api/cmd/main.go
+  build:api: go build -ldflags "-w -s" -o bin/public-api.exe services/api/cmd/main.go
   build:tasks: go build -ldflags "-w -s" -o bin/tasks.exe services/tasks/cmd/main.go
 
   dev:api:
-    cmd: air --build.cmd "task build:docs && task build:api" --build.bin "bin\\api-backend.exe" --build.exclude_dir "internal\\db,internal\\docs"
+    cmd: air --build.cmd "task build:docs && task build:api" --build.bin "bin\\public-api.exe" --build.exclude_dir "internal\\db,internal\\docs"
     env:
       ENVIRONMENT: development
   dev:tasks:
