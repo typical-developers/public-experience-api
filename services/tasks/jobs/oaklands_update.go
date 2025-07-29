@@ -70,8 +70,14 @@ func inputUpload(ctx context.Context) (*string, error) {
 }
 
 func CheckOaklandsUpdates() {
+	log.Info("Checking for Oaklands updates.")
+
 	ctx := context.Background()
 	lastUpdatedEpoch := cache.Client.Get(ctx, "oaklands:last_updated").Val()
+	if lastUpdatedEpoch == "" {
+		lastUpdatedEpoch = "0"
+	}
+
 	parsedLastUpdatedEpoch, err := strconv.ParseInt(lastUpdatedEpoch, 10, 64)
 	if err != nil {
 		log.WithError(err).Error("Failed to parse last updated epoch")
@@ -157,6 +163,8 @@ func CheckOaklandsUpdates() {
 	// ---
 
 	// Cache Stock Market
+	lastUpdated := time.Now().UTC().Format(time.RFC3339)
+	cache.Client.Set(ctx, "oaklands:stock_market:updated", lastUpdated, 0)
 	cache.SetCached(ctx, "oaklands:stock_market", "$", binary.StockMarket, nil)
 	// ---
 
@@ -174,5 +182,9 @@ func CheckOaklandsUpdates() {
 	cache.SetCached(ctx, "oaklands:ore_rarity_v1", "$", binary.OreRarityV1, nil)
 	// ---
 
+	// Last Updated
 	cache.Client.Set(ctx, "oaklands:last_updated", lastUpdatedTime.Unix(), 0)
+	// ---
+
+	log.Info("Successfully cached new Oaklands update values.")
 }

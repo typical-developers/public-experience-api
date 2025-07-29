@@ -1,6 +1,9 @@
 package experiences
 
-import "strings"
+import (
+	"strings"
+	"time"
+)
 
 // --- newsletters ---
 
@@ -112,6 +115,26 @@ type OaklandsStockMarketV1 struct {
 	Trees map[string]OaklandsStockMarketEntry `json:"trees"`
 	Rocks map[string]OaklandsStockMarketEntry `json:"rocks"`
 	Ores  map[string]OaklandsStockMarketEntry `json:"ores"`
+}
+
+func (s *OaklandsStockMarketV1) NextReset() string {
+	now := time.Now().UTC()
+	hour := now.Hour()
+
+	var nextReset int
+	for _, h := range []int{4, 10, 16, 22} {
+		if hour > h {
+			continue
+		}
+
+		nextReset = h
+		break
+	}
+
+	return time.Date(
+		now.Year(), now.Month(), now.Day(),
+		nextReset, 0, 0, 0, time.UTC,
+	).UTC().Format(time.RFC3339)
 }
 
 // ---

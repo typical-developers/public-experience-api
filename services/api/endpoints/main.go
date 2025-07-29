@@ -15,6 +15,9 @@ import (
 //	@tag.name			Oaklands - Translations
 //	@tag.description	All endpoints related to Oaklands translations.
 //
+//	@tag.name			Oaklands - Economy
+//	@tag.description	All endpoints related to Oaklands economy.
+//
 // nolint:staticcheck
 func Register(app *fiber.App) {
 	// Registers swagger documentation.
