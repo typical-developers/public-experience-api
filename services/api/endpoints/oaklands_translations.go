@@ -25,9 +25,9 @@ func OaklandsV1TranslationKeys(c *fiber.Ctx) error {
 	search := c.Query("search")
 	omit := c.Query("omit")
 
-	var translations *cache.Translations
-	if translations = cache.GetCached[cache.Translations](c.Context(), "oaklands:translations", "$"); translations == nil {
-		c.Status(fiber.StatusServiceUnavailable)
+	var translations *cache.OaklandsTranslations
+	if translations = cache.GetCached[cache.OaklandsTranslations](c.Context(), "oaklands:translations", "$"); translations == nil {
+		c.Status(fiber.StatusInternalServerError)
 		return c.JSON(ErrorAPIResponse{
 			Success: false,
 			Message: "Unable to fetch translations",
@@ -93,8 +93,8 @@ func OaklandsV1Translations(c *fiber.Ctx) error {
 		})
 	}
 
-	var translations *cache.Translations
-	if translations = cache.GetCached[cache.Translations](c.Context(), "oaklands:translations", "$"); translations == nil {
+	var translations *cache.OaklandsTranslations
+	if translations = cache.GetCached[cache.OaklandsTranslations](c.Context(), "oaklands:translations", "$"); translations == nil {
 		c.Status(fiber.StatusServiceUnavailable)
 		return c.JSON(ErrorAPIResponse{
 			Success: false,
