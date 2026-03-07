@@ -1,0 +1,10 @@
+basePath: /v1/
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a publicly accessible API to get data in Typical Developers
+    experiences.
+  title: Typical Developers - Public Experience API
+  version: "1.0"
+paths: {}
+swagger: "2.0"

@@ -1,0 +1,12 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a publicly accessible API to get data in Typical Developers experiences.",
+        "title": "Typical Developers - Public Experience API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/v1/",
+    "paths": {}
+}
