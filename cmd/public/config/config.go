@@ -10,6 +10,9 @@ import (
 type Config struct {
 	// The port that the server will be live on.
 	Port string `env:"PORT" envDefault:"8080"`
+
+	// The Opencloud API key necessary for accessing Roblox's Opencloud endpoints.
+	OpencloudKey string `env:"OPENCLOUD_KEY,required"`
 }
 
 var (
