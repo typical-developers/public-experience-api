@@ -10,15 +10,21 @@ import (
 	_ "github.com/typical-developers/public-experience-api/cmd/public/docs"
 )
 
-// @title           Typical Developers - Public Experience API
-// @version         1.0
-// @description     This is a publicly accessible API to get data in Typical Developers experiences.
+// serveStatic will serve static files on the root.
+func serveStatic(r chi.Router) {
+	fs := http.FileServer(http.Dir("static"))
+	r.Handle("/*", http.StripPrefix("/", fs))
+}
+
+// @Title           Typical Developers - Public Experience API
+// @Description     This is a publicly accessible API to get data in Typical Developers experiences.
 //
-// @host      localhost:8080
-// @BasePath  /v1/
+// @Tag.Name Oaklands
+// @Tag.Description Oaklands related endpoints.
 func main() {
 	r := chi.NewMux()
 	r.Get("/docs/*", httpSwagger.Handler())
+	serveStatic(r)
 
 	port := fmt.Sprintf(":%s", config.C.Port)
 	panic(http.ListenAndServe(port, r))
