@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	httpSwagger "github.com/swaggo/http-swagger"
 	"github.com/typical-developers/public-experience-api/cmd/public/config"
 	_ "github.com/typical-developers/public-experience-api/cmd/public/docs"
 )
@@ -16,14 +15,15 @@ func serveStatic(r chi.Router) {
 	r.Handle("/*", http.StripPrefix("/", fs))
 }
 
-// @Title           Typical Developers - Public Experience API
-// @Description     This is a publicly accessible API to get data in Typical Developers experiences.
+//	@Title				Typical Developers - Public Experience API
+//	@Description		This is a publicly accessible API to get data in Typical Developers experiences.
 //
-// @Tag.Name Oaklands
-// @Tag.Description Oaklands related endpoints.
+//	@Tag.Name			Oaklands
+//	@Tag.Description	Oaklands related endpoints.
+//
+// swagger:ignore
 func main() {
 	r := chi.NewMux()
-	r.Get("/docs/*", httpSwagger.Handler())
 	serveStatic(r)
 
 	port := fmt.Sprintf(":%s", config.C.Port)
