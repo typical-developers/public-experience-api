@@ -144,7 +144,7 @@ func (o *OaklandsV1Routes) writeStockMarket(
 //
 //	@Tags			Oaklands
 //
-//	@Param			sort_by		query		string	false	"The field to sort by."			default(multiplier)	enums(name, current_difference, last_difference, multiplier, values.current_value, values.base_value)
+//	@Param			sort_by		query		string	false	"The field to sort by."			default(multiplier)	enums(name, current_multiplier, last_multiplier, values.current_value, values.base_value)
 //	@Param			order_by	query		string	false	"The direction to order by."	default(desc)		enums(desc, asc)
 //
 //	@Success		200			{object}	object{data=[]StockMarket}
@@ -161,7 +161,7 @@ func (o *OaklandsV1Routes) GetStockMarketTrees(w http.ResponseWriter, r *http.Re
 //
 //	@Tags			Oaklands
 //
-//	@Param			sort_by		query		string	false	"The field to sort by."			default(multiplier)	enums(name, current_difference, last_difference, multiplier, values.current_value, values.base_value)
+//	@Param			sort_by		query		string	false	"The field to sort by."			default(multiplier)	enums(name, current_multiplier, last_multiplier, values.current_value, values.base_value)
 //	@Param			order_by	query		string	false	"The direction to order by."	default(desc)		enums(desc, asc)
 //
 //	@Success		200			{object}	object{data=[]StockMarket}
@@ -178,7 +178,7 @@ func (o *OaklandsV1Routes) GetStockMarketRocks(w http.ResponseWriter, r *http.Re
 //
 //	@Tags			Oaklands
 //
-//	@Param			sort_by		query		string	false	"The field to sort by."			default(multiplier)	enums(name, current_difference, last_difference, multiplier, values.current_value, values.base_value)
+//	@Param			sort_by		query		string	false	"The field to sort by."			default(multiplier)	enums(name, current_multiplier, last_multiplier, values.current_value, values.base_value)
 //	@Param			order_by	query		string	false	"The direction to order by."	default(desc)		enums(desc, asc)
 //
 //	@Success		200			{object}	object{data=[]StockMarket}

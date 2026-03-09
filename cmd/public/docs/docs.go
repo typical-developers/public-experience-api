@@ -25,9 +25,8 @@ const docTemplate = `{
                     {
                         "enum": [
                             "name",
-                            "current_difference",
-                            "last_difference",
-                            "multiplier",
+                            "current_multiplier",
+                            "last_multiplier",
                             "values.current_value",
                             "values.base_value"
                         ],
@@ -89,9 +88,8 @@ const docTemplate = `{
                     {
                         "enum": [
                             "name",
-                            "current_difference",
-                            "last_difference",
-                            "multiplier",
+                            "current_multiplier",
+                            "last_multiplier",
                             "values.current_value",
                             "values.base_value"
                         ],
@@ -153,9 +151,8 @@ const docTemplate = `{
                     {
                         "enum": [
                             "name",
-                            "current_difference",
-                            "last_difference",
-                            "multiplier",
+                            "current_multiplier",
+                            "last_multiplier",
                             "values.current_value",
                             "values.base_value"
                         ],
