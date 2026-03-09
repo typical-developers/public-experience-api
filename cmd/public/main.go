@@ -3,17 +3,50 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/typical-developers/public-experience-api/cmd/public/config"
 	_ "github.com/typical-developers/public-experience-api/cmd/public/docs"
+	models "github.com/typical-developers/public-experience-api/cmd/public/handlers"
+	"github.com/typical-developers/public-experience-api/internal/apperror"
+	"github.com/typical-developers/public-experience-api/pkg/httpx"
+)
+
+var (
+	HttpErrorNotFound = apperror.NewAppError("HttpErrorNotFound", "This page could not be found.", http.StatusNotFound, nil)
 )
 
 // serveStatic will serve static files on the root.
 func serveStatic(r chi.Router) {
-	fs := http.FileServer(http.Dir("static"))
-	r.Handle("/*", http.StripPrefix("/", fs))
+	root := "static"
+	fs := http.FileServer(http.Dir(root))
+
+	r.Handle("/*", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		path := filepath.Join(root, r.URL.Path)
+		info, err := os.Stat(path)
+		if os.IsNotExist(err) {
+			_ = httpx.WriteJSON(w, models.ErrorResponse{
+				Type:    HttpErrorNotFound.Type,
+				Message: HttpErrorNotFound.Message,
+			}, HttpErrorNotFound.Status)
+			return
+		}
+
+		if info.IsDir() {
+			if _, err := os.Stat(filepath.Join(path, "index.html")); os.IsNotExist(err) {
+				_ = httpx.WriteJSON(w, models.ErrorResponse{
+					Type:    HttpErrorNotFound.Type,
+					Message: HttpErrorNotFound.Message,
+				}, HttpErrorNotFound.Status)
+				return
+			}
+		}
+
+		http.StripPrefix("/", fs).ServeHTTP(w, r)
+	}))
 }
 
 //	@Title				Typical Developers - Public Experience API

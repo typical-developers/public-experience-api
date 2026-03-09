@@ -1,0 +1,34 @@
+package apperror
+
+import (
+	"fmt"
+)
+
+// AppError defines a standard application error.
+type AppError struct {
+	Type    string
+	Message string
+	Status  int
+	Err     error
+}
+
+// NewAppError creates a new AppError instance.
+func NewAppError(errType, message string, status int, err error) *AppError {
+	return &AppError{
+		Type:    errType,
+		Message: message,
+		Status:  status,
+		Err:     err,
+	}
+}
+
+func (e *AppError) Error() string {
+	if e.Err != nil {
+		return fmt.Sprintf("%s: %v", e.Message, e.Err)
+	}
+	return e.Message
+}
+
+func (e *AppError) Unwrap() error {
+	return e.Err
+}
