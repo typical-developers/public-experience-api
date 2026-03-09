@@ -3,6 +3,8 @@ name: public-experience-api
 networks:
   default:
     name: services
+volumes:
+  redis_data:
 
 services:
   redis:
@@ -20,6 +22,7 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
     volumes:
       - ./deployments/docker/redis/redis.conf:/opt/redis-stack/etc/redis.conf
+      - redis_data:/data
 
   workers:
     build:
