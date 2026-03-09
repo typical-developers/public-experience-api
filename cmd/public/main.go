@@ -14,7 +14,7 @@ import (
 	"github.com/typical-developers/public-experience-api/cmd/public/config"
 	models "github.com/typical-developers/public-experience-api/cmd/public/handlers"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/oaklands_v1"
-	"github.com/typical-developers/public-experience-api/docs"
+	_ "github.com/typical-developers/public-experience-api/docs"
 	"github.com/typical-developers/public-experience-api/internal/apperror"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
@@ -80,11 +80,6 @@ func serveStatic(r chi.Router) {
 //
 // swagger:ignore
 func main() {
-	if config.C.ReferenceConfig.PublicHost != "" {
-		docs.SwaggerInfo.Host = config.C.ReferenceConfig.PublicHost
-		docs.SwaggerInfo.Schemes = []string{"https"}
-	}
-
 	oc := opencloud.NewClient().WithAPIKey(config.C.OpencloudKey)
 	redis := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%d", config.C.Redis.Host, config.C.Redis.Port),
@@ -110,11 +105,6 @@ func main() {
 	oaklands_v1.NewOaklandsV1(r, &oaklands_v1.OaklandsV1Opts{
 		OpencloudClient: oc,
 		Usecase:         oaklandsUsecase,
-	})
-
-	r.Get("/docs/swagger.json", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(docs.SwaggerInfo.ReadDoc()))
 	})
 
 	serveStatic(r)

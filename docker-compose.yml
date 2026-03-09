@@ -49,13 +49,19 @@ services:
       - "${PUBLIC_PORT:-8080}:8080"
 
   docs:
-    image: scalarapi/api-reference:latest
+    build:
+      context: .
+      dockerfile: deployments/docker/docs/Dockerfile
     ports:
       - "${DOCS_PORT:-8081}:8080"
     environment:
       API_REFERENCE_CONFIG: |
         {
-          "url": "http://public:8080/docs/swagger.json"
+          "servers": [
+            {
+              "url": "${REFERENCE_CONFIG_API_BASE_URL:-localhost:8080}"
+            }
+          ]
         }
     depends_on:
       public:
