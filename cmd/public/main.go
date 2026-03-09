@@ -108,7 +108,7 @@ func main() {
 		Usecase:         oaklandsUsecase,
 	})
 
-	// serveStatic(r)
+	serveStatic(r)
 
 	port := fmt.Sprintf(":%s", config.C.Port)
 	panic(http.ListenAndServe(port, r))
