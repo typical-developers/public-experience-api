@@ -27,6 +27,14 @@ type Script struct {
 	client  *opencloud.Client
 }
 
+// NewScript will create a new Script based on direct script content.
+func NewScript(client *opencloud.Client, content string) *Script {
+	return &Script{
+		content: content,
+		client:  client,
+	}
+}
+
 // NewScriptFromFile will create a new Script based on a file path.
 func NewScriptFromFile(client *opencloud.Client, path string) (*Script, error) {
 	content, err := os.ReadFile(path)
@@ -34,10 +42,7 @@ func NewScriptFromFile(client *opencloud.Client, path string) (*Script, error) {
 		return nil, err
 	}
 
-	script := &Script{
-		content: string(content),
-		client:  client,
-	}
+	script := NewScript(client, string(content))
 
 	return script, nil
 }

@@ -2,6 +2,7 @@ package oaklands
 
 import (
 	"context"
+	_ "embed"
 
 	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/internal/scripts"
@@ -12,6 +13,9 @@ var (
 	ProductionPlaceID = "9938675423"
 	StagingPlaceID    = "13353432458"
 )
+
+//go:embed scripts/ContentSync.luau
+var ContentSyncScript string
 
 type ContentSyncData struct {
 	Changelogs  map[string]ChangelogVersion `json:"Changelogs"`
@@ -24,10 +28,7 @@ type ContentSyncData struct {
 
 // GetContentSync will run the ContentSync script to get new data (i.e. when Oaklands updates).
 func GetContentSync(ctx context.Context, oc *opencloud.Client) (*ContentSyncData, error) {
-	script, err := scripts.NewScriptFromFile(oc, "../../internal/oaklands/scripts/ContentSync.luau")
-	if err != nil {
-		return nil, err
-	}
+	script := scripts.NewScript(oc, ContentSyncScript)
 
 	result, err := script.Execute(ctx, scripts.ExecuteOptions{
 		UniverseID:         UniverseID,
