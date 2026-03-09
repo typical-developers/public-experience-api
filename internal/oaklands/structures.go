@@ -86,5 +86,6 @@ type StockMarketMaterial struct {
 	CurrencyType      string             `json:"CurrencyType"`
 	CurrentDifference float32            `json:"CurrentDifference"`
 	LastDifference    float32            `json:"LastDifference"`
+	Multiplier        float32            `json:"Multiplier"`
 	Values            []StockMarketValue `json:"Values"`
 }
