@@ -9,4 +9,4 @@ type ErrorResponse struct {
 	Type string `json:"type"`
 	// The message for the returned error.
 	Message string `json:"message"`
-}
+} //	@name	API.ErrorResponse

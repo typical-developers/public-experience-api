@@ -1,5 +1,5 @@
 definitions:
-  models.ErrorResponse:
+  API.ErrorResponse:
     properties:
       message:
         description: The message for the returned error.
@@ -8,7 +8,7 @@ definitions:
         description: The type of error that was returned.
         type: string
     type: object
-  oaklands_v1.MaterialValues:
+  Oaklands.V1.MaterialValues:
     properties:
       base_value:
         description: The base value for the material.
@@ -20,7 +20,7 @@ definitions:
         description: The type of material.
         type: string
     type: object
-  oaklands_v1.StockMarket:
+  Oaklands.V1.StockMarket:
     properties:
       currency_type:
         description: The currency of the material.
@@ -40,7 +40,7 @@ definitions:
       values:
         description: The values of the different types for the materials
         items:
-          $ref: '#/definitions/oaklands_v1.MaterialValues'
+          $ref: '#/definitions/Oaklands.V1.MaterialValues'
         type: array
     type: object
 host: localhost:8080
@@ -97,17 +97,17 @@ paths:
             properties:
               data:
                 items:
-                  $ref: '#/definitions/oaklands_v1.StockMarket'
+                  $ref: '#/definitions/Oaklands.V1.StockMarket'
                 type: array
             type: object
         "429":
           description: Too Many Requests
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/API.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/API.ErrorResponse'
       tags:
       - Oaklands
   /v1/oaklands/economy/stock-market/rocks:
@@ -140,17 +140,17 @@ paths:
             properties:
               data:
                 items:
-                  $ref: '#/definitions/oaklands_v1.StockMarket'
+                  $ref: '#/definitions/Oaklands.V1.StockMarket'
                 type: array
             type: object
         "429":
           description: Too Many Requests
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/API.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/API.ErrorResponse'
       tags:
       - Oaklands
   /v1/oaklands/economy/stock-market/trees:
@@ -183,17 +183,17 @@ paths:
             properties:
               data:
                 items:
-                  $ref: '#/definitions/oaklands_v1.StockMarket'
+                  $ref: '#/definitions/Oaklands.V1.StockMarket'
                 type: array
             type: object
         "429":
           description: Too Many Requests
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/API.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/API.ErrorResponse'
       tags:
       - Oaklands
 swagger: "2.0"

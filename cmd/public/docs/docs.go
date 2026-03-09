@@ -57,7 +57,7 @@ const docTemplate = `{
                                 "data": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/definitions/oaklands_v1.StockMarket"
+                                        "$ref": "#/definitions/Oaklands.V1.StockMarket"
                                     }
                                 }
                             }
@@ -66,13 +66,13 @@ const docTemplate = `{
                     "429": {
                         "description": "Too Many Requests",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/API.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/API.ErrorResponse"
                         }
                     }
                 }
@@ -120,7 +120,7 @@ const docTemplate = `{
                                 "data": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/definitions/oaklands_v1.StockMarket"
+                                        "$ref": "#/definitions/Oaklands.V1.StockMarket"
                                     }
                                 }
                             }
@@ -129,13 +129,13 @@ const docTemplate = `{
                     "429": {
                         "description": "Too Many Requests",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/API.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/API.ErrorResponse"
                         }
                     }
                 }
@@ -183,7 +183,7 @@ const docTemplate = `{
                                 "data": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/definitions/oaklands_v1.StockMarket"
+                                        "$ref": "#/definitions/Oaklands.V1.StockMarket"
                                     }
                                 }
                             }
@@ -192,13 +192,13 @@ const docTemplate = `{
                     "429": {
                         "description": "Too Many Requests",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/API.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/API.ErrorResponse"
                         }
                     }
                 }
@@ -206,7 +206,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.ErrorResponse": {
+        "API.ErrorResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -219,7 +219,7 @@ const docTemplate = `{
                 }
             }
         },
-        "oaklands_v1.MaterialValues": {
+        "Oaklands.V1.MaterialValues": {
             "type": "object",
             "properties": {
                 "base_value": {
@@ -236,7 +236,7 @@ const docTemplate = `{
                 }
             }
         },
-        "oaklands_v1.StockMarket": {
+        "Oaklands.V1.StockMarket": {
             "type": "object",
             "properties": {
                 "currency_type": {
@@ -263,7 +263,7 @@ const docTemplate = `{
                     "description": "The values of the different types for the materials",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/oaklands_v1.MaterialValues"
+                        "$ref": "#/definitions/Oaklands.V1.MaterialValues"
                     }
                 }
             }
