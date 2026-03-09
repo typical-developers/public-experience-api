@@ -9,8 +9,6 @@ services:
     image: redis/redis-stack:latest
     networks:
       - default
-    ports:
-      - "${REDIS_PORT:-6379}:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
