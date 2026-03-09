@@ -47,8 +47,6 @@ services:
 
   docs:
     image: scalarapi/api-reference:latest
-    build:
-      context: .
     ports:
       - "${DOCS_PORT:-8081}:8080"
     environment:
@@ -57,7 +55,7 @@ services:
           
         }
     volumes:
-      - ./cmd/public/docs:/docs
+      - ./docs:/docs
     depends_on:
       public:
         condition: service_started
