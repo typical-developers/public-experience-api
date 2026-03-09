@@ -7,11 +7,16 @@ import (
 	"path/filepath"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
+	"github.com/redis/go-redis/v9"
+	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/cmd/public/config"
 	_ "github.com/typical-developers/public-experience-api/cmd/public/docs"
 	models "github.com/typical-developers/public-experience-api/cmd/public/handlers"
+	"github.com/typical-developers/public-experience-api/cmd/public/handlers/oaklands_v1"
 	"github.com/typical-developers/public-experience-api/internal/apperror"
+	"github.com/typical-developers/public-experience-api/internal/oaklands"
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
 
@@ -49,6 +54,7 @@ func serveStatic(r chi.Router) {
 	}))
 }
 
+//	@Host				localhost:8080
 //	@Title				Typical Developers - Public Experience API
 //
 //	@Description		This is the official, publicly accessible, API to get data in Typical Developers' experiences.
@@ -56,7 +62,8 @@ func serveStatic(r chi.Router) {
 //	@Description		- All dates and timestamps are returned in [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) format and are set as a UTC timezone.<br>
 //	@Description		---
 //	@Description		# Ratelimits
-//	@Description		If you are constantly hitting ratelimits and need help, reach out in our community development channels in our [Discord Server](https://discord.gg/typical).<br>
+//	@Description		> [!NOTE]
+//	@Description		> If you are constantly hitting ratelimits and need help, reach out in our community development channels in our [Discord Server](https://discord.gg/typical).<br>
 //	@Description		<!---->
 //	@Description		| Duration | Requests |
 //	@Description		|----------|----------|
@@ -74,8 +81,16 @@ func serveStatic(r chi.Router) {
 //
 // swagger:ignore
 func main() {
-	r := chi.NewMux()
+	oc := opencloud.NewClient().WithAPIKey(config.C.OpencloudKey)
+	redis := redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%d", config.C.Redis.Host, config.C.Redis.Port),
+		Password: config.C.Redis.Password,
+		DB:       config.C.Redis.DB,
+	})
 
+	r := chi.NewMux()
+	r.Use(middleware.Recoverer)
+	r.Use(middleware.Logger)
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "OPTIONS"},
@@ -85,7 +100,15 @@ func main() {
 		MaxAge:           300,
 	}))
 
-	serveStatic(r)
+	oaklandsRepository := oaklands.NewOaklandsRepository(&oaklands.OaklandsRepositoryOpts{RedisClient: redis})
+	oaklandsUsecase := oaklands.NewOaklandsUsecase(oaklandsRepository)
+
+	oaklands_v1.NewOaklandsV1(r, &oaklands_v1.OaklandsV1Opts{
+		OpencloudClient: oc,
+		Usecase:         oaklandsUsecase,
+	})
+
+	// serveStatic(r)
 
 	port := fmt.Sprintf(":%s", config.C.Port)
 	panic(http.ListenAndServe(port, r))

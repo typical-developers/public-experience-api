@@ -1,10 +1,205 @@
-basePath: /v1/
+definitions:
+  models.ErrorResponse:
+    properties:
+      message:
+        description: The message for the returned error.
+        type: string
+      type:
+        description: The type of error that was returned.
+        type: string
+    type: object
+  oaklands_v1.MaterialValues:
+    properties:
+      base_value:
+        description: The base value for the material.
+        type: number
+      current_value:
+        description: The current value of the material.
+        type: number
+      type:
+        description: The type of material.
+        type: string
+    type: object
+  oaklands_v1.StockMarket:
+    properties:
+      currency_type:
+        description: The currency of the material.
+        type: string
+      current_multiplier:
+        description: The current multiplier.
+        type: number
+      display_name:
+        description: The display name of the material.
+        type: string
+      last_multiplier:
+        description: The multipler from the last time the stock refreshed.
+        type: number
+      name:
+        description: The identifier for the material.
+        type: string
+      values:
+        description: The values of the different types for the materials
+        items:
+          $ref: '#/definitions/oaklands_v1.MaterialValues'
+        type: array
+    type: object
 host: localhost:8080
 info:
   contact: {}
-  description: This is a publicly accessible API to get data in Typical Developers
-    experiences.
+  description: |-
+    This is the official, publicly accessible, API to get data in Typical Developers' experiences.
+    # Notes
+    - All dates and timestamps are returned in [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) format and are set as a UTC timezone.<br>
+    ---
+    # Ratelimits
+    > [!NOTE]
+    > If you are constantly hitting ratelimits and need help, reach out in our community development channels in our [Discord Server](https://discord.gg/typical).<br>
+    <!---->
+    | Duration | Requests |
+    |----------|----------|
+    | Daily   | Unlimited |
+    | Per Minute    | 120 |
+    | Per Second    | 6  |
+    <!---->
+    ## Headers
+    `X-RateLimit-Limit`:     The total amount of requests that can be made.<br>
+    `X-RateLimit-Remaining`: The remaining amount of requests that can be made before the rate-limit is exhausted.<br>
+    `X-RateLimit-Reset`:     The remaining amount of time for when the rate-limit resets.<br>
   title: Typical Developers - Public Experience API
-  version: "1.0"
-paths: {}
+paths:
+  /v1/oaklands/economy/stock-market/ores:
+    get:
+      description: Fetch the current ore stock market.
+      parameters:
+      - default: multiplier
+        description: The field to sort by.
+        enum:
+        - name
+        - current_difference
+        - last_difference
+        - multiplier
+        - values.current_value
+        - values.base_value
+        in: query
+        name: sort_by
+        type: string
+      - default: desc
+        description: The direction to order by.
+        enum:
+        - desc
+        - asc
+        in: query
+        name: order_by
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/oaklands_v1.StockMarket'
+                type: array
+            type: object
+        "429":
+          description: Too Many Requests
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      tags:
+      - Oaklands
+  /v1/oaklands/economy/stock-market/rocks:
+    get:
+      description: Fetch the current rock stock market.
+      parameters:
+      - default: multiplier
+        description: The field to sort by.
+        enum:
+        - name
+        - current_difference
+        - last_difference
+        - multiplier
+        - values.current_value
+        - values.base_value
+        in: query
+        name: sort_by
+        type: string
+      - default: desc
+        description: The direction to order by.
+        enum:
+        - desc
+        - asc
+        in: query
+        name: order_by
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/oaklands_v1.StockMarket'
+                type: array
+            type: object
+        "429":
+          description: Too Many Requests
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      tags:
+      - Oaklands
+  /v1/oaklands/economy/stock-market/trees:
+    get:
+      description: Fetch the current tree stock market.
+      parameters:
+      - default: multiplier
+        description: The field to sort by.
+        enum:
+        - name
+        - current_difference
+        - last_difference
+        - multiplier
+        - values.current_value
+        - values.base_value
+        in: query
+        name: sort_by
+        type: string
+      - default: desc
+        description: The direction to order by.
+        enum:
+        - desc
+        - asc
+        in: query
+        name: order_by
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/oaklands_v1.StockMarket'
+                type: array
+            type: object
+        "429":
+          description: Too Many Requests
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      tags:
+      - Oaklands
 swagger: "2.0"
+tags:
+- description: All of the available Oaklands endpoints.
+  name: Oaklands

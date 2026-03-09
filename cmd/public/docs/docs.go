@@ -14,17 +14,280 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/v1/oaklands/economy/stock-market/ores": {
+            "get": {
+                "description": "Fetch the current ore stock market.",
+                "tags": [
+                    "Oaklands"
+                ],
+                "parameters": [
+                    {
+                        "enum": [
+                            "name",
+                            "current_difference",
+                            "last_difference",
+                            "multiplier",
+                            "values.current_value",
+                            "values.base_value"
+                        ],
+                        "type": "string",
+                        "default": "multiplier",
+                        "description": "The field to sort by.",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "desc",
+                            "asc"
+                        ],
+                        "type": "string",
+                        "default": "desc",
+                        "description": "The direction to order by.",
+                        "name": "order_by",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/oaklands_v1.StockMarket"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/oaklands/economy/stock-market/rocks": {
+            "get": {
+                "description": "Fetch the current rock stock market.",
+                "tags": [
+                    "Oaklands"
+                ],
+                "parameters": [
+                    {
+                        "enum": [
+                            "name",
+                            "current_difference",
+                            "last_difference",
+                            "multiplier",
+                            "values.current_value",
+                            "values.base_value"
+                        ],
+                        "type": "string",
+                        "default": "multiplier",
+                        "description": "The field to sort by.",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "desc",
+                            "asc"
+                        ],
+                        "type": "string",
+                        "default": "desc",
+                        "description": "The direction to order by.",
+                        "name": "order_by",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/oaklands_v1.StockMarket"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/oaklands/economy/stock-market/trees": {
+            "get": {
+                "description": "Fetch the current tree stock market.",
+                "tags": [
+                    "Oaklands"
+                ],
+                "parameters": [
+                    {
+                        "enum": [
+                            "name",
+                            "current_difference",
+                            "last_difference",
+                            "multiplier",
+                            "values.current_value",
+                            "values.base_value"
+                        ],
+                        "type": "string",
+                        "default": "multiplier",
+                        "description": "The field to sort by.",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "desc",
+                            "asc"
+                        ],
+                        "type": "string",
+                        "default": "desc",
+                        "description": "The direction to order by.",
+                        "name": "order_by",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/oaklands_v1.StockMarket"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "description": "The message for the returned error.",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "The type of error that was returned.",
+                    "type": "string"
+                }
+            }
+        },
+        "oaklands_v1.MaterialValues": {
+            "type": "object",
+            "properties": {
+                "base_value": {
+                    "description": "The base value for the material.",
+                    "type": "number"
+                },
+                "current_value": {
+                    "description": "The current value of the material.",
+                    "type": "number"
+                },
+                "type": {
+                    "description": "The type of material.",
+                    "type": "string"
+                }
+            }
+        },
+        "oaklands_v1.StockMarket": {
+            "type": "object",
+            "properties": {
+                "currency_type": {
+                    "description": "The currency of the material.",
+                    "type": "string"
+                },
+                "current_multiplier": {
+                    "description": "The current multiplier.",
+                    "type": "number"
+                },
+                "display_name": {
+                    "description": "The display name of the material.",
+                    "type": "string"
+                },
+                "last_multiplier": {
+                    "description": "The multipler from the last time the stock refreshed.",
+                    "type": "number"
+                },
+                "name": {
+                    "description": "The identifier for the material.",
+                    "type": "string"
+                },
+                "values": {
+                    "description": "The values of the different types for the materials",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/oaklands_v1.MaterialValues"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "description": "All of the available Oaklands endpoints.",
+            "name": "Oaklands"
+        }
+    ]
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0",
+	Version:          "",
 	Host:             "localhost:8080",
-	BasePath:         "/v1/",
+	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "Typical Developers - Public Experience API",
-	Description:      "This is a publicly accessible API to get data in Typical Developers experiences.",
+	Description:      "This is the official, publicly accessible, API to get data in Typical Developers' experiences.\n# Notes\n- All dates and timestamps are returned in [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) format and are set as a UTC timezone.<br>\n---\n# Ratelimits\n> [!NOTE]\n> If you are constantly hitting ratelimits and need help, reach out in our community development channels in our [Discord Server](https://discord.gg/typical).<br>\n<!---->\n| Duration | Requests |\n|----------|----------|\n| Daily   | Unlimited |\n| Per Minute    | 120 |\n| Per Second    | 6  |\n<!---->\n## Headers\n`X-RateLimit-Limit`:     The total amount of requests that can be made.<br>\n`X-RateLimit-Remaining`: The remaining amount of requests that can be made before the rate-limit is exhausted.<br>\n`X-RateLimit-Reset`:     The remaining amount of time for when the rate-limit resets.<br>",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
