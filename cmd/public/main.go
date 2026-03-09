@@ -14,6 +14,7 @@ import (
 	"github.com/typical-developers/public-experience-api/cmd/public/config"
 	models "github.com/typical-developers/public-experience-api/cmd/public/handlers"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/oaklands_v1"
+	"github.com/typical-developers/public-experience-api/docs"
 	_ "github.com/typical-developers/public-experience-api/docs"
 	"github.com/typical-developers/public-experience-api/internal/apperror"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
@@ -54,7 +55,6 @@ func serveStatic(r chi.Router) {
 	}))
 }
 
-//	@Host				localhost:8080
 //	@Title				Typical Developers - Public Experience API
 //
 //	@Description		This is the official, publicly accessible, API to get data in Typical Developers' experiences.
@@ -81,6 +81,10 @@ func serveStatic(r chi.Router) {
 //
 // swagger:ignore
 func main() {
+	if config.C.ReferenceConfig.PublicHost != "" {
+		docs.SwaggerInfo.Host = config.C.ReferenceConfig.PublicHost
+	}
+
 	oc := opencloud.NewClient().WithAPIKey(config.C.OpencloudKey)
 	redis := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%d", config.C.Redis.Host, config.C.Redis.Port),

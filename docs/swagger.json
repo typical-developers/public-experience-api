@@ -5,7 +5,6 @@
         "title": "Typical Developers - Public Experience API",
         "contact": {}
     },
-    "host": "localhost:8080",
     "paths": {
         "/v1/oaklands/economy/stock-market/ores": {
             "get": {
