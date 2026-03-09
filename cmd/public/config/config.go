@@ -21,10 +21,6 @@ type Config struct {
 		Password string `env:"PASSWORD"`
 		DB       int    `env:"DB" envDefault:"0"`
 	} `envPrefix:"REDIS_"`
-
-	ReferenceConfig struct {
-		PublicHost string `env:"PUBLIC_HOST"`
-	} `envPrefix:"REFERENCE_CONFIG_"`
 }
 
 var (

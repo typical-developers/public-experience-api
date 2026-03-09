@@ -57,7 +57,12 @@ services:
     environment:
       API_REFERENCE_CONFIG: |
         {
-          "url": "/docs/swagger.json"
+          "url": "/docs/swagger.json",
+          "servers": [
+            {
+              "url": "${REFERENCE_CONFIG_PUBLIC_HOST}"
+            }
+          ]
         }
     depends_on:
       public:
