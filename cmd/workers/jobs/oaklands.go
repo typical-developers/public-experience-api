@@ -26,8 +26,6 @@ func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
 		r:         opts.Repository,
 	}
 
-	h.CheckForUpdates()
-
 	if _, err := opts.Cron.AddFunc("@every 5m", h.CheckForUpdates); err != nil {
 		panic(err)
 	}
