@@ -76,6 +76,10 @@ paths:
     get:
       description: Fetch the current ore stock market.
       parameters:
+      - description: ETag to validate cached response.
+        in: header
+        name: If-None-Match
+        type: string
       - default: current_multiplier
         description: The field to sort by.
         enum:
@@ -119,6 +123,10 @@ paths:
     get:
       description: Fetch the current rock stock market.
       parameters:
+      - description: ETag to validate cached response.
+        in: header
+        name: If-None-Match
+        type: string
       - default: current_multiplier
         description: The field to sort by.
         enum:
@@ -162,6 +170,10 @@ paths:
     get:
       description: Fetch the current tree stock market.
       parameters:
+      - description: ETag to validate cached response.
+        in: header
+        name: If-None-Match
+        type: string
       - default: current_multiplier
         description: The field to sort by.
         enum:

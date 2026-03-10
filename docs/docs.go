@@ -23,6 +23,12 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "ETag to validate cached response.",
+                        "name": "If-None-Match",
+                        "in": "header"
+                    },
+                    {
                         "enum": [
                             "name",
                             "current_multiplier",
@@ -86,6 +92,12 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "ETag to validate cached response.",
+                        "name": "If-None-Match",
+                        "in": "header"
+                    },
+                    {
                         "enum": [
                             "name",
                             "current_multiplier",
@@ -148,6 +160,12 @@ const docTemplate = `{
                     "Oaklands"
                 ],
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ETag to validate cached response.",
+                        "name": "If-None-Match",
+                        "in": "header"
+                    },
                     {
                         "enum": [
                             "name",

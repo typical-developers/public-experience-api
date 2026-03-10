@@ -14,6 +14,12 @@
                 ],
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "ETag to validate cached response.",
+                        "name": "If-None-Match",
+                        "in": "header"
+                    },
+                    {
                         "enum": [
                             "name",
                             "current_multiplier",
@@ -77,6 +83,12 @@
                 ],
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "ETag to validate cached response.",
+                        "name": "If-None-Match",
+                        "in": "header"
+                    },
+                    {
                         "enum": [
                             "name",
                             "current_multiplier",
@@ -139,6 +151,12 @@
                     "Oaklands"
                 ],
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ETag to validate cached response.",
+                        "name": "If-None-Match",
+                        "in": "header"
+                    },
                     {
                         "enum": [
                             "name",
