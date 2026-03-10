@@ -21,12 +21,16 @@ type OaklandsCronJobsOpts struct {
 }
 
 func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
-	h := &OaklandsCronJobs{
+	c := &OaklandsCronJobs{
 		opencloud: opts.OpencloudClient,
 		r:         opts.Repository,
 	}
 
-	if _, err := opts.Cron.AddFunc("@every 5m", h.CheckForUpdates); err != nil {
+	if _, err := opts.Cron.AddFunc("@every 5m", c.CheckForUpdates); err != nil {
+		panic(err)
+	}
+
+	if _, err := opts.Cron.AddFunc("0 4,10,16,22 * * *", c.RefreshStockMarkets); err != nil {
 		panic(err)
 	}
 }
@@ -64,5 +68,24 @@ func (c *OaklandsCronJobs) CheckForUpdates() {
 		if err := c.r.ContentSync(ctx, *content); err != nil {
 			panic(err)
 		}
+	}
+}
+
+// RefreshStockMarkets will fetch and update the stock market values for each relating stock market.
+// This happens every 6 hours.
+func (c *OaklandsCronJobs) RefreshStockMarkets() {
+	ctx := context.Background()
+
+	stock, err := oaklands.GetStockMarket(ctx, c.opencloud)
+	if err != nil {
+		panic(err)
+	}
+
+	if stock == nil {
+		return
+	}
+
+	if err := c.r.SetStockMarket(ctx, *stock); err != nil {
+		panic(err)
 	}
 }

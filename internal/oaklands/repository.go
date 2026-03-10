@@ -19,11 +19,13 @@ type OaklandsRepository interface {
 	// GetLastSyncTime will get the last time a ContentSync happened.
 	GetLastSyncTime(ctx context.Context) (*time.Time, error)
 
-	//
+	// SetStockMarket will update all of the stock market values.
+	SetStockMarket(ctx context.Context, data map[string][]StockMarketMaterial) error
+	// GetTreesStockMarket will get the tree stock market.
 	GetTreesStockMarket(ctx context.Context) ([]StockMarketMaterial, error)
-	//
+	// GetRocksStockMarket will get the rock stock market
 	GetRocksStockMarket(ctx context.Context) ([]StockMarketMaterial, error)
-	//
+	// GetOresStockMarket will get the ore stock market.
 	GetOresStockMarket(ctx context.Context) ([]StockMarketMaterial, error)
 }
 
@@ -106,6 +108,21 @@ func (r *OaklandsRepositoryImpl) GetLastSyncTime(ctx context.Context) (*time.Tim
 	}
 
 	return &t, nil
+}
+
+func (r *OaklandsRepositoryImpl) SetStockMarket(ctx context.Context, data map[string][]StockMarketMaterial) error {
+	pipeline := r.redis.Pipeline()
+
+	for marketType, materials := range data {
+		key := fmt.Sprintf("oaklands:stock_market:%s", strings.ToLower(marketType))
+		pipeline.JSONSet(ctx, key, "$", materials)
+	}
+
+	if _, err := pipeline.Exec(ctx); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (r *OaklandsRepositoryImpl) GetTreesStockMarket(ctx context.Context) ([]StockMarketMaterial, error) {

@@ -14,8 +14,12 @@ var (
 	StagingPlaceID    = "13353432458"
 )
 
-//go:embed scripts/ContentSync.luau
-var ContentSyncScript string
+var (
+	//go:embed scripts/ContentSync.luau
+	ContentSyncScript string
+	//go:embed scripts/StockMarket.luau
+	StockMarketScript string
+)
 
 type ContentSyncData struct {
 	Changelogs  map[string]ChangelogVersion `json:"Changelogs"`
@@ -40,6 +44,30 @@ func GetContentSync(ctx context.Context, oc *opencloud.Client) (*ContentSyncData
 	}
 
 	data := new(ContentSyncData)
+	if err := result.DecodeBinaryOutput(data); err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
+type StockMarketData map[string][]StockMarketMaterial
+
+// GetStockMarket will run the StockMarket script to get new data.
+func GetStockMarket(ctx context.Context, oc *opencloud.Client) (*StockMarketData, error) {
+	script := scripts.NewScript(oc, StockMarketScript)
+
+	result, err := script.Execute(ctx, scripts.ExecuteOptions{
+		UniverseID:         UniverseID,
+		PlaceID:            StagingPlaceID,
+		EnableBinaryOutput: new(true),
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	data := new(StockMarketData)
 	if err := result.DecodeBinaryOutput(data); err != nil {
 		return nil, err
 	}
