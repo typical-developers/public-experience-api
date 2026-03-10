@@ -69,7 +69,7 @@ info:
     ## Headers
     `X-RateLimit-Limit`:     The total amount of requests that can be made.<br>
     `X-RateLimit-Remaining`: The remaining amount of requests that can be made before the rate-limit is exhausted.<br>
-    `X-RateLimit-Reset`:     The remaining amount of time for when the rate-limit resets.<br>=
+    `X-RateLimit-Reset`:     The remaining amount of time for when the rate-limit resets.
   title: Typical Developers - Public Experience API
 paths:
   /v1/oaklands/economy/stock-market/ores:

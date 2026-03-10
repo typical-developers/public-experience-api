@@ -79,7 +79,7 @@ func serveStatic(r chi.Router) {
 //	@Description		## Headers
 //	@Description		`X-RateLimit-Limit`:     The total amount of requests that can be made.<br>
 //	@Description		`X-RateLimit-Remaining`: The remaining amount of requests that can be made before the rate-limit is exhausted.<br>
-//	@Description		`X-RateLimit-Reset`:     The remaining amount of time for when the rate-limit resets.<br>=
+//	@Description		`X-RateLimit-Reset`:     The remaining amount of time for when the rate-limit resets.
 //
 //	@Tag.Name			Oaklands
 //	@Tag.Description	All of the available Oaklands endpoints.
