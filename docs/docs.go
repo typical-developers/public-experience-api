@@ -31,7 +31,7 @@ const docTemplate = `{
                             "values.base_value"
                         ],
                         "type": "string",
-                        "default": "multiplier",
+                        "default": "current_multiplier",
                         "description": "The field to sort by.",
                         "name": "sort_by",
                         "in": "query"
@@ -94,7 +94,7 @@ const docTemplate = `{
                             "values.base_value"
                         ],
                         "type": "string",
-                        "default": "multiplier",
+                        "default": "current_multiplier",
                         "description": "The field to sort by.",
                         "name": "sort_by",
                         "in": "query"
@@ -157,7 +157,7 @@ const docTemplate = `{
                             "values.base_value"
                         ],
                         "type": "string",
-                        "default": "multiplier",
+                        "default": "current_multiplier",
                         "description": "The field to sort by.",
                         "name": "sort_by",
                         "in": "query"

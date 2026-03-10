@@ -70,7 +70,7 @@ paths:
     get:
       description: Fetch the current ore stock market.
       parameters:
-      - default: multiplier
+      - default: current_multiplier
         description: The field to sort by.
         enum:
         - name
@@ -113,7 +113,7 @@ paths:
     get:
       description: Fetch the current rock stock market.
       parameters:
-      - default: multiplier
+      - default: current_multiplier
         description: The field to sort by.
         enum:
         - name
@@ -156,7 +156,7 @@ paths:
     get:
       description: Fetch the current tree stock market.
       parameters:
-      - default: multiplier
+      - default: current_multiplier
         description: The field to sort by.
         enum:
         - name
