@@ -1,6 +1,7 @@
 package httpx
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
@@ -9,12 +10,15 @@ import (
 
 // ETagJSON will generate a strong ETag from JSON data.
 func ETagJSON(data any) (*string, error) {
-	jsonb, err := json.Marshal(data)
-	if err != nil {
+	var buf bytes.Buffer
+	encoder := json.NewEncoder(&buf)
+	encoder.SetEscapeHTML(false)
+
+	if err := encoder.Encode(data); err != nil {
 		return nil, err
 	}
 
-	hash := sha256.Sum256(jsonb)
+	hash := sha256.Sum256(buf.Bytes())
 	str := hex.EncodeToString(hash[:])[:32]
 	etag := fmt.Sprintf(`"%s"`, str)
 

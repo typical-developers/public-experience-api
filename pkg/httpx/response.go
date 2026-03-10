@@ -3,6 +3,7 @@ package httpx
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 )
 
 func WriteJSON(w http.ResponseWriter, data any, statusCode int) error {
@@ -21,12 +22,29 @@ func WriteJSONWithETag(w http.ResponseWriter, r *http.Request, data any, statusC
 		return err
 	}
 
+	w.Header().Set("ETag", *etag)
+
 	match := r.Header.Get("If-None-Match")
-	if *etag != match {
-		w.Header().Set("ETag", *etag)
-		return WriteJSON(w, data, statusCode)
+	if match == "*" {
+		w.WriteHeader(http.StatusNotModified)
+		return nil
 	}
 
-	w.WriteHeader(http.StatusNotModified)
-	return nil
+	for _, part := range strings.Split(match, ",") {
+		token := strings.TrimSpace(part)
+		if token == "" {
+			continue
+		}
+
+		if strings.HasPrefix(token, "W/") || strings.HasPrefix(token, "w/") {
+			token = strings.TrimSpace(token[2:])
+		}
+
+		if token == *etag {
+			w.WriteHeader(http.StatusNotModified)
+			return nil
+		}
+	}
+
+	return WriteJSON(w, data, statusCode)
 }
