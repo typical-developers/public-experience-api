@@ -60,6 +60,12 @@ func serveStatic(r chi.Router) {
 //	@Description		# Notes
 //	@Description		- All dates and timestamps are returned in [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) format and are set as a UTC timezone.<br>
 //	@Description		---
+//	@Description		# Caching
+//	@Description		All responses will return an `ETag` header, which is an MD5 hash of the response. You are able to use this hash to verify
+//	@Description		if there's updated content by supplying a `If-None-Match` in the requests header for the next request you make.<br>
+//	@Description		- Status `200 - OK` will be returned if the resource has been updated.
+//	@Description		- Status `304 - Not Modified` will be returned if the resource has not been updated.
+//	@Description		---
 //	@Description		# Ratelimits
 //	@Description		> [!NOTE]
 //	@Description		> If you are constantly hitting ratelimits and need help, reach out in our community development channels in our [Discord Server](https://discord.gg/typical).<br>
@@ -73,7 +79,7 @@ func serveStatic(r chi.Router) {
 //	@Description		## Headers
 //	@Description		`X-RateLimit-Limit`:     The total amount of requests that can be made.<br>
 //	@Description		`X-RateLimit-Remaining`: The remaining amount of requests that can be made before the rate-limit is exhausted.<br>
-//	@Description		`X-RateLimit-Reset`:     The remaining amount of time for when the rate-limit resets.<br>
+//	@Description		`X-RateLimit-Reset`:     The remaining amount of time for when the rate-limit resets.<br>=
 //
 //	@Tag.Name			Oaklands
 //	@Tag.Description	All of the available Oaklands endpoints.

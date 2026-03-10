@@ -14,3 +14,19 @@ func WriteJSON(w http.ResponseWriter, data any, statusCode int) error {
 
 	return encoder.Encode(data)
 }
+
+func WriteJSONWithETag(w http.ResponseWriter, r *http.Request, data any, statusCode int) error {
+	etag, err := ETagJSON(data)
+	if err != nil {
+		return err
+	}
+
+	match := r.Header.Get("If-None-Match")
+	if *etag != match {
+		w.Header().Set("ETag", *etag)
+		return WriteJSON(w, data, statusCode)
+	}
+
+	w.WriteHeader(http.StatusNotModified)
+	return nil
+}

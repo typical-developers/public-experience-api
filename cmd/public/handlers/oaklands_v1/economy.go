@@ -132,8 +132,7 @@ func (o *OaklandsV1Routes) writeStockMarket(
 
 	materials = o.sortStockMarketMaterials(materials, sort, order)
 	response := newStockMarketResponse(materials)
-
-	if err := httpx.WriteJSON(w, response, http.StatusOK); err != nil {
+	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
