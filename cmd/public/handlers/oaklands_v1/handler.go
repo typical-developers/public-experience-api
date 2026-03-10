@@ -38,6 +38,15 @@ func oaklandsRateLimit(limit int, window time.Duration, bucket string) func(http
 	)
 }
 
+func cacheControl() func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=300, stale-while-revalidate=300")
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+
 // NewOaklandsV1 will create new v1 routes for Oaklands related endpoints.
 func NewOaklandsV1(r *chi.Mux, opts *OaklandsV1Opts) {
 	o := &OaklandsV1Routes{
@@ -48,6 +57,7 @@ func NewOaklandsV1(r *chi.Mux, opts *OaklandsV1Opts) {
 	r.Route("/v1/oaklands", func(r chi.Router) {
 		r.Use(oaklandsRateLimit(120, 1*time.Minute, "per-minute"))
 		r.Use(oaklandsRateLimit(6, 1*time.Second, "per-second"))
+		r.Use(cacheControl())
 
 		r.Route("/economy", func(r chi.Router) {
 			r.Route("/stock-market", func(r chi.Router) {
