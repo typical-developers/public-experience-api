@@ -35,11 +35,11 @@ func NewOaklandsV1(r *chi.Mux, opts *OaklandsV1Opts) {
 	}
 
 	r.Route("/v1/oaklands", func(r chi.Router) {
-		r.Use(cacheControl())
-
 		r.Get("/sync", o.GetSyncTimes)
 
 		r.Route("/economy", func(r chi.Router) {
+			r.Use(cacheControl())
+
 			r.Route("/stock-market", func(r chi.Router) {
 				r.Get("/trees", o.GetStockMarketTrees)
 				r.Get("/rocks", o.GetStockMarketRocks)
