@@ -3,9 +3,9 @@ package oaklands
 import "context"
 
 type OaklandsUsecase interface {
-	GetStockMarketTrees(ctx context.Context) ([]StockMarketMaterial, error)
-	GetStockMarketRocks(ctx context.Context) ([]StockMarketMaterial, error)
-	GetStockMarketOres(ctx context.Context) ([]StockMarketMaterial, error)
+	GetStockMarketTrees(ctx context.Context) (*StockMarket, error)
+	GetStockMarketRocks(ctx context.Context) (*StockMarket, error)
+	GetStockMarketOres(ctx context.Context) (*StockMarket, error)
 }
 
 type OaklandsUsecaseImpl struct {
@@ -16,14 +16,14 @@ func NewOaklandsUsecase(r OaklandsRepository) OaklandsUsecase {
 	return &OaklandsUsecaseImpl{r: r}
 }
 
-func (u *OaklandsUsecaseImpl) GetStockMarketTrees(ctx context.Context) ([]StockMarketMaterial, error) {
+func (u *OaklandsUsecaseImpl) GetStockMarketTrees(ctx context.Context) (*StockMarket, error) {
 	return u.r.GetTreesStockMarket(ctx)
 }
 
-func (u *OaklandsUsecaseImpl) GetStockMarketRocks(ctx context.Context) ([]StockMarketMaterial, error) {
+func (u *OaklandsUsecaseImpl) GetStockMarketRocks(ctx context.Context) (*StockMarket, error) {
 	return u.r.GetRocksStockMarket(ctx)
 }
 
-func (u *OaklandsUsecaseImpl) GetStockMarketOres(ctx context.Context) ([]StockMarketMaterial, error) {
+func (u *OaklandsUsecaseImpl) GetStockMarketOres(ctx context.Context) (*StockMarket, error) {
 	return u.r.GetOresStockMarket(ctx)
 }

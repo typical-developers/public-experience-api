@@ -112,14 +112,14 @@ func newStockMarketResponse(materials []oaklands.StockMarketMaterial) models.Res
 func (o *OaklandsV1Routes) writeStockMarket(
 	w http.ResponseWriter,
 	r *http.Request,
-	getter func(ctx context.Context) ([]oaklands.StockMarketMaterial, error),
+	getter func(ctx context.Context) (*oaklands.StockMarket, error),
 ) {
 	ctx := r.Context()
 
 	sort := httpx.QueryGet(r, "sort_by", "current_multiplier")
 	order := httpx.QueryGet(r, "order_by", "desc")
 
-	materials, err := getter(ctx)
+	market, err := getter(ctx)
 	if err != nil {
 		_ = httpx.WriteJSON(w, models.ErrorResponse{
 			Type:    "HtppInternalServerError",
@@ -130,8 +130,10 @@ func (o *OaklandsV1Routes) writeStockMarket(
 		return
 	}
 
-	materials = o.sortStockMarketMaterials(materials, sort, order)
-	response := newStockMarketResponse(materials)
+	market.Stock = o.sortStockMarketMaterials(market.Stock, sort, order)
+	response := newStockMarketResponse(market.Stock)
+
+	w.Header().Set("Last-Modified", market.LastSync.Format(http.TimeFormat))
 	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return

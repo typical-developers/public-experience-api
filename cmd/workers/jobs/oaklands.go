@@ -40,7 +40,7 @@ func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
 func (c *OaklandsCronJobs) CheckForUpdates() {
 	ctx := context.Background()
 
-	lastSync, err := c.r.GetLastSyncTime(ctx)
+	lastSync, err := c.r.GetSyncTimes(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -55,7 +55,7 @@ func (c *OaklandsCronJobs) CheckForUpdates() {
 		panic(err)
 	}
 
-	if lastSync == nil || lastSync.Before(updateTime) {
+	if lastSync == nil || lastSync.LastContentSync.Before(updateTime) {
 		content, err := oaklands.GetContentSync(ctx, c.opencloud)
 		if err != nil {
 			panic(err)
