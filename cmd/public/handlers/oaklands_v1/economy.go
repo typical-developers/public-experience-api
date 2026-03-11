@@ -125,8 +125,6 @@ func (o *OaklandsV1Routes) writeStockMarket(
 			Type:    "HtppInternalServerError",
 			Message: "There was an internal server error, try again later.",
 		}, http.StatusInternalServerError)
-
-		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
 
