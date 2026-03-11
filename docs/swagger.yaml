@@ -57,19 +57,9 @@ info:
     - Status `304 - Not Modified` will be returned if the resource has not been updated.
     ---
     # Ratelimits
-    > [!NOTE]
-    > If you are constantly hitting ratelimits and need help, reach out in our community development channels in our [Discord Server](https://discord.gg/typical).<br>
-    <!---->
-    | Duration | Requests |
-    |----------|----------|
-    | Daily   | Unlimited |
-    | Per Minute    | 120 |
-    | Per Second    | 6  |
-    <!---->
-    ## Headers
-    `X-RateLimit-Limit`:     The total amount of requests that can be made.<br>
-    `X-RateLimit-Remaining`: The remaining amount of requests that can be made before the rate-limit is exhausted.<br>
-    `X-RateLimit-Reset`:     The remaining amount of time for when the rate-limit resets.
+    At the moment, the API does not have any rate limits. Please use the API responsibly by following good practices.
+    Abuse detection will result in a indefinite ban from accessing the API. Please reach out in our [Discord Server](https.discord.gg/typical)
+    if you have ran into this issue.
   title: Typical Developers - Public Experience API
 paths:
   /v1/oaklands/economy/stock-market/ores:

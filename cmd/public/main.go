@@ -67,19 +67,9 @@ func serveStatic(r chi.Router) {
 //	@Description		- Status `304 - Not Modified` will be returned if the resource has not been updated.
 //	@Description		---
 //	@Description		# Ratelimits
-//	@Description		> [!NOTE]
-//	@Description		> If you are constantly hitting ratelimits and need help, reach out in our community development channels in our [Discord Server](https://discord.gg/typical).<br>
-//	@Description		<!---->
-//	@Description		| Duration | Requests |
-//	@Description		|----------|----------|
-//	@Description		| Daily   | Unlimited |
-//	@Description		| Per Minute    | 120 |
-//	@Description		| Per Second    | 6  |
-//	@Description		<!---->
-//	@Description		## Headers
-//	@Description		`X-RateLimit-Limit`:     The total amount of requests that can be made.<br>
-//	@Description		`X-RateLimit-Remaining`: The remaining amount of requests that can be made before the rate-limit is exhausted.<br>
-//	@Description		`X-RateLimit-Reset`:     The remaining amount of time for when the rate-limit resets.
+//	@Description		At the moment, the API does not have any rate limits. Please use the API responsibly by following good practices.
+//	@Description		Abuse detection will result in a indefinite ban from accessing the API. Please reach out in our [Discord Server](https.discord.gg/typical)
+//	@Description		if you have ran into this issue.
 //
 //	@Tag.Name			Oaklands
 //	@Tag.Description	All of the available Oaklands endpoints.
