@@ -149,8 +149,6 @@ func (o *OaklandsV1Routes) writeStockMarket(
 //	@Param			sort_by			query		string	false	"The field to sort by."			default(current_multiplier)	enums(name, current_multiplier, last_multiplier, values.current_value, values.base_value)
 //	@Param			order_by		query		string	false	"The direction to order by."	default(desc)				enums(desc, asc)
 //
-//	@Header			200				{string}	ETag	"Entity tag for the response."
-//
 //	@Success		200				{object}	object{data=[]StockMarket}
 //	@Failure		429				{object}	models.ErrorResponse
 //	@Failure		500				{object}	models.ErrorResponse
@@ -169,8 +167,6 @@ func (o *OaklandsV1Routes) GetStockMarketTrees(w http.ResponseWriter, r *http.Re
 //	@Param			sort_by			query		string	false	"The field to sort by."			default(current_multiplier)	enums(name, current_multiplier, last_multiplier, values.current_value, values.base_value)
 //	@Param			order_by		query		string	false	"The direction to order by."	default(desc)				enums(desc, asc)
 //
-//	@Header			200				{string}	ETag	"Entity tag for the response."
-//
 //	@Success		200				{object}	object{data=[]StockMarket}
 //	@Failure		429				{object}	models.ErrorResponse
 //	@Failure		500				{object}	models.ErrorResponse
@@ -188,8 +184,6 @@ func (o *OaklandsV1Routes) GetStockMarketRocks(w http.ResponseWriter, r *http.Re
 //	@Param			If-None-Match	header		string	false	"ETag to validate cached response."
 //	@Param			sort_by			query		string	false	"The field to sort by."			default(current_multiplier)	enums(name, current_multiplier, last_multiplier, values.current_value, values.base_value)
 //	@Param			order_by		query		string	false	"The direction to order by."	default(desc)				enums(desc, asc)
-//
-//	@Header			200				{string}	ETag	"Entity tag for the response."
 //
 //	@Success		200				{object}	object{data=[]StockMarket}
 //	@Failure		429				{object}	models.ErrorResponse
