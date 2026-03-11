@@ -2,7 +2,7 @@ package httpx
 
 import (
 	"bytes"
-	"crypto/sha256"
+	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -18,7 +18,7 @@ func ETagJSON(data any) (*string, error) {
 		return nil, err
 	}
 
-	hash := sha256.Sum256(buf.Bytes())
+	hash := md5.Sum(buf.Bytes())
 	str := hex.EncodeToString(hash[:])[:32]
 	etag := fmt.Sprintf(`"%s"`, str)
 
