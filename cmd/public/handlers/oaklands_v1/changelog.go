@@ -29,7 +29,7 @@ func (o *OaklandsV1Routes) GetChangelogVersion(w http.ResponseWriter, r *http.Re
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
 			_ = httpx.WriteJSON(w, models.ErrorResponse{
-				Type:    "HttpNotFound",
+				Type:    "NotFound",
 				Message: "This changelog does not exist.",
 			}, http.StatusNotFound)
 
@@ -37,7 +37,7 @@ func (o *OaklandsV1Routes) GetChangelogVersion(w http.ResponseWriter, r *http.Re
 		}
 
 		_ = httpx.WriteJSON(w, models.ErrorResponse{
-			Type:    "HtppInternalServerError",
+			Type:    "InternalServerError",
 			Message: "There was an internal server error, try again later.",
 		}, http.StatusInternalServerError)
 
@@ -95,7 +95,7 @@ func (o *OaklandsV1Routes) GetChangelog(w http.ResponseWriter, r *http.Request) 
 	changelogs, err := o.uc.GetChangelogs(ctx)
 	if err != nil {
 		_ = httpx.WriteJSON(w, models.ErrorResponse{
-			Type:    "HtppInternalServerError",
+			Type:    "InternalServerError",
 			Message: "There was an internal server error, try again later.",
 		}, http.StatusInternalServerError)
 
@@ -105,6 +105,15 @@ func (o *OaklandsV1Routes) GetChangelog(w http.ResponseWriter, r *http.Request) 
 	changelogs = o.sortChangelogs(changelogs, orderBy)
 	response := models.Response[[]ChangelogVersion]{
 		Data: make([]ChangelogVersion, len(changelogs)),
+	}
+
+	if len(changelogs) <= 0 {
+		_ = httpx.WriteJSON(w, models.ErrorResponse{
+			Type:    "ResourceNotCached",
+			Message: "The requested resource is not cached. Try again in a bit.",
+		}, http.StatusServiceUnavailable)
+
+		return
 	}
 
 	for i, version := range changelogs {

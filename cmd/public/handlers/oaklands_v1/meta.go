@@ -27,7 +27,7 @@ func (o OaklandsV1Routes) GetSyncTimes(w http.ResponseWriter, r *http.Request) {
 	sync, err := o.uc.GetSyncTimes(ctx)
 	if err != nil {
 		_ = httpx.WriteJSON(w, models.ErrorResponse{
-			Type:    "HtppInternalServerError",
+			Type:    "InternalServerError",
 			Message: "There was an internal server error, try again later.",
 		}, http.StatusInternalServerError)
 
