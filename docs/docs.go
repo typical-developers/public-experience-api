@@ -224,7 +224,7 @@ const docTemplate = `{
         },
         "/v1/oaklands/sync": {
             "get": {
-                "description": "Fetch information on when data was last synced from the game.\u003cbr\u003e\nIt should ne noted that a majority of data is refetched from Oaklands every 5 minutes.",
+                "description": "Fetch information on when data was last synced from the game.\nIt should be noted that a majority of data is fetched when checking if the experience was updated,\nsuch as newsletters and changelogs. Some content with resync at certain intervals by itself\nalongside update sync checks.\u003cbr\u003e\u003cbr\u003e\nInternally, updates are checked for every **5 minutes**.",
                 "tags": [
                     "Oaklands"
                 ],
@@ -322,9 +322,13 @@ const docTemplate = `{
         "Oaklands.V1.Sync": {
             "type": "object",
             "properties": {
-                "last_content_sync": {
-                    "description": "The last time that data from Oaklands that can be updated from experience changes was synced.",
-                    "type": "string"
+                "meta": {
+                    "description": "Information from the experience that is used for sync checks.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/oaklands_v1.SyncMeta"
+                        }
+                    ]
                 },
                 "stock_market": {
                     "description": "Sync information for the stock market.",
@@ -345,6 +349,19 @@ const docTemplate = `{
                 },
                 "next_sync": {
                     "description": "The next time that the resource will be updated",
+                    "type": "string"
+                }
+            }
+        },
+        "oaklands_v1.SyncMeta": {
+            "type": "object",
+            "properties": {
+                "last_update": {
+                    "description": "The last time that data from Oaklands that can be updated from experience changes was synced and updated.",
+                    "type": "string"
+                },
+                "next_check": {
+                    "description": "The next time Oaklands will be checked for an update.",
                     "type": "string"
                 }
             }

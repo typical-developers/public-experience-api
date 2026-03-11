@@ -39,9 +39,16 @@ type SyncdInfoWithReset struct {
 	NextSync time.Time `json:"next_sync"`
 } //	@name	Oaklands.V1.SyncdInfoWithReset
 
+type SyncMeta struct {
+	// The last time that data from Oaklands that can be updated from experience changes was synced and updated.
+	LastUpdate time.Time `json:"last_update"`
+	// The next time Oaklands will be checked for an update.
+	NextCheck time.Time `json:"next_check"`
+}
+
 type Sync struct {
-	// The last time that data from Oaklands that can be updated from experience changes was synced.
-	LastContentSync time.Time `json:"last_content_sync"`
+	// Information from the experience that is used for sync checks.
+	Meta SyncMeta `json:"meta"`
 	// Sync information for the stock market.
 	StockMarket SyncdInfoWithReset `json:"stock_market"`
 } //	@name	Oaklands.V1.Sync

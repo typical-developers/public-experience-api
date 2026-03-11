@@ -173,6 +173,7 @@ func (r *OaklandsRepositoryImpl) GetSyncTimes(ctx context.Context) (*SyncInfo, e
 		info.StockMarket.LastSync = *stockMarketLastSync
 	}
 	info.StockMarket.NextSync = stockMarketNextSync
+	info.NextSyncCheck = time.Now().UTC().Truncate(5 * time.Minute).Add(5 * time.Minute)
 
 	return info, nil
 }

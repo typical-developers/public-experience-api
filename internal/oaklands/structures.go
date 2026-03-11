@@ -15,5 +15,6 @@ type SyncInfoCategory struct {
 
 type SyncInfo struct {
 	LastContentSync time.Time
+	NextSyncCheck   time.Time
 	StockMarket     SyncInfoCategory
 }
