@@ -51,10 +51,10 @@ definitions:
         type: string
       stock_market:
         allOf:
-        - $ref: '#/definitions/Oaklands.V1.UpdatedInfoWithReset'
+        - $ref: '#/definitions/Oaklands.V1.SyncdInfoWithReset'
         description: Sync information for the stock market.
     type: object
-  Oaklands.V1.UpdatedInfoWithReset:
+  Oaklands.V1.SyncdInfoWithReset:
     properties:
       last_sync:
         description: The last time that the resource was updated.

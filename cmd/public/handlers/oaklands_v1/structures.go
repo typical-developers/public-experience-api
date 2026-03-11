@@ -30,14 +30,14 @@ type StockMarket struct {
 type SyncInfo struct {
 	//	The last time that the resource was updated.
 	LastSync time.Time `json:"last_sync"`
-} //	@name	Oaklands.V1.UpdatedInfo
+} //	@name	Oaklands.V1.SyncInfo
 
 type SyncdInfoWithReset struct {
 	//	The last time that the resource was updated.
 	LastSync time.Time `json:"last_sync"`
 	// The next time that the resource will be updated
 	NextSync time.Time `json:"next_sync"`
-} //	@name	Oaklands.V1.UpdatedInfoWithReset
+} //	@name	Oaklands.V1.SyncdInfoWithReset
 
 type Sync struct {
 	// The last time that data from Oaklands that can be updated from experience changes was synced.

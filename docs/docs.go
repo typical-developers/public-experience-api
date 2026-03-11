@@ -330,13 +330,13 @@ const docTemplate = `{
                     "description": "Sync information for the stock market.",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/Oaklands.V1.UpdatedInfoWithReset"
+                            "$ref": "#/definitions/Oaklands.V1.SyncdInfoWithReset"
                         }
                     ]
                 }
             }
         },
-        "Oaklands.V1.UpdatedInfoWithReset": {
+        "Oaklands.V1.SyncdInfoWithReset": {
             "type": "object",
             "properties": {
                 "last_sync": {
