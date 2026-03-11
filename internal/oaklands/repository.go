@@ -85,25 +85,17 @@ func (r *OaklandsRepositoryImpl) jsonGet(ctx context.Context, key, path string, 
 
 // stockMarketReset wil get the timestamp for the next time the stock market resets.
 func (r *OaklandsRepositoryImpl) stockMarketReset(now time.Time) time.Time {
-	utc := now.UTC()
-	year, month, day := utc.Date()
-	location := utc.Location()
-	hour := utc.Hour()
+	year, month, day := now.Date()
 
-	switch {
-	case hour >= 22:
-		return time.Date(year, month, day, 22, 0, 0, 0, location)
-	case hour >= 16:
-		return time.Date(year, month, day, 16, 0, 0, 0, location)
-	case hour >= 10:
-		return time.Date(year, month, day, 10, 0, 0, 0, location)
-	case hour >= 4:
-		return time.Date(year, month, day, 4, 0, 0, 0, location)
-	default:
-		prev := utc.AddDate(0, 0, -1)
-		y, m, d := prev.Date()
-		return time.Date(y, m, d, 22, 0, 0, 0, location)
+	interval := 6 * time.Hour
+	base := time.Date(year, month, day, 4, 0, 0, 0, time.UTC)
+
+	if now.Before(base) {
+		base = base.Add(-24 * time.Hour)
 	}
+
+	elapsed := now.Sub(base)
+	return base.Add(((elapsed / interval) + 1) * interval)
 }
 
 func (r *OaklandsRepositoryImpl) ContentSync(ctx context.Context, data ContentSyncData) error {
