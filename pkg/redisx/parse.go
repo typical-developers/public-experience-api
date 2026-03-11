@@ -3,11 +3,13 @@ package redisx
 import (
 	"fmt"
 	"time"
+
+	"github.com/redis/go-redis/v9"
 )
 
 func ParseTime(v any) (*time.Time, error) {
 	if v == nil {
-		return nil, nil
+		return nil, redis.Nil
 	}
 
 	var timestamp string

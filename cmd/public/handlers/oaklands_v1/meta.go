@@ -1,8 +1,10 @@
 package oaklands_v1
 
 import (
+	"errors"
 	"net/http"
 
+	"github.com/redis/go-redis/v9"
 	models "github.com/typical-developers/public-experience-api/cmd/public/handlers"
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
@@ -26,6 +28,13 @@ func (o OaklandsV1Routes) GetSyncTimes(w http.ResponseWriter, r *http.Request) {
 
 	sync, err := o.uc.GetSyncTimes(ctx)
 	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			_ = httpx.WriteJSON(w, models.ErrorResponse{
+				Type:    "ResourceNotCached",
+				Message: "The requested resource is not cached. Try again in a bit.",
+			}, http.StatusServiceUnavailable)
+		}
+
 		_ = httpx.WriteJSON(w, models.ErrorResponse{
 			Type:    "InternalServerError",
 			Message: "There was an internal server error, try again later.",
