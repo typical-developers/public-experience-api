@@ -18,6 +18,8 @@ import (
 //
 //	@Tags			Oaklands
 //
+//	@Param			version	path	string	true	"The version of changelog. For quick access to the latest changelog, use 'latest' as the value."
+//
 // swagger:ignore
 func (o *OaklandsV1Routes) GetChangelogVersion(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()

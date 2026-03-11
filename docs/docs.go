@@ -43,6 +43,15 @@ const docTemplate = `{
                 "tags": [
                     "Oaklands"
                 ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The version of changelog. For quick access to the latest changelog, use 'latest' as the value.",
+                        "name": "version",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {}
             }
         },

@@ -111,6 +111,13 @@ paths:
   /v1/oaklands/changelogs/{version}:
     get:
       description: Fetch a changelog version.
+      parameters:
+      - description: The version of changelog. For quick access to the latest changelog,
+          use 'latest' as the value.
+        in: path
+        name: version
+        required: true
+        type: string
       responses: {}
       tags:
       - Oaklands
