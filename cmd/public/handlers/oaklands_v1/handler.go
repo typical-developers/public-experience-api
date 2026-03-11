@@ -46,5 +46,12 @@ func NewOaklandsV1(r *chi.Mux, opts *OaklandsV1Opts) {
 				r.Get("/ores", o.GetStockMarketOres)
 			})
 		})
+
+		r.Route("/changelogs", func(r chi.Router) {
+			r.Use(cacheControl())
+
+			r.Get("/", o.GetChangelog)
+			r.Get("/{version}", o.GetChangelogVersion)
+		})
 	})
 }

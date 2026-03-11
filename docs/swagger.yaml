@@ -47,12 +47,22 @@ definitions:
     properties:
       meta:
         allOf:
-        - $ref: '#/definitions/oaklands_v1.SyncMeta'
+        - $ref: '#/definitions/Oaklands.V1.SyncMeta'
         description: Information from the experience that is used for sync checks.
       stock_market:
         allOf:
         - $ref: '#/definitions/Oaklands.V1.SyncdInfoWithReset'
         description: Sync information for the stock market.
+    type: object
+  Oaklands.V1.SyncMeta:
+    properties:
+      last_update:
+        description: The last time that data from Oaklands that can be updated from
+          experience changes was synced and updated.
+        type: string
+      next_check:
+        description: The next time Oaklands will be checked for an update.
+        type: string
     type: object
   Oaklands.V1.SyncdInfoWithReset:
     properties:
@@ -61,16 +71,6 @@ definitions:
         type: string
       next_sync:
         description: The next time that the resource will be updated
-        type: string
-    type: object
-  oaklands_v1.SyncMeta:
-    properties:
-      last_update:
-        description: The last time that data from Oaklands that can be updated from
-          experience changes was synced and updated.
-        type: string
-      next_check:
-        description: The next time Oaklands will be checked for an update.
         type: string
     type: object
 info:
@@ -92,6 +92,28 @@ info:
     if you have ran into this issue.
   title: Typical Developers - Public Experience API
 paths:
+  /v1/oaklands/changelogs:
+    get:
+      description: Fetch a list of changelog versions with their information.
+      parameters:
+      - default: desc
+        description: The direction to order by. This will use the changelog's date
+          to order.
+        enum:
+        - desc
+        - asc
+        in: query
+        name: order_by
+        type: string
+      responses: {}
+      tags:
+      - Oaklands
+  /v1/oaklands/changelogs/{version}:
+    get:
+      description: Fetch a changelog version.
+      responses: {}
+      tags:
+      - Oaklands
   /v1/oaklands/economy/stock-market/ores:
     get:
       description: Fetch the current ore stock market.

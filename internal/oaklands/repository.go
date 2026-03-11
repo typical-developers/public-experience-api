@@ -27,6 +27,11 @@ type OaklandsRepository interface {
 	GetRocksStockMarket(ctx context.Context) (*StockMarket, error)
 	// GetOresStockMarket will get the ore stock market.
 	GetOresStockMarket(ctx context.Context) (*StockMarket, error)
+
+	// GetChangelogs will return all of the available changelogs.
+	GetChangelogs(ctx context.Context) ([]Changelogs, error)
+	// GetChangelogVersion will return a specific changelog's version.
+	GetChangelogVersion(ctx context.Context, version string) (*ChangelogVersion, error)
 }
 
 type OaklandsRepositoryImpl struct {
@@ -45,6 +50,9 @@ const (
 
 	redisKeyStockMarketLastSync = "oaklands:stock_market:last_sync"
 	redisKeyStockMarketNextSync = "oaklands:stock_market:next_sync"
+
+	redisKeyChangelogByDate = "oaklands:changelog:index:date"
+	redisKeyChangelogByID   = "oaklands:changelog:index:id"
 )
 
 func redisKeyChangelog(version string) string {
@@ -103,8 +111,20 @@ func (r *OaklandsRepositoryImpl) ContentSync(ctx context.Context, data ContentSy
 	pipeline := r.redis.Pipeline()
 
 	if len(data.Changelogs) > 0 {
+		pipeline.Del(ctx, redisKeyChangelogByDate, redisKeyChangelogByID)
 		for version, changelog := range data.Changelogs {
 			pipeline.JSONSet(ctx, redisKeyChangelog(version), "$", changelog)
+
+			if parsed, err := time.Parse(time.RFC3339, changelog.DateToISO8601()); err == nil {
+				pipeline.ZAdd(ctx, redisKeyChangelogByDate, redis.Z{
+					Score:  float64(parsed.Unix()),
+					Member: version,
+				})
+			}
+			pipeline.ZAdd(ctx, redisKeyChangelogByID, redis.Z{
+				Score:  float64(changelog.ID),
+				Member: version,
+			})
 		}
 	}
 
@@ -249,4 +269,70 @@ func (r *OaklandsRepositoryImpl) GetOresStockMarket(ctx context.Context) (*Stock
 		NextSync: *lastSync.StockMarket.NextSync,
 		Stock:    ores,
 	}, nil
+}
+
+func (r *OaklandsRepositoryImpl) GetChangelogs(ctx context.Context) ([]Changelogs, error) {
+	dateEntries, err := r.redis.ZRangeWithScores(ctx, redisKeyChangelogByDate, 0, -1).Result()
+	if err != nil {
+		return nil, err
+	}
+
+	if len(dateEntries) == 0 {
+		return []Changelogs{}, nil
+	}
+
+	idEntries, err := r.redis.ZRangeWithScores(ctx, redisKeyChangelogByID, 0, -1).Result()
+	if err != nil {
+		return nil, err
+	}
+
+	versionIDs := make(map[string]int32, len(idEntries))
+	for _, entry := range idEntries {
+		version, ok := entry.Member.(string)
+		if !ok {
+			version = fmt.Sprintf("%v", entry.Member)
+		}
+		versionIDs[version] = int32(entry.Score)
+	}
+
+	changelogs := make([]Changelogs, 0, len(dateEntries))
+	for _, entry := range dateEntries {
+		version, ok := entry.Member.(string)
+		if !ok {
+			version = fmt.Sprintf("%v", entry.Member)
+		}
+
+		changelogs = append(changelogs, Changelogs{
+			ID:      versionIDs[version],
+			Version: version,
+			Date:    time.Unix(int64(entry.Score), 0).UTC(),
+		})
+	}
+
+	return changelogs, nil
+}
+
+func (r *OaklandsRepositoryImpl) GetChangelogVersion(ctx context.Context, version string) (*ChangelogVersion, error) {
+	if strings.EqualFold(version, "latest") {
+		versions, err := r.redis.ZRangeArgs(ctx, redis.ZRangeArgs{
+			Key:   redisKeyChangelogByID,
+			Start: 0,
+			Stop:  0,
+			Rev:   true,
+		}).Result()
+		if err != nil {
+			return nil, err
+		}
+		if len(versions) == 0 {
+			return nil, redis.Nil
+		}
+		version = versions[0]
+	}
+
+	var changelog ChangelogVersion
+	if err := r.jsonGet(ctx, redisKeyChangelog(version), "$", &changelog); err != nil {
+		return nil, err
+	}
+
+	return &changelog, nil
 }

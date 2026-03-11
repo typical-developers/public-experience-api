@@ -15,6 +15,37 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/v1/oaklands/changelogs": {
+            "get": {
+                "description": "Fetch a list of changelog versions with their information.",
+                "tags": [
+                    "Oaklands"
+                ],
+                "parameters": [
+                    {
+                        "enum": [
+                            "desc",
+                            "asc"
+                        ],
+                        "type": "string",
+                        "default": "desc",
+                        "description": "The direction to order by. This will use the changelog's date to order.",
+                        "name": "order_by",
+                        "in": "query"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/v1/oaklands/changelogs/{version}": {
+            "get": {
+                "description": "Fetch a changelog version.",
+                "tags": [
+                    "Oaklands"
+                ],
+                "responses": {}
+            }
+        },
         "/v1/oaklands/economy/stock-market/ores": {
             "get": {
                 "description": "Fetch the current ore stock market.",
@@ -326,7 +357,7 @@ const docTemplate = `{
                     "description": "Information from the experience that is used for sync checks.",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/oaklands_v1.SyncMeta"
+                            "$ref": "#/definitions/Oaklands.V1.SyncMeta"
                         }
                     ]
                 },
@@ -340,6 +371,19 @@ const docTemplate = `{
                 }
             }
         },
+        "Oaklands.V1.SyncMeta": {
+            "type": "object",
+            "properties": {
+                "last_update": {
+                    "description": "The last time that data from Oaklands that can be updated from experience changes was synced and updated.",
+                    "type": "string"
+                },
+                "next_check": {
+                    "description": "The next time Oaklands will be checked for an update.",
+                    "type": "string"
+                }
+            }
+        },
         "Oaklands.V1.SyncdInfoWithReset": {
             "type": "object",
             "properties": {
@@ -349,19 +393,6 @@ const docTemplate = `{
                 },
                 "next_sync": {
                     "description": "The next time that the resource will be updated",
-                    "type": "string"
-                }
-            }
-        },
-        "oaklands_v1.SyncMeta": {
-            "type": "object",
-            "properties": {
-                "last_update": {
-                    "description": "The last time that data from Oaklands that can be updated from experience changes was synced and updated.",
-                    "type": "string"
-                },
-                "next_check": {
-                    "description": "The next time Oaklands will be checked for an update.",
                     "type": "string"
                 }
             }

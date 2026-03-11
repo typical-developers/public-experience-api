@@ -27,6 +27,20 @@ type StockMarket struct {
 	Values []MaterialValues `json:"values"`
 } //	@name	Oaklands.V1.StockMarket
 
+type ChangelogVersion struct {
+	ID      int32     `json:"id"`
+	Version string    `json:"version"`
+	Date    time.Time `json:"date"`
+} //	@name	Oaklands.V1.ChangelogVersion
+
+type Changelog struct {
+	ChangelogVersion
+
+	Changed []string `json:"changed"`
+	Added   []string `json:"added"`
+	Fixed   []string `json:"fixed"`
+} //	@name	Oaklands.V1.Changelog
+
 type SyncInfo struct {
 	//	The last time that the resource was updated.
 	LastSync time.Time `json:"last_sync"`
@@ -44,7 +58,7 @@ type SyncMeta struct {
 	LastUpdate time.Time `json:"last_update"`
 	// The next time Oaklands will be checked for an update.
 	NextCheck time.Time `json:"next_check"`
-}
+} //	@name	Oaklands.V1.SyncMeta
 
 type Sync struct {
 	// Information from the experience that is used for sync checks.

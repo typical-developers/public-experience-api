@@ -5,14 +5,6 @@ import (
 	"time"
 )
 
-type ChangelogVersion struct {
-	ID      int32    `json:"_Id"`
-	Date    string   `json:"Date"`
-	Changed []string `json:"Changed"`
-	Added   []string `json:"Added"`
-	Fixed   []string `json:"Removed"`
-}
-
 type NewsletterContentType string
 
 var (
@@ -56,6 +48,15 @@ type Newsletter struct {
 	Subheader     string              `json:"Subheader"`
 	BannerImageId string              `json:"BannerImageId"`
 	Sections      []NewsletterSection `json:"Sections"`
+}
+
+type ChangelogVersion struct {
+	ID      int32    `json:"_Id"`
+	Version string   `json:"Version"`
+	Date    string   `json:"Date"`
+	Changed []string `json:"Changed"`
+	Added   []string `json:"Added"`
+	Fixed   []string `json:"Fixed"`
 }
 
 // DateToISO8601 will convert the date (i.e. January 1st, 2026 to an ISO8601 formatted date in UTC)

@@ -7,6 +7,8 @@ type OaklandsUsecase interface {
 	GetStockMarketTrees(ctx context.Context) (*StockMarket, error)
 	GetStockMarketRocks(ctx context.Context) (*StockMarket, error)
 	GetStockMarketOres(ctx context.Context) (*StockMarket, error)
+	GetChangelogs(ctx context.Context) ([]Changelogs, error)
+	GetChangelogVersion(ctx context.Context, version string) (*ChangelogVersion, error)
 }
 
 type OaklandsUsecaseImpl struct {
@@ -31,4 +33,12 @@ func (u *OaklandsUsecaseImpl) GetStockMarketRocks(ctx context.Context) (*StockMa
 
 func (u *OaklandsUsecaseImpl) GetStockMarketOres(ctx context.Context) (*StockMarket, error) {
 	return u.r.GetOresStockMarket(ctx)
+}
+
+func (u *OaklandsUsecaseImpl) GetChangelogs(ctx context.Context) ([]Changelogs, error) {
+	return u.r.GetChangelogs(ctx)
+}
+
+func (u *OaklandsUsecaseImpl) GetChangelogVersion(ctx context.Context, version string) (*ChangelogVersion, error) {
+	return u.r.GetChangelogVersion(ctx, version)
 }

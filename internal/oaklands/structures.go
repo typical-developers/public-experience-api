@@ -18,3 +18,9 @@ type SyncInfo struct {
 	NextSyncCheck   time.Time
 	StockMarket     SyncInfoCategory
 }
+
+type Changelogs struct {
+	ID      int32
+	Version string
+	Date    time.Time
+}
