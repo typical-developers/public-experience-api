@@ -107,7 +107,7 @@ func (r *OaklandsRepositoryImpl) stockMarketReset(now time.Time) time.Time {
 }
 
 func (r *OaklandsRepositoryImpl) ContentSync(ctx context.Context, data ContentSyncData) error {
-	now := time.Now()
+	now := time.Now().UTC()
 	pipeline := r.redis.Pipeline()
 
 	if len(data.Changelogs) > 0 {
@@ -186,7 +186,7 @@ func (r *OaklandsRepositoryImpl) GetSyncTimes(ctx context.Context) (*SyncInfo, e
 }
 
 func (r *OaklandsRepositoryImpl) SetStockMarket(ctx context.Context, data map[string][]StockMarketMaterial) error {
-	now := time.Now()
+	now := time.Now().UTC()
 	pipeline := r.redis.Pipeline()
 
 	nextSync := r.stockMarketReset(now)

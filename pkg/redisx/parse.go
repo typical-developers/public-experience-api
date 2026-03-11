@@ -25,6 +25,7 @@ func ParseTime(v any) (*time.Time, error) {
 	if t, err := time.Parse(time.RFC3339, timestamp); err != nil {
 		return nil, fmt.Errorf("invalid timestamp: %s", timestamp)
 	} else {
-		return &t, nil
+		utc := t.UTC()
+		return &utc, nil
 	}
 }
