@@ -43,6 +43,26 @@ definitions:
           $ref: '#/definitions/Oaklands.V1.MaterialValues'
         type: array
     type: object
+  Oaklands.V1.Sync:
+    properties:
+      last_content_sync:
+        description: The last time that data from Oaklands that can be updated from
+          experience changes was synced.
+        type: string
+      stock_market:
+        allOf:
+        - $ref: '#/definitions/Oaklands.V1.UpdatedInfoWithReset'
+        description: Sync information for the stock market.
+    type: object
+  Oaklands.V1.UpdatedInfoWithReset:
+    properties:
+      last_sync:
+        description: The last time that the resource was updated.
+        type: string
+      next_sync:
+        description: The next time that the resource will be updated
+        type: string
+    type: object
 info:
   contact: {}
   description: |-
@@ -192,6 +212,29 @@ paths:
                 items:
                   $ref: '#/definitions/Oaklands.V1.StockMarket'
                 type: array
+            type: object
+        "429":
+          description: Too Many Requests
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+      tags:
+      - Oaklands
+  /v1/oaklands/sync:
+    get:
+      description: |-
+        Fetch information on when data was last synced from the game.<br>
+        It should ne noted that a majority of data is refetched from Oaklands every 5 minutes.
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/Oaklands.V1.Sync'
             type: object
         "429":
           description: Too Many Requests

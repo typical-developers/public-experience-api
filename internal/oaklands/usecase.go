@@ -3,6 +3,7 @@ package oaklands
 import "context"
 
 type OaklandsUsecase interface {
+	GetSyncTimes(ctx context.Context) (*SyncInfo, error)
 	GetStockMarketTrees(ctx context.Context) (*StockMarket, error)
 	GetStockMarketRocks(ctx context.Context) (*StockMarket, error)
 	GetStockMarketOres(ctx context.Context) (*StockMarket, error)
@@ -14,6 +15,10 @@ type OaklandsUsecaseImpl struct {
 
 func NewOaklandsUsecase(r OaklandsRepository) OaklandsUsecase {
 	return &OaklandsUsecaseImpl{r: r}
+}
+
+func (u *OaklandsUsecaseImpl) GetSyncTimes(ctx context.Context) (*SyncInfo, error) {
+	return u.r.GetSyncTimes(ctx)
 }
 
 func (u *OaklandsUsecaseImpl) GetStockMarketTrees(ctx context.Context) (*StockMarket, error) {

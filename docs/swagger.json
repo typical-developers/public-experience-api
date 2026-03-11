@@ -212,6 +212,39 @@
                     }
                 }
             }
+        },
+        "/v1/oaklands/sync": {
+            "get": {
+                "description": "Fetch information on when data was last synced from the game.\u003cbr\u003e\nIt should ne noted that a majority of data is refetched from Oaklands every 5 minutes.",
+                "tags": [
+                    "Oaklands"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "$ref": "#/definitions/Oaklands.V1.Sync"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -274,6 +307,36 @@
                     "items": {
                         "$ref": "#/definitions/Oaklands.V1.MaterialValues"
                     }
+                }
+            }
+        },
+        "Oaklands.V1.Sync": {
+            "type": "object",
+            "properties": {
+                "last_content_sync": {
+                    "description": "The last time that data from Oaklands that can be updated from experience changes was synced.",
+                    "type": "string"
+                },
+                "stock_market": {
+                    "description": "Sync information for the stock market.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Oaklands.V1.UpdatedInfoWithReset"
+                        }
+                    ]
+                }
+            }
+        },
+        "Oaklands.V1.UpdatedInfoWithReset": {
+            "type": "object",
+            "properties": {
+                "last_sync": {
+                    "description": "The last time that the resource was updated.",
+                    "type": "string"
+                },
+                "next_sync": {
+                    "description": "The next time that the resource will be updated",
+                    "type": "string"
                 }
             }
         }

@@ -27,18 +27,21 @@ type StockMarket struct {
 	Values []MaterialValues `json:"values"`
 } //	@name	Oaklands.V1.StockMarket
 
-type UpdatedInfo struct {
+type SyncInfo struct {
 	//	The last time that the resource was updated.
-	LastUpdated time.Time `json:"last_updated"`
+	LastSync time.Time `json:"last_sync"`
 } //	@name	Oaklands.V1.UpdatedInfo
 
-type UpdatedInfoWithReset struct {
+type SyncdInfoWithReset struct {
 	//	The last time that the resource was updated.
-	LastUpdated time.Time `json:"last_updated"`
+	LastSync time.Time `json:"last_sync"`
 	// The next time that the resource will be updated
-	NextUpdate time.Time `json:"next_update"`
+	NextSync time.Time `json:"next_sync"`
 } //	@name	Oaklands.V1.UpdatedInfoWithReset
 
-type UpdateInfo struct {
-	Translations UpdatedInfo `json:"translations"`
-} //	@name	Oaklands.V1.UpdateInfo
+type Sync struct {
+	// The last time that data from Oaklands that can be updated from experience changes was synced.
+	LastContentSync time.Time `json:"last_content_sync"`
+	// Sync information for the stock market.
+	StockMarket SyncdInfoWithReset `json:"stock_market"`
+} //	@name	Oaklands.V1.Sync
