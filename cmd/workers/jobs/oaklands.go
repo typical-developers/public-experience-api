@@ -2,8 +2,10 @@ package jobs
 
 import (
 	"context"
+	"errors"
 	"time"
 
+	"github.com/redis/go-redis/v9"
 	"github.com/robfig/cron/v3"
 	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
@@ -41,7 +43,7 @@ func (c *OaklandsCronJobs) CheckForUpdates() {
 	ctx := context.Background()
 
 	lastSync, err := c.r.GetSyncTimes(ctx)
-	if err != nil {
+	if err != nil && !errors.Is(err, redis.Nil) {
 		panic(err)
 	}
 
