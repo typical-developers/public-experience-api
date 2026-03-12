@@ -22,8 +22,8 @@ tmp_dir = "tmp"
   poll_interval = 0
   post_cmd = []
   pre_cmd = [
-    "swag fmt",
-    "swag init -o ../../docs --ot json,yaml"
+    "go run github.com/swaggo/swag/v2/cmd/swag@v2.0.0-rc5 fmt",
+    "go run github.com/swaggo/swag/v2/cmd/swag@v2.0.0-rc5 init --v3.1 -o ../../docs --ot json,yaml"
   ]
   rerun = false
   rerun_delay = 500

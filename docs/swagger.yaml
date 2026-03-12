@@ -1,80 +1,82 @@
-definitions:
-  API.ErrorResponse:
-    properties:
-      message:
-        description: The message for the returned error.
-        type: string
-      type:
-        description: The type of error that was returned.
-        type: string
-    type: object
-  Oaklands.V1.MaterialValues:
-    properties:
-      base_value:
-        description: The base value for the material.
-        type: number
-      current_value:
-        description: The current value of the material.
-        type: number
-      type:
-        description: The type of material.
-        type: string
-    type: object
-  Oaklands.V1.StockMarket:
-    properties:
-      currency_type:
-        description: The currency of the material.
-        type: string
-      current_multiplier:
-        description: The current multiplier.
-        type: number
-      display_name:
-        description: The display name of the material.
-        type: string
-      last_multiplier:
-        description: The multipler from the last time the stock refreshed.
-        type: number
-      name:
-        description: The identifier for the material.
-        type: string
-      values:
-        description: The values of the different types for the materials
-        items:
-          $ref: '#/definitions/Oaklands.V1.MaterialValues'
-        type: array
-    type: object
-  Oaklands.V1.Sync:
-    properties:
-      meta:
-        allOf:
-        - $ref: '#/definitions/Oaklands.V1.SyncMeta'
-        description: Information from the experience that is used for sync checks.
-      stock_market:
-        allOf:
-        - $ref: '#/definitions/Oaklands.V1.SyncdInfoWithReset'
-        description: Sync information for the stock market.
-    type: object
-  Oaklands.V1.SyncMeta:
-    properties:
-      last_update:
-        description: The last time that data from Oaklands that can be updated from
-          experience changes was synced and updated.
-        type: string
-      next_check:
-        description: The next time Oaklands will be checked for an update.
-        type: string
-    type: object
-  Oaklands.V1.SyncdInfoWithReset:
-    properties:
-      last_sync:
-        description: The last time that the resource was updated.
-        type: string
-      next_sync:
-        description: The next time that the resource will be updated
-        type: string
-    type: object
+components:
+  schemas:
+    API.ErrorResponse:
+      properties:
+        message:
+          description: The message for the returned error.
+          type: string
+        type:
+          description: The type of error that was returned.
+          type: string
+      type: object
+    Oaklands.V1.MaterialValues:
+      properties:
+        base_value:
+          description: The base value for the material.
+          type: number
+        current_value:
+          description: The current value of the material.
+          type: number
+        type:
+          description: The type of material.
+          type: string
+      type: object
+    Oaklands.V1.StockMarket:
+      properties:
+        currency_type:
+          description: The currency of the material.
+          type: string
+        current_multiplier:
+          description: The current multiplier.
+          type: number
+        display_name:
+          description: The display name of the material.
+          type: string
+        last_multiplier:
+          description: The multipler from the last time the stock refreshed.
+          type: number
+        name:
+          description: The identifier for the material.
+          type: string
+        values:
+          description: The values of the different types for the materials
+          items:
+            $ref: '#/components/schemas/Oaklands.V1.MaterialValues'
+          type: array
+          uniqueItems: false
+      type: object
+    Oaklands.V1.Sync:
+      properties:
+        meta:
+          $ref: '#/components/schemas/Oaklands.V1.SyncMeta'
+        stock_market:
+          $ref: '#/components/schemas/Oaklands.V1.SyncdInfoWithReset'
+      type: object
+    Oaklands.V1.SyncMeta:
+      description: Information from the experience that is used for sync checks.
+      properties:
+        last_update:
+          description: The last time that data from Oaklands that can be updated from
+            experience changes was synced and updated.
+          type: string
+        next_check:
+          description: The next time Oaklands will be checked for an update.
+          type: string
+      type: object
+    Oaklands.V1.SyncdInfoWithReset:
+      description: Sync information for the stock market.
+      properties:
+        last_sync:
+          description: The last time that the resource was updated.
+          type: string
+        next_sync:
+          description: The next time that the resource will be updated
+          type: string
+      type: object
+externalDocs:
+  description: ""
+  url: ""
 info:
-  contact: {}
   description: |-
     This is the official, publicly accessible, API to get data in Typical Developers' experiences.
     # Notes
@@ -91,21 +93,24 @@ info:
     Abuse detection will result in a indefinite ban from accessing the API. Please reach out in our [Discord Server](https.discord.gg/typical)
     if you have ran into this issue.
   title: Typical Developers - Public Experience API
+  version: ""
+openapi: 3.1.0
 paths:
   /v1/oaklands/changelogs:
     get:
       description: Fetch a list of changelog versions with their information.
       parameters:
-      - default: desc
-        description: The direction to order by. This will use the changelog's date
+      - description: The direction to order by. This will use the changelog's date
           to order.
-        enum:
-        - desc
-        - asc
         in: query
         name: order_by
-        type: string
-      responses: {}
+        schema:
+          default: desc
+          enum:
+          - desc
+          - asc
+          type: string
+      responses: null
       tags:
       - Oaklands
   /v1/oaklands/changelogs/{version}:
@@ -117,8 +122,9 @@ paths:
         in: path
         name: version
         required: true
-        type: string
-      responses: {}
+        schema:
+          type: string
+      responses: null
       tags:
       - Oaklands
   /v1/oaklands/economy/stock-market/ores:
@@ -128,44 +134,53 @@ paths:
       - description: ETag to validate cached response.
         in: header
         name: If-None-Match
-        type: string
-      - default: current_multiplier
-        description: The field to sort by.
-        enum:
-        - name
-        - current_multiplier
-        - last_multiplier
-        - values.current_value
-        - values.base_value
+        schema:
+          type: string
+      - description: The field to sort by.
         in: query
         name: sort_by
-        type: string
-      - default: desc
-        description: The direction to order by.
-        enum:
-        - desc
-        - asc
+        schema:
+          default: current_multiplier
+          enum:
+          - name
+          - current_multiplier
+          - last_multiplier
+          - values.current_value
+          - values.base_value
+          type: string
+      - description: The direction to order by.
         in: query
         name: order_by
-        type: string
+        schema:
+          default: desc
+          enum:
+          - desc
+          - asc
+          type: string
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    items:
+                      $ref: '#/components/schemas/Oaklands.V1.StockMarket'
+                    type: array
+                type: object
           description: OK
-          schema:
-            properties:
-              data:
-                items:
-                  $ref: '#/definitions/Oaklands.V1.StockMarket'
-                type: array
-            type: object
         "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
           description: Too Many Requests
-          schema:
-            $ref: '#/definitions/API.ErrorResponse'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/API.ErrorResponse'
       tags:
       - Oaklands
   /v1/oaklands/economy/stock-market/rocks:
@@ -175,44 +190,53 @@ paths:
       - description: ETag to validate cached response.
         in: header
         name: If-None-Match
-        type: string
-      - default: current_multiplier
-        description: The field to sort by.
-        enum:
-        - name
-        - current_multiplier
-        - last_multiplier
-        - values.current_value
-        - values.base_value
+        schema:
+          type: string
+      - description: The field to sort by.
         in: query
         name: sort_by
-        type: string
-      - default: desc
-        description: The direction to order by.
-        enum:
-        - desc
-        - asc
+        schema:
+          default: current_multiplier
+          enum:
+          - name
+          - current_multiplier
+          - last_multiplier
+          - values.current_value
+          - values.base_value
+          type: string
+      - description: The direction to order by.
         in: query
         name: order_by
-        type: string
+        schema:
+          default: desc
+          enum:
+          - desc
+          - asc
+          type: string
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    items:
+                      $ref: '#/components/schemas/Oaklands.V1.StockMarket'
+                    type: array
+                type: object
           description: OK
-          schema:
-            properties:
-              data:
-                items:
-                  $ref: '#/definitions/Oaklands.V1.StockMarket'
-                type: array
-            type: object
         "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
           description: Too Many Requests
-          schema:
-            $ref: '#/definitions/API.ErrorResponse'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/API.ErrorResponse'
       tags:
       - Oaklands
   /v1/oaklands/economy/stock-market/trees:
@@ -222,44 +246,53 @@ paths:
       - description: ETag to validate cached response.
         in: header
         name: If-None-Match
-        type: string
-      - default: current_multiplier
-        description: The field to sort by.
-        enum:
-        - name
-        - current_multiplier
-        - last_multiplier
-        - values.current_value
-        - values.base_value
+        schema:
+          type: string
+      - description: The field to sort by.
         in: query
         name: sort_by
-        type: string
-      - default: desc
-        description: The direction to order by.
-        enum:
-        - desc
-        - asc
+        schema:
+          default: current_multiplier
+          enum:
+          - name
+          - current_multiplier
+          - last_multiplier
+          - values.current_value
+          - values.base_value
+          type: string
+      - description: The direction to order by.
         in: query
         name: order_by
-        type: string
+        schema:
+          default: desc
+          enum:
+          - desc
+          - asc
+          type: string
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    items:
+                      $ref: '#/components/schemas/Oaklands.V1.StockMarket'
+                    type: array
+                type: object
           description: OK
-          schema:
-            properties:
-              data:
-                items:
-                  $ref: '#/definitions/Oaklands.V1.StockMarket'
-                type: array
-            type: object
         "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
           description: Too Many Requests
-          schema:
-            $ref: '#/definitions/API.ErrorResponse'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/API.ErrorResponse'
       tags:
       - Oaklands
   /v1/oaklands/sync:
@@ -272,23 +305,28 @@ paths:
         Internally, updates are checked for every **5 minutes**.
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Oaklands.V1.Sync'
+                type: object
           description: OK
-          schema:
-            properties:
-              data:
-                $ref: '#/definitions/Oaklands.V1.Sync'
-            type: object
         "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
           description: Too Many Requests
-          schema:
-            $ref: '#/definitions/API.ErrorResponse'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/API.ErrorResponse'
       tags:
       - Oaklands
-swagger: "2.0"
 tags:
 - description: All of the available Oaklands endpoints.
   name: Oaklands

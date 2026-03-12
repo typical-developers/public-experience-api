@@ -1,403 +1,472 @@
 {
-    "swagger": "2.0",
+    "components": {
+        "schemas": {
+            "API.ErrorResponse": {
+                "properties": {
+                    "message": {
+                        "description": "The message for the returned error.",
+                        "type": "string"
+                    },
+                    "type": {
+                        "description": "The type of error that was returned.",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Oaklands.V1.MaterialValues": {
+                "properties": {
+                    "base_value": {
+                        "description": "The base value for the material.",
+                        "type": "number"
+                    },
+                    "current_value": {
+                        "description": "The current value of the material.",
+                        "type": "number"
+                    },
+                    "type": {
+                        "description": "The type of material.",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Oaklands.V1.StockMarket": {
+                "properties": {
+                    "currency_type": {
+                        "description": "The currency of the material.",
+                        "type": "string"
+                    },
+                    "current_multiplier": {
+                        "description": "The current multiplier.",
+                        "type": "number"
+                    },
+                    "display_name": {
+                        "description": "The display name of the material.",
+                        "type": "string"
+                    },
+                    "last_multiplier": {
+                        "description": "The multipler from the last time the stock refreshed.",
+                        "type": "number"
+                    },
+                    "name": {
+                        "description": "The identifier for the material.",
+                        "type": "string"
+                    },
+                    "values": {
+                        "description": "The values of the different types for the materials",
+                        "items": {
+                            "$ref": "#/components/schemas/Oaklands.V1.MaterialValues"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    }
+                },
+                "type": "object"
+            },
+            "Oaklands.V1.Sync": {
+                "properties": {
+                    "meta": {
+                        "$ref": "#/components/schemas/Oaklands.V1.SyncMeta"
+                    },
+                    "stock_market": {
+                        "$ref": "#/components/schemas/Oaklands.V1.SyncdInfoWithReset"
+                    }
+                },
+                "type": "object"
+            },
+            "Oaklands.V1.SyncMeta": {
+                "description": "Information from the experience that is used for sync checks.",
+                "properties": {
+                    "last_update": {
+                        "description": "The last time that data from Oaklands that can be updated from experience changes was synced and updated.",
+                        "type": "string"
+                    },
+                    "next_check": {
+                        "description": "The next time Oaklands will be checked for an update.",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Oaklands.V1.SyncdInfoWithReset": {
+                "description": "Sync information for the stock market.",
+                "properties": {
+                    "last_sync": {
+                        "description": "The last time that the resource was updated.",
+                        "type": "string"
+                    },
+                    "next_sync": {
+                        "description": "The next time that the resource will be updated",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
     "info": {
         "description": "This is the official, publicly accessible, API to get data in Typical Developers' experiences.\n# Notes\n- All dates and timestamps are returned in [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) format and are set as a UTC timezone.\u003cbr\u003e\n---\n# Caching\nAll responses will return an `ETag` header, which is an MD5 hash of the response. You are able to use this hash to verify\nif there's updated content by supplying a `If-None-Match` in the requests header for the next request you make.\u003cbr\u003e\n- Status `200 - OK` will be returned if the resource has been updated.\n- Status `304 - Not Modified` will be returned if the resource has not been updated.\n---\n# Ratelimits\nAt the moment, the API does not have any rate limits. Please use the API responsibly by following good practices.\nAbuse detection will result in a indefinite ban from accessing the API. Please reach out in our [Discord Server](https.discord.gg/typical)\nif you have ran into this issue.",
         "title": "Typical Developers - Public Experience API",
-        "contact": {}
+        "version": ""
+    },
+    "externalDocs": {
+        "description": "",
+        "url": ""
     },
     "paths": {
         "/v1/oaklands/changelogs": {
             "get": {
                 "description": "Fetch a list of changelog versions with their information.",
-                "tags": [
-                    "Oaklands"
-                ],
                 "parameters": [
                     {
-                        "enum": [
-                            "desc",
-                            "asc"
-                        ],
-                        "type": "string",
-                        "default": "desc",
                         "description": "The direction to order by. This will use the changelog's date to order.",
+                        "in": "query",
                         "name": "order_by",
-                        "in": "query"
+                        "schema": {
+                            "default": "desc",
+                            "enum": [
+                                "desc",
+                                "asc"
+                            ],
+                            "type": "string"
+                        }
                     }
                 ],
-                "responses": {}
+                "responses": null,
+                "tags": [
+                    "Oaklands"
+                ]
             }
         },
         "/v1/oaklands/changelogs/{version}": {
             "get": {
                 "description": "Fetch a changelog version.",
-                "tags": [
-                    "Oaklands"
-                ],
                 "parameters": [
                     {
-                        "type": "string",
                         "description": "The version of changelog. For quick access to the latest changelog, use 'latest' as the value.",
-                        "name": "version",
                         "in": "path",
-                        "required": true
+                        "name": "version",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
-                "responses": {}
+                "responses": null,
+                "tags": [
+                    "Oaklands"
+                ]
             }
         },
         "/v1/oaklands/economy/stock-market/ores": {
             "get": {
                 "description": "Fetch the current ore stock market.",
-                "tags": [
-                    "Oaklands"
-                ],
                 "parameters": [
                     {
-                        "type": "string",
                         "description": "ETag to validate cached response.",
+                        "in": "header",
                         "name": "If-None-Match",
-                        "in": "header"
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
-                        "enum": [
-                            "name",
-                            "current_multiplier",
-                            "last_multiplier",
-                            "values.current_value",
-                            "values.base_value"
-                        ],
-                        "type": "string",
-                        "default": "current_multiplier",
                         "description": "The field to sort by.",
+                        "in": "query",
                         "name": "sort_by",
-                        "in": "query"
+                        "schema": {
+                            "default": "current_multiplier",
+                            "enum": [
+                                "name",
+                                "current_multiplier",
+                                "last_multiplier",
+                                "values.current_value",
+                                "values.base_value"
+                            ],
+                            "type": "string"
+                        }
                     },
                     {
-                        "enum": [
-                            "desc",
-                            "asc"
-                        ],
-                        "type": "string",
-                        "default": "desc",
                         "description": "The direction to order by.",
+                        "in": "query",
                         "name": "order_by",
-                        "in": "query"
+                        "schema": {
+                            "default": "desc",
+                            "enum": [
+                                "desc",
+                                "asc"
+                            ],
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "data": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/definitions/Oaklands.V1.StockMarket"
-                                    }
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "items": {
+                                                "$ref": "#/components/schemas/Oaklands.V1.StockMarket"
+                                            },
+                                            "type": "array"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
-                        }
+                        },
+                        "description": "OK"
                     },
                     "429": {
-                        "description": "Too Many Requests",
-                        "schema": {
-                            "$ref": "#/definitions/API.ErrorResponse"
-                        }
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/API.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Too Many Requests"
                     },
                     "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/API.ErrorResponse"
-                        }
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/API.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
                     }
-                }
+                },
+                "tags": [
+                    "Oaklands"
+                ]
             }
         },
         "/v1/oaklands/economy/stock-market/rocks": {
             "get": {
                 "description": "Fetch the current rock stock market.",
-                "tags": [
-                    "Oaklands"
-                ],
                 "parameters": [
                     {
-                        "type": "string",
                         "description": "ETag to validate cached response.",
+                        "in": "header",
                         "name": "If-None-Match",
-                        "in": "header"
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
-                        "enum": [
-                            "name",
-                            "current_multiplier",
-                            "last_multiplier",
-                            "values.current_value",
-                            "values.base_value"
-                        ],
-                        "type": "string",
-                        "default": "current_multiplier",
                         "description": "The field to sort by.",
+                        "in": "query",
                         "name": "sort_by",
-                        "in": "query"
+                        "schema": {
+                            "default": "current_multiplier",
+                            "enum": [
+                                "name",
+                                "current_multiplier",
+                                "last_multiplier",
+                                "values.current_value",
+                                "values.base_value"
+                            ],
+                            "type": "string"
+                        }
                     },
                     {
-                        "enum": [
-                            "desc",
-                            "asc"
-                        ],
-                        "type": "string",
-                        "default": "desc",
                         "description": "The direction to order by.",
+                        "in": "query",
                         "name": "order_by",
-                        "in": "query"
+                        "schema": {
+                            "default": "desc",
+                            "enum": [
+                                "desc",
+                                "asc"
+                            ],
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "data": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/definitions/Oaklands.V1.StockMarket"
-                                    }
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "items": {
+                                                "$ref": "#/components/schemas/Oaklands.V1.StockMarket"
+                                            },
+                                            "type": "array"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
-                        }
+                        },
+                        "description": "OK"
                     },
                     "429": {
-                        "description": "Too Many Requests",
-                        "schema": {
-                            "$ref": "#/definitions/API.ErrorResponse"
-                        }
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/API.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Too Many Requests"
                     },
                     "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/API.ErrorResponse"
-                        }
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/API.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
                     }
-                }
+                },
+                "tags": [
+                    "Oaklands"
+                ]
             }
         },
         "/v1/oaklands/economy/stock-market/trees": {
             "get": {
                 "description": "Fetch the current tree stock market.",
-                "tags": [
-                    "Oaklands"
-                ],
                 "parameters": [
                     {
-                        "type": "string",
                         "description": "ETag to validate cached response.",
+                        "in": "header",
                         "name": "If-None-Match",
-                        "in": "header"
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
-                        "enum": [
-                            "name",
-                            "current_multiplier",
-                            "last_multiplier",
-                            "values.current_value",
-                            "values.base_value"
-                        ],
-                        "type": "string",
-                        "default": "current_multiplier",
                         "description": "The field to sort by.",
+                        "in": "query",
                         "name": "sort_by",
-                        "in": "query"
+                        "schema": {
+                            "default": "current_multiplier",
+                            "enum": [
+                                "name",
+                                "current_multiplier",
+                                "last_multiplier",
+                                "values.current_value",
+                                "values.base_value"
+                            ],
+                            "type": "string"
+                        }
                     },
                     {
-                        "enum": [
-                            "desc",
-                            "asc"
-                        ],
-                        "type": "string",
-                        "default": "desc",
                         "description": "The direction to order by.",
+                        "in": "query",
                         "name": "order_by",
-                        "in": "query"
+                        "schema": {
+                            "default": "desc",
+                            "enum": [
+                                "desc",
+                                "asc"
+                            ],
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "data": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/definitions/Oaklands.V1.StockMarket"
-                                    }
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "items": {
+                                                "$ref": "#/components/schemas/Oaklands.V1.StockMarket"
+                                            },
+                                            "type": "array"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
-                        }
+                        },
+                        "description": "OK"
                     },
                     "429": {
-                        "description": "Too Many Requests",
-                        "schema": {
-                            "$ref": "#/definitions/API.ErrorResponse"
-                        }
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/API.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Too Many Requests"
                     },
                     "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/API.ErrorResponse"
-                        }
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/API.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
                     }
-                }
+                },
+                "tags": [
+                    "Oaklands"
+                ]
             }
         },
         "/v1/oaklands/sync": {
             "get": {
                 "description": "Fetch information on when data was last synced from the game.\nIt should be noted that a majority of data is fetched when checking if the experience was updated,\nsuch as newsletters and changelogs. Some content with resync at certain intervals by itself\nalongside update sync checks.\u003cbr\u003e\u003cbr\u003e\nInternally, updates are checked for every **5 minutes**.",
-                "tags": [
-                    "Oaklands"
-                ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "data": {
-                                    "$ref": "#/definitions/Oaklands.V1.Sync"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Oaklands.V1.Sync"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
-                        }
+                        },
+                        "description": "OK"
                     },
                     "429": {
-                        "description": "Too Many Requests",
-                        "schema": {
-                            "$ref": "#/definitions/API.ErrorResponse"
-                        }
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/API.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Too Many Requests"
                     },
                     "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/API.ErrorResponse"
-                        }
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/API.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
                     }
-                }
+                },
+                "tags": [
+                    "Oaklands"
+                ]
             }
         }
     },
-    "definitions": {
-        "API.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "description": "The message for the returned error.",
-                    "type": "string"
-                },
-                "type": {
-                    "description": "The type of error that was returned.",
-                    "type": "string"
-                }
-            }
-        },
-        "Oaklands.V1.MaterialValues": {
-            "type": "object",
-            "properties": {
-                "base_value": {
-                    "description": "The base value for the material.",
-                    "type": "number"
-                },
-                "current_value": {
-                    "description": "The current value of the material.",
-                    "type": "number"
-                },
-                "type": {
-                    "description": "The type of material.",
-                    "type": "string"
-                }
-            }
-        },
-        "Oaklands.V1.StockMarket": {
-            "type": "object",
-            "properties": {
-                "currency_type": {
-                    "description": "The currency of the material.",
-                    "type": "string"
-                },
-                "current_multiplier": {
-                    "description": "The current multiplier.",
-                    "type": "number"
-                },
-                "display_name": {
-                    "description": "The display name of the material.",
-                    "type": "string"
-                },
-                "last_multiplier": {
-                    "description": "The multipler from the last time the stock refreshed.",
-                    "type": "number"
-                },
-                "name": {
-                    "description": "The identifier for the material.",
-                    "type": "string"
-                },
-                "values": {
-                    "description": "The values of the different types for the materials",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/Oaklands.V1.MaterialValues"
-                    }
-                }
-            }
-        },
-        "Oaklands.V1.Sync": {
-            "type": "object",
-            "properties": {
-                "meta": {
-                    "description": "Information from the experience that is used for sync checks.",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/Oaklands.V1.SyncMeta"
-                        }
-                    ]
-                },
-                "stock_market": {
-                    "description": "Sync information for the stock market.",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/Oaklands.V1.SyncdInfoWithReset"
-                        }
-                    ]
-                }
-            }
-        },
-        "Oaklands.V1.SyncMeta": {
-            "type": "object",
-            "properties": {
-                "last_update": {
-                    "description": "The last time that data from Oaklands that can be updated from experience changes was synced and updated.",
-                    "type": "string"
-                },
-                "next_check": {
-                    "description": "The next time Oaklands will be checked for an update.",
-                    "type": "string"
-                }
-            }
-        },
-        "Oaklands.V1.SyncdInfoWithReset": {
-            "type": "object",
-            "properties": {
-                "last_sync": {
-                    "description": "The last time that the resource was updated.",
-                    "type": "string"
-                },
-                "next_sync": {
-                    "description": "The next time that the resource will be updated",
-                    "type": "string"
-                }
-            }
-        }
-    },
+    "openapi": "3.1.0",
     "tags": [
         {
             "description": "All of the available Oaklands endpoints.",
