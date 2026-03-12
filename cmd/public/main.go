@@ -14,7 +14,6 @@ import (
 	"github.com/typical-developers/public-experience-api/cmd/public/config"
 	models "github.com/typical-developers/public-experience-api/cmd/public/handlers"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/oaklands_v1"
-	_ "github.com/typical-developers/public-experience-api/docs"
 	"github.com/typical-developers/public-experience-api/internal/apperror"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
 	"github.com/typical-developers/public-experience-api/pkg/httpx"

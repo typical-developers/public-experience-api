@@ -21,7 +21,10 @@ tmp_dir = "tmp"
   poll = false
   poll_interval = 0
   post_cmd = []
-  pre_cmd = ["swag fmt; swag init -o ../../docs"]
+  pre_cmd = [
+    "swag fmt",
+    "swag init -o ../../docs --ot json,yaml"
+  ]
   rerun = false
   rerun_delay = 500
   send_interrupt = false
