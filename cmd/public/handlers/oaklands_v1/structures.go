@@ -41,6 +41,60 @@ type Changelog struct {
 	Fixed   []string `json:"fixed"`
 } //	@name	Oaklands.V1.Changelog
 
+type NewsLetterContent struct {
+	// The content type.
+	Type string `json:"type" enums:"paragraph,image,image_carousel,video"`
+} //	@name	Oaklands.V1.NewsLetterContent
+
+type NewsletterParagraph struct {
+	NewsLetterContent
+	// The text contents.
+	Text string `json:"text"`
+} //	@name	Oaklands.V1.NewsletterParagraph
+
+type NewsletterImage struct {
+	NewsLetterContent
+	// The Roblox ID for the image in the section.
+	ImageId string `json:"image_id"`
+} //	@name	Oaklands.V1.NewsletterImage
+
+type NewsletterImageCarousel struct {
+	NewsLetterContent
+	// The Roblox IDs for the images in the section.
+	ImageIds []string `json:"image_ids"`
+} //	@name	Oaklands.V1.NewsletterImageCarousel
+
+type NewsletterVideo struct {
+	NewsLetterContent
+	// The Roblox ID for the video in the section.
+	VideoId string `json:"video_id"`
+} //	@name	Oaklands.V1.NewsletterVideo
+
+type NewsletterSection struct {
+	// The header of the section.
+	Header string `json:"header"`
+	// The type of content in the section.
+	Content []any `json:"content" oneOf:"NewsletterParagraph,NewsletterImage,NewsletterImageCarousel,NewsletterVideo"`
+} //	@name	Oaklands.V1.NewsletterSection
+
+type Newsletter struct {
+	// The primary header of the newsletter.
+	Header string `json:"header"`
+	// The secondary header of the newsletter.
+	Subheader string `json:"subheader"`
+	// The date that the newsletter was released.
+	Date time.Time `json:"date"`
+	// The Roblox ID for the banner of the newsletter.
+	BannerImageId string `json:"banner_image_id"`
+	// Sections of the newsletter.
+	Sections []NewsletterSection `json:"sections"`
+} //	@name	Oaklands.V1.Newsletter
+
+type NewsletterEntry struct {
+	ID   string    `json:"id"`
+	Date time.Time `json:"date"`
+} //	@name	Oaklands.V1.NewsletterEntry
+
 type SyncInfo struct {
 	//	The last time that the resource was updated.
 	LastSync time.Time `json:"last_sync"`

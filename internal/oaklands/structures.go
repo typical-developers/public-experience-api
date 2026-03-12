@@ -24,3 +24,8 @@ type Changelogs struct {
 	Version string
 	Date    time.Time
 }
+
+type Newsletters struct {
+	ID   string
+	Date time.Time
+}

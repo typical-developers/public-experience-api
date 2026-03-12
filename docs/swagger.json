@@ -80,6 +80,156 @@
                 },
                 "type": "object"
             },
+            "Oaklands.V1.Newsletter": {
+                "properties": {
+                    "banner_image_id": {
+                        "description": "The Roblox ID for the banner of the newsletter.",
+                        "type": "string"
+                    },
+                    "date": {
+                        "description": "The date that the newsletter was released.",
+                        "type": "string"
+                    },
+                    "header": {
+                        "description": "The primary header of the newsletter.",
+                        "type": "string"
+                    },
+                    "sections": {
+                        "description": "Sections of the newsletter.",
+                        "items": {
+                            "$ref": "#/components/schemas/Oaklands.V1.NewsletterSection"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    },
+                    "subheader": {
+                        "description": "The secondary header of the newsletter.",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Oaklands.V1.NewsletterEntry": {
+                "properties": {
+                    "date": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Oaklands.V1.NewsletterImage": {
+                "properties": {
+                    "image_id": {
+                        "description": "The Roblox ID for the image in the section.",
+                        "type": "string"
+                    },
+                    "type": {
+                        "description": "The content type.",
+                        "enum": [
+                            "paragraph",
+                            "image",
+                            "image_carousel",
+                            "video"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Oaklands.V1.NewsletterImageCarousel": {
+                "properties": {
+                    "image_ids": {
+                        "description": "The Roblox IDs for the images in the section.",
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    },
+                    "type": {
+                        "description": "The content type.",
+                        "enum": [
+                            "paragraph",
+                            "image",
+                            "image_carousel",
+                            "video"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Oaklands.V1.NewsletterParagraph": {
+                "properties": {
+                    "text": {
+                        "description": "The text contents.",
+                        "type": "string"
+                    },
+                    "type": {
+                        "description": "The content type.",
+                        "enum": [
+                            "paragraph",
+                            "image",
+                            "image_carousel",
+                            "video"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Oaklands.V1.NewsletterSection": {
+                "properties": {
+                    "content": {
+                        "description": "The type of content in the section.",
+                        "items": {
+                            "oneOf": [
+                                {
+                                    "$ref": "#/components/schemas/Oaklands.V1.NewsletterParagraph"
+                                },
+                                {
+                                    "$ref": "#/components/schemas/Oaklands.V1.NewsletterImage"
+                                },
+                                {
+                                    "$ref": "#/components/schemas/Oaklands.V1.NewsletterImageCarousel"
+                                },
+                                {
+                                    "$ref": "#/components/schemas/Oaklands.V1.NewsletterVideo"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "uniqueItems": false
+                    },
+                    "header": {
+                        "description": "The header of the section.",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Oaklands.V1.NewsletterVideo": {
+                "properties": {
+                    "type": {
+                        "description": "The content type.",
+                        "enum": [
+                            "paragraph",
+                            "image",
+                            "image_carousel",
+                            "video"
+                        ],
+                        "type": "string"
+                    },
+                    "video_id": {
+                        "description": "The Roblox ID for the video in the section.",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "Oaklands.V1.StockMarket": {
                 "properties": {
                     "currency_type": {
@@ -510,6 +660,114 @@
                                                 "$ref": "#/components/schemas/Oaklands.V1.StockMarket"
                                             },
                                             "type": "array"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/API.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    },
+                    "503": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/API.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Service Unavailable"
+                    }
+                },
+                "tags": [
+                    "Oaklands"
+                ]
+            }
+        },
+        "/v1/oaklands/newsletters": {
+            "get": {
+                "description": "Fetch a list of newsletters.",
+                "parameters": [
+                    {
+                        "description": "The direction to order by. This will use the changelog's date to order.",
+                        "in": "query",
+                        "name": "order_by",
+                        "schema": {
+                            "default": "desc",
+                            "enum": [
+                                "desc",
+                                "asc"
+                            ],
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "items": {
+                                                "$ref": "#/components/schemas/Oaklands.V1.NewsletterEntry"
+                                            },
+                                            "type": "array"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/API.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    },
+                    "503": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/API.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Service Unavailable"
+                    }
+                },
+                "tags": [
+                    "Oaklands"
+                ]
+            }
+        },
+        "/v1/oaklands/newsletters/{id}": {
+            "get": {
+                "description": "Fetch a list of newsletters.",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Oaklands.V1.Newsletter"
                                         }
                                     },
                                     "type": "object"

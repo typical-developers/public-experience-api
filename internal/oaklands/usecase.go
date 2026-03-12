@@ -4,11 +4,16 @@ import "context"
 
 type OaklandsUsecase interface {
 	GetSyncTimes(ctx context.Context) (*SyncInfo, error)
+
 	GetStockMarketTrees(ctx context.Context) (*StockMarket, error)
 	GetStockMarketRocks(ctx context.Context) (*StockMarket, error)
 	GetStockMarketOres(ctx context.Context) (*StockMarket, error)
+
 	GetChangelogs(ctx context.Context) ([]Changelogs, error)
 	GetChangelogVersion(ctx context.Context, version string) (*ChangelogVersion, error)
+
+	GetNewsletters(ctx context.Context) ([]Newsletters, error)
+	GetNewsletter(ctx context.Context, id string) (*Newsletter, error)
 }
 
 type OaklandsUsecaseImpl struct {
@@ -41,4 +46,12 @@ func (u *OaklandsUsecaseImpl) GetChangelogs(ctx context.Context) ([]Changelogs, 
 
 func (u *OaklandsUsecaseImpl) GetChangelogVersion(ctx context.Context, version string) (*ChangelogVersion, error) {
 	return u.r.GetChangelogVersion(ctx, version)
+}
+
+func (u *OaklandsUsecaseImpl) GetNewsletters(ctx context.Context) ([]Newsletters, error) {
+	return u.r.GetNewsletters(ctx)
+}
+
+func (u *OaklandsUsecaseImpl) GetNewsletter(ctx context.Context, id string) (*Newsletter, error) {
+	return u.r.GetNewsletter(ctx, id)
 }

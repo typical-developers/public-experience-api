@@ -32,6 +32,11 @@ type OaklandsRepository interface {
 	GetChangelogs(ctx context.Context) ([]Changelogs, error)
 	// GetChangelogVersion will return a specific changelog's version.
 	GetChangelogVersion(ctx context.Context, version string) (*ChangelogVersion, error)
+
+	// GetNewsleters will return all of the available newsletters.
+	GetNewsletters(ctx context.Context) ([]Newsletters, error)
+	// GetNewsletter will return a specific newsletter version.
+	GetNewsletter(ctx context.Context, id string) (*Newsletter, error)
 }
 
 type OaklandsRepositoryImpl struct {
@@ -53,6 +58,8 @@ const (
 
 	redisKeyChangelogByDate = "oaklands:changelog:index:date"
 	redisKeyChangelogByID   = "oaklands:changelog:index:id"
+
+	redisKeyNewsletterByDate = "oaklands:newsletter:index:date"
 )
 
 func redisKeyChangelog(version string) string {
@@ -112,8 +119,14 @@ func (r *OaklandsRepositoryImpl) ContentSync(ctx context.Context, data ContentSy
 
 	if len(data.Changelogs) > 0 {
 		pipeline.Del(ctx, redisKeyChangelogByDate, redisKeyChangelogByID)
+
 		for version, changelog := range data.Changelogs {
 			pipeline.JSONSet(ctx, redisKeyChangelog(version), "$", changelog)
+
+			pipeline.ZAdd(ctx, redisKeyChangelogByID, redis.Z{
+				Score:  float64(changelog.ID),
+				Member: version,
+			})
 
 			if parsed, err := time.Parse(time.RFC3339, changelog.DateToISO8601()); err == nil {
 				pipeline.ZAdd(ctx, redisKeyChangelogByDate, redis.Z{
@@ -121,10 +134,6 @@ func (r *OaklandsRepositoryImpl) ContentSync(ctx context.Context, data ContentSy
 					Member: version,
 				})
 			}
-			pipeline.ZAdd(ctx, redisKeyChangelogByID, redis.Z{
-				Score:  float64(changelog.ID),
-				Member: version,
-			})
 		}
 	}
 
@@ -132,8 +141,17 @@ func (r *OaklandsRepositoryImpl) ContentSync(ctx context.Context, data ContentSy
 		pipeline.Set(ctx, redisKeyNewsletterLatest, data.Newsletters.Latest, 0)
 	}
 	if len(data.Newsletters.Pages) > 0 {
+		pipeline.Del(ctx, redisKeyNewsletterByDate)
+
 		for version, newsletter := range data.Newsletters.Pages {
 			pipeline.JSONSet(ctx, redisKeyNewsletter(version), "$", newsletter)
+
+			if parsed, err := time.Parse(time.RFC3339, newsletter.DateToISO8601()); err == nil {
+				pipeline.ZAdd(ctx, redisKeyNewsletterByDate, redis.Z{
+					Score:  float64(parsed.Unix()),
+					Member: version,
+				})
+			}
 		}
 	}
 
@@ -320,12 +338,14 @@ func (r *OaklandsRepositoryImpl) GetChangelogVersion(ctx context.Context, versio
 			Stop:  0,
 			Rev:   true,
 		}).Result()
+
 		if err != nil {
 			return nil, err
 		}
 		if len(versions) == 0 {
 			return nil, redis.Nil
 		}
+
 		version = versions[0]
 	}
 
@@ -335,4 +355,48 @@ func (r *OaklandsRepositoryImpl) GetChangelogVersion(ctx context.Context, versio
 	}
 
 	return &changelog, nil
+}
+
+func (r *OaklandsRepositoryImpl) GetNewsletters(ctx context.Context) ([]Newsletters, error) {
+	entries, err := r.redis.ZRangeWithScores(ctx, redisKeyNewsletterByDate, 0, -1).Result()
+	if err != nil {
+		return nil, err
+	}
+
+	if len(entries) == 0 {
+		return nil, redis.Nil
+	}
+
+	newsletters := make([]Newsletters, 0, len(entries))
+	for _, entry := range entries {
+		id, ok := entry.Member.(string)
+		if !ok {
+			id = fmt.Sprintf("%v", entry.Member)
+		}
+
+		newsletters = append(newsletters, Newsletters{
+			ID:   id,
+			Date: time.Unix(int64(entry.Score), 0).UTC(),
+		})
+	}
+
+	return newsletters, nil
+}
+
+func (r *OaklandsRepositoryImpl) GetNewsletter(ctx context.Context, id string) (*Newsletter, error) {
+	if strings.EqualFold(id, "latest") {
+		latestPage, err := r.redis.Get(ctx, redisKeyNewsletterLatest).Result()
+		if err != nil {
+			return nil, err
+		}
+
+		id = latestPage
+	}
+
+	var newsletter Newsletter
+	if err := r.jsonGet(ctx, redisKeyNewsletter(id), "$", &newsletter); err != nil {
+		return nil, err
+	}
+
+	return &newsletter, nil
 }
