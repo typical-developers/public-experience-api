@@ -28,6 +28,10 @@ func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
 		r:         opts.Repository,
 	}
 
+	if _, err := opts.Cron.AddFunc("@every 5m", c.GetConfig); err != nil {
+		panic(err)
+	}
+
 	if _, err := opts.Cron.AddFunc("@every 5m", c.CheckForUpdates); err != nil {
 		panic(err)
 	}
@@ -37,8 +41,24 @@ func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
 	}
 }
 
+// GetConfig will fetch for update config values from Oaklands.
+// This happenes every 5 minutes.
+func (c *OaklandsCronJobs) GetConfig() {
+	ctx := context.Background()
+
+	config, err := oaklands.GetConfig(ctx, c.opencloud)
+	if err != nil {
+		panic(err)
+	}
+
+	if err := c.r.UpdateConfig(ctx, *config); err != nil {
+		panic(err)
+	}
+}
+
 // CheckForUpdates will run an API check to see if Oaklands has been updated.
 // If it has been, it will fetch for new data and update ephemeral storage.
+// This happenes every 5 minutes.
 func (c *OaklandsCronJobs) CheckForUpdates() {
 	ctx := context.Background()
 

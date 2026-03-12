@@ -9,7 +9,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/redis/go-redis/v9 v9.18.0
 	github.com/robfig/cron/v3 v3.0.1
-	github.com/typical-developers/goblox v0.0.0-20260302200222-e62ed16fb449
+	github.com/typical-developers/goblox v0.0.0-20260312234757-5a027d43801f
 	golang.org/x/sync v0.12.0
 )
 
@@ -22,3 +22,5 @@ require (
 	github.com/stretchr/testify v1.9.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 )
+
+// replace github.com/typical-developers/goblox => ../goblox

@@ -13,6 +13,11 @@ import (
 )
 
 type OaklandsRepository interface {
+	// UpdateConfig will update the used config values from Oaklands.
+	UpdateConfig(ctx context.Context, data Config) error
+	// GetConfig will get the tored config values.
+	GetConfig(ctx context.Context) (*Config, error)
+
 	// ContentSync will update various entries with updated data.
 	ContentSync(ctx context.Context, data ContentSyncData) error
 
@@ -49,6 +54,8 @@ type OaklandsRepositoryOpts struct {
 }
 
 const (
+	redisKeyConfig = "oaklands:config"
+
 	redisKeyLastSync = "oaklands:last_sync"
 
 	redisKeyNewsletterLatest = "oaklands:newsletter:latest"
@@ -111,6 +118,24 @@ func (r *OaklandsRepositoryImpl) stockMarketReset(now time.Time) time.Time {
 
 	elapsed := now.Sub(base)
 	return base.Add(((elapsed / interval) + 1) * interval)
+}
+
+func (r *OaklandsRepositoryImpl) UpdateConfig(ctx context.Context, data Config) error {
+	_, err := r.redis.JSONSet(ctx, redisKeyConfig, "$", data).Result()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *OaklandsRepositoryImpl) GetConfig(ctx context.Context) (*Config, error) {
+	var config Config
+	if err := r.jsonGet(ctx, redisKeyStockMarket("trees"), "$", &config); err != nil {
+		return nil, err
+	}
+
+	return &config, nil
 }
 
 func (r *OaklandsRepositoryImpl) ContentSync(ctx context.Context, data ContentSyncData) error {
