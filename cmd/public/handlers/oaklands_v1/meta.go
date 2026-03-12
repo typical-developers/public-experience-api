@@ -19,8 +19,8 @@ import (
 //	@Tags			Oaklands
 //
 //	@Success		200	{object}	object{data=Sync}
-//	@Failure		429	{object}	models.ErrorResponse
 //	@Failure		500	{object}	models.ErrorResponse
+//	@Failure		503	{object}	models.ErrorResponse
 //
 // swagger:ignore
 func (o OaklandsV1Routes) GetSyncTimes(w http.ResponseWriter, r *http.Request) {

@@ -159,7 +159,7 @@ func (o *OaklandsV1Routes) writeStockMarket(
 //	@Param			order_by		query		string	false	"The direction to order by."	default(desc)				enums(desc, asc)
 //
 //	@Success		200				{object}	object{data=[]StockMarket}
-//	@Failure		429				{object}	models.ErrorResponse
+//	@Failure		503				{object}	models.ErrorResponse
 //	@Failure		500				{object}	models.ErrorResponse
 //
 // swagger:ignore
@@ -177,7 +177,7 @@ func (o *OaklandsV1Routes) GetStockMarketTrees(w http.ResponseWriter, r *http.Re
 //	@Param			order_by		query		string	false	"The direction to order by."	default(desc)				enums(desc, asc)
 //
 //	@Success		200				{object}	object{data=[]StockMarket}
-//	@Failure		429				{object}	models.ErrorResponse
+//	@Failure		503				{object}	models.ErrorResponse
 //	@Failure		500				{object}	models.ErrorResponse
 //
 // swagger:ignore
@@ -195,7 +195,7 @@ func (o *OaklandsV1Routes) GetStockMarketRocks(w http.ResponseWriter, r *http.Re
 //	@Param			order_by		query		string	false	"The direction to order by."	default(desc)				enums(desc, asc)
 //
 //	@Success		200				{object}	object{data=[]StockMarket}
-//	@Failure		429				{object}	models.ErrorResponse
+//	@Failure		503				{object}	models.ErrorResponse
 //	@Failure		500				{object}	models.ErrorResponse
 //
 // swagger:ignore

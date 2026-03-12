@@ -18,7 +18,11 @@ import (
 //
 //	@Tags			Oaklands
 //
-//	@Param			version	path	string	true	"The version of changelog. For quick access to the latest changelog, use 'latest' as the value."
+//	@Param			version	path		string	true	"The version of changelog. For quick access to the latest changelog, use 'latest' as the value."
+//
+//	@Success		200		{object}	object{data=Changelog}
+//	@Failure		503		{object}	models.ErrorResponse
+//	@Failure		500		{object}	models.ErrorResponse
 //
 // swagger:ignore
 func (o *OaklandsV1Routes) GetChangelogVersion(w http.ResponseWriter, r *http.Request) {
@@ -84,7 +88,11 @@ func (o *OaklandsV1Routes) sortChangelogs(values []oaklands.Changelogs, orderBy 
 //
 //	@Tags			Oaklands
 //
-//	@Param			order_by	query	string	false	"The direction to order by. This will use the changelog's date to order."	default(desc)	enums(desc, asc)
+//	@Param			order_by	query		string	false	"The direction to order by. This will use the changelog's date to order."	default(desc)	enums(desc, asc)
+//
+//	@Success		200			{object}	object{data=[]ChangelogVersion}
+//	@Failure		503			{object}	models.ErrorResponse
+//	@Failure		500			{object}	models.ErrorResponse
 //
 // swagger:ignore
 func (o *OaklandsV1Routes) GetChangelog(w http.ResponseWriter, r *http.Request) {

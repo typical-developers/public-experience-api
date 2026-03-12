@@ -9,6 +9,39 @@ components:
           description: The type of error that was returned.
           type: string
       type: object
+    Oaklands.V1.Changelog:
+      properties:
+        added:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        changed:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        date:
+          type: string
+        fixed:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+        id:
+          type: integer
+        version:
+          type: string
+      type: object
+    Oaklands.V1.ChangelogVersion:
+      properties:
+        date:
+          type: string
+        id:
+          type: integer
+        version:
+          type: string
+      type: object
     Oaklands.V1.MaterialValues:
       properties:
         base_value:
@@ -110,7 +143,30 @@ paths:
           - desc
           - asc
           type: string
-      responses: null
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    items:
+                      $ref: '#/components/schemas/Oaklands.V1.ChangelogVersion'
+                    type: array
+                type: object
+          description: OK
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
+          description: Internal Server Error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
+          description: Service Unavailable
       tags:
       - Oaklands
   /v1/oaklands/changelogs/{version}:
@@ -124,7 +180,28 @@ paths:
         required: true
         schema:
           type: string
-      responses: null
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Oaklands.V1.Changelog'
+                type: object
+          description: OK
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
+          description: Internal Server Error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
+          description: Service Unavailable
       tags:
       - Oaklands
   /v1/oaklands/economy/stock-market/ores:
@@ -169,18 +246,18 @@ paths:
                     type: array
                 type: object
           description: OK
-        "429":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
-          description: Too Many Requests
         "500":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/API.ErrorResponse'
           description: Internal Server Error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
+          description: Service Unavailable
       tags:
       - Oaklands
   /v1/oaklands/economy/stock-market/rocks:
@@ -225,18 +302,18 @@ paths:
                     type: array
                 type: object
           description: OK
-        "429":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
-          description: Too Many Requests
         "500":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/API.ErrorResponse'
           description: Internal Server Error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
+          description: Service Unavailable
       tags:
       - Oaklands
   /v1/oaklands/economy/stock-market/trees:
@@ -281,18 +358,18 @@ paths:
                     type: array
                 type: object
           description: OK
-        "429":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
-          description: Too Many Requests
         "500":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/API.ErrorResponse'
           description: Internal Server Error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
+          description: Service Unavailable
       tags:
       - Oaklands
   /v1/oaklands/sync:
@@ -313,18 +390,18 @@ paths:
                     $ref: '#/components/schemas/Oaklands.V1.Sync'
                 type: object
           description: OK
-        "429":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
-          description: Too Many Requests
         "500":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/API.ErrorResponse'
           description: Internal Server Error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
+          description: Service Unavailable
       tags:
       - Oaklands
 tags:
