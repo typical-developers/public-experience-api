@@ -292,6 +292,7 @@ paths:
         name: version
         required: true
         schema:
+          default: latest
           type: string
       responses:
         "200":
