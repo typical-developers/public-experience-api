@@ -142,6 +142,7 @@ func (o *OaklandsV1Routes) writeStockMarket(
 	market.Stock = o.sortStockMarketMaterials(market.Stock, sort, order)
 	response := newStockMarketResponse(market.Stock)
 
+	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=300, stale-while-revalidate=300")
 	w.Header().Set("Last-Modified", market.LastSync.Format(http.TimeFormat))
 	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)

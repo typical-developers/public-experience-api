@@ -56,6 +56,7 @@ func (o OaklandsV1Routes) GetSyncTimes(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
+	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=60")
 	if err := httpx.WriteJSON(w, response, http.StatusOK); err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return

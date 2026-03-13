@@ -165,6 +165,7 @@ func (o *OaklandsV1Routes) GetNewsletter(w http.ResponseWriter, r *http.Request)
 		}
 	}
 
+	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=300, stale-while-revalidate=300")
 	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
