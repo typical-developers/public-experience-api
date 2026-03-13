@@ -57,11 +57,16 @@ services:
     environment:
       API_REFERENCE_CONFIG: |
         {
+          "hideClientButton": true,
           "servers": [
             {
               "url": "${REFERENCE_CONFIG_API_BASE_URL:-http://localhost:8080}"
             }
-          ]
+          ],
+          "metaData": {
+            "title": "Public Experience API Reference",
+            "description": "Documentation for the official Typical Developers public experience api."
+          }
         }
     depends_on:
       public:

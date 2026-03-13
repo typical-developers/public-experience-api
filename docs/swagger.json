@@ -795,7 +795,7 @@
                         }
                     },
                     {
-                        "description": "The ID of the newsletter.",
+                        "description": "The id of the newsletter. For quick access to the latest newsletter, use 'latest' as the value.",
                         "in": "path",
                         "name": "id",
                         "required": true,
