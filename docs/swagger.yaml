@@ -539,6 +539,13 @@ paths:
         name: If-None-Match
         schema:
           type: string
+      - description: The ID of the newsletter.
+        in: path
+        name: id
+        required: true
+        schema:
+          default: latest
+          type: string
       responses:
         "200":
           content:

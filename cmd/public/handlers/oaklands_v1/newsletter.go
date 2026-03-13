@@ -88,6 +88,7 @@ func (o *OaklandsV1Routes) GetNewsletters(w http.ResponseWriter, r *http.Request
 //	@Tags			Oaklands
 //
 //	@Param			If-None-Match	header		string	false	"ETag to validate cached response."
+//	@Param			id				path		string	true	"The ID of the newsletter."	default(latest)
 //
 //	@Success		200				{object}	object{data=Newsletter}
 //	@Failure		503				{object}	models.ErrorResponse
