@@ -23,9 +23,9 @@ var (
 
 type Config struct {
 	// The latest newsletter override.
-	NewsletterOverride *string
+	NewsletterOverride string `json:"NewsletterOverride"`
 	// Newsletters to not display.
-	HiddenNewsletters []string
+	HiddenNewsletters []string `json:"HiddenNewsletters"`
 }
 
 type ContentSyncData struct {
@@ -46,7 +46,7 @@ func GetConfig(ctx context.Context, oc *opencloud.Client) (*Config, error) {
 
 	c := &Config{}
 	if newsletterOverride, ok := config.Entries["Client_LatestNewsletterOverride"].(string); ok {
-		c.NewsletterOverride = &newsletterOverride
+		c.NewsletterOverride = newsletterOverride
 	}
 
 	if hiddenNewsletters, ok := config.Entries["Client_HideNewsletters"].([]string); ok {

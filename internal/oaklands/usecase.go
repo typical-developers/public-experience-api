@@ -1,6 +1,9 @@
 package oaklands
 
-import "context"
+import (
+	"context"
+	"slices"
+)
 
 type OaklandsUsecase interface {
 	GetSyncTimes(ctx context.Context) (*SyncInfo, error)
@@ -49,9 +52,38 @@ func (u *OaklandsUsecaseImpl) GetChangelogVersion(ctx context.Context, version s
 }
 
 func (u *OaklandsUsecaseImpl) GetNewsletters(ctx context.Context) ([]Newsletters, error) {
-	return u.r.GetNewsletters(ctx)
+	config, err := u.r.GetConfig(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	newsletters, err := u.r.GetNewsletters(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(config.HiddenNewsletters) == 0 {
+		return newsletters, nil
+	}
+
+	hidden := make(map[string]struct{}, len(config.HiddenNewsletters))
+	for _, id := range config.HiddenNewsletters {
+		hidden[id] = struct{}{}
+	}
+
+	return slices.DeleteFunc(newsletters, func(newsletter Newsletters) bool {
+		_, ok := hidden[newsletter.ID]
+		return ok
+	}), nil
 }
 
 func (u *OaklandsUsecaseImpl) GetNewsletter(ctx context.Context, id string) (*Newsletter, error) {
+	if id == "latest" {
+		config, err := u.r.GetConfig(ctx)
+		if err == nil && config.NewsletterOverride != "" && config.NewsletterOverride != "Default" {
+			id = config.NewsletterOverride
+		}
+	}
+
 	return u.r.GetNewsletter(ctx, id)
 }
