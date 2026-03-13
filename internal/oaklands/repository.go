@@ -131,7 +131,7 @@ func (r *OaklandsRepositoryImpl) UpdateConfig(ctx context.Context, data Config) 
 
 func (r *OaklandsRepositoryImpl) GetConfig(ctx context.Context) (*Config, error) {
 	var config Config
-	if err := r.jsonGet(ctx, redisKeyStockMarket("trees"), "$", &config); err != nil {
+	if err := r.jsonGet(ctx, redisKeyConfig, "$", &config); err != nil {
 		return nil, err
 	}
 
