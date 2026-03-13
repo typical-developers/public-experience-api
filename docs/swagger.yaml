@@ -236,6 +236,11 @@ paths:
     get:
       description: Fetch a list of changelog versions with their information.
       parameters:
+      - description: ETag to validate cached response.
+        in: header
+        name: If-None-Match
+        schema:
+          type: string
       - description: The direction to order by. This will use the changelog's date
           to order.
         in: query
@@ -276,6 +281,11 @@ paths:
     get:
       description: Fetch a changelog version.
       parameters:
+      - description: ETag to validate cached response.
+        in: header
+        name: If-None-Match
+        schema:
+          type: string
       - description: The version of changelog. For quick access to the latest changelog,
           use 'latest' as the value.
         in: path
@@ -479,6 +489,11 @@ paths:
     get:
       description: Fetch a list of newsletters.
       parameters:
+      - description: ETag to validate cached response.
+        in: header
+        name: If-None-Match
+        schema:
+          type: string
       - description: The direction to order by. This will use the changelog's date
           to order.
         in: query
@@ -518,6 +533,12 @@ paths:
   /v1/oaklands/newsletters/{id}:
     get:
       description: Fetch a list of newsletters.
+      parameters:
+      - description: ETag to validate cached response.
+        in: header
+        name: If-None-Match
+        schema:
+          type: string
       responses:
         "200":
           content:

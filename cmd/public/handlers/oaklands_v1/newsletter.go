@@ -32,11 +32,12 @@ func (o *OaklandsV1Routes) sortNewsletters(values []oaklands.Newsletters, orderB
 //
 //	@Tags			Oaklands
 //
-//	@Param			order_by	query		string	false	"The direction to order by. This will use the changelog's date to order."	default(desc)	enums(desc, asc)
+//	@Param			If-None-Match	header		string	false	"ETag to validate cached response."
+//	@Param			order_by		query		string	false	"The direction to order by. This will use the changelog's date to order."	default(desc)	enums(desc, asc)
 //
-//	@Success		200			{object}	object{data=[]NewsletterEntry}
-//	@Failure		503			{object}	models.ErrorResponse
-//	@Failure		500			{object}	models.ErrorResponse
+//	@Success		200				{object}	object{data=[]NewsletterEntry}
+//	@Failure		503				{object}	models.ErrorResponse
+//	@Failure		500				{object}	models.ErrorResponse
 //
 // swagger:ignore
 func (o *OaklandsV1Routes) GetNewsletters(w http.ResponseWriter, r *http.Request) {
@@ -86,9 +87,11 @@ func (o *OaklandsV1Routes) GetNewsletters(w http.ResponseWriter, r *http.Request
 //
 //	@Tags			Oaklands
 //
-//	@Success		200	{object}	object{data=Newsletter}
-//	@Failure		503	{object}	models.ErrorResponse
-//	@Failure		500	{object}	models.ErrorResponse
+//	@Param			If-None-Match	header		string	false	"ETag to validate cached response."
+//
+//	@Success		200				{object}	object{data=Newsletter}
+//	@Failure		503				{object}	models.ErrorResponse
+//	@Failure		500				{object}	models.ErrorResponse
 //
 // swagger:ignore
 func (o *OaklandsV1Routes) GetNewsletter(w http.ResponseWriter, r *http.Request) {
