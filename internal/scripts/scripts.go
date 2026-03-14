@@ -115,7 +115,14 @@ func (e *ExecuteResult) DecodeResult(v any) error {
 		return ErrNoScriptOutput
 	}
 
-	jsonb, err := json.Marshal(e.results[0])
+	result := e.results[0]
+	if wrapped, ok := result.(map[string]any); ok {
+		if returnValues, exists := wrapped["ReturnValues"]; exists {
+			result = returnValues
+		}
+	}
+
+	jsonb, err := json.Marshal(result)
 	if err != nil {
 		return err
 	}
