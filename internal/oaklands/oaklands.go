@@ -3,6 +3,7 @@ package oaklands
 import (
 	"context"
 	_ "embed"
+	"fmt"
 
 	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/internal/scripts"
@@ -19,6 +20,8 @@ var (
 	ContentSyncScript string
 	//go:embed scripts/StockMarket.luau
 	StockMarketScript string
+	//go:embed scripts/ClassicShop.luau
+	ClassicShopScript string
 )
 
 type Config struct {
@@ -102,6 +105,30 @@ func GetStockMarket(ctx context.Context, oc *opencloud.Client) (*StockMarketData
 	if err := result.DecodeBinaryOutput(data); err != nil {
 		return nil, err
 	}
+
+	return data, nil
+}
+
+// GetClassicShop will get the current classic shop items.
+func GetClassicShop(ctx context.Context, oc *opencloud.Client) ([]string, error) {
+	script := scripts.NewScript(oc, ClassicShopScript)
+
+	result, err := script.Execute(ctx, scripts.ExecuteOptions{
+		UniverseID: UniverseID,
+		PlaceID:    StagingPlaceID,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	data := []string{}
+	if err := result.DecodeResult(&data); err != nil {
+		println(err.Error())
+		return nil, err
+	}
+
+	fmt.Printf("%+v", data)
 
 	return data, nil
 }
