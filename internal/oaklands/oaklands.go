@@ -29,12 +29,15 @@ type Config struct {
 }
 
 type ContentSyncData struct {
-	Changelogs  map[string]ChangelogVersion `json:"Changelogs"`
-	Newsletters struct {
+	Translations Translations                `json:"Translations"`
+	Changelogs   map[string]ChangelogVersion `json:"Changelogs"`
+	Newsletters  struct {
 		Latest string                `json:"Latest"`
 		Pages  map[string]Newsletter `json:"Pages"`
 	} `json:"Newsletters"`
 	StockMarket map[string][]StockMarketMaterial `json:"StockMarket"`
+	ItemDetails map[string]ItemDetails           `json:"ItemDetails"`
+	StoreItems  map[string][]string              `json:"StoreItems"`
 }
 
 // GetConfig will get needed config values from the Oaklands experience config.

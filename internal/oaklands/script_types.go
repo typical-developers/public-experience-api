@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+type Translations map[string]map[string]string
+
 // DateToISO8601 will convert the date (i.e. January 1st, 2026 to an ISO8601 formatted date in UTC)
 func dateToISO8601(dateStr string) string {
 	// Remove ordinal suffixes to match the "January 2, 2006" layout
@@ -147,4 +149,17 @@ type StockMarketMaterial struct {
 	CurrentMultiplier float32            `json:"CurrentMultiplier"`
 	LastMultiplier    float32            `json:"LastMultiplier"`
 	Values            []StockMarketValue `json:"Values"`
+}
+
+type ItemForm struct {
+	FormType    string         `json:"FormType"`
+	ConvertType string         `json:"ConvertType"`
+	Data        map[string]any `json:"Data"`
+}
+
+type ItemDetails struct {
+	Name        string     `json:"Name"`
+	DisplayName string     `json:"DisplayName"`
+	Description string     `json:"Description"`
+	Forms       []ItemForm `json:"Forms"`
 }

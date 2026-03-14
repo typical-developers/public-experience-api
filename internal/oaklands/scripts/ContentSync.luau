@@ -12,14 +12,20 @@ _G.Server = {
 local PublicAPIUtility = require(game.ServerScriptService.PublicAPIUtility)
 PublicAPIUtility:Initialize()
 
+local Translations = require(game.ServerScriptService.PublicAPIUtility.Translations)
 local Changelogs = require(game.ServerScriptService.PublicAPIUtility.Changelogs)
 local Newsletters = require(game.ServerScriptService.PublicAPIUtility.Newsletters)
 local MaterialStockMarket = require(game.ServerScriptService.PublicAPIUtility.MaterialStockMarket)
+local Items = require(game.ServerScriptService.PublicAPIUtility.Items)
+local StoreItems = require(game.ServerScriptService.PublicAPIUtility.StoreItems)
 
 local BinaryOutputBuffer = PublicAPIUtility:EncodeBinaryOutput({
+    Translations = Translations,
     Changelogs = Changelogs,
     Newsletters = Newsletters,
-    StockMarket = MaterialStockMarket
+    StockMarket = MaterialStockMarket,
+    ItemDetails = Items,
+    StoreItems = StoreItems
 })
 
 local Result: LuauExecutionTaskOutput = {
