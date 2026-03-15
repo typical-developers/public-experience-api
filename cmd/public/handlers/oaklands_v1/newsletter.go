@@ -36,8 +36,8 @@ func (o *OaklandsV1Routes) sortNewsletters(values []oaklands.Newsletters, orderB
 //	@Param			order_by		query		string	false	"The direction to order by. This will use the changelog's date to order."	default(desc)	enums(desc, asc)
 //
 //	@Success		200				{object}	object{data=[]NewsletterEntry}
-//	@Failure		503				{object}	models.ErrorResponse
 //	@Failure		500				{object}	models.ErrorResponse
+//	@Failure		503				{object}	models.ErrorResponse
 //
 // swagger:ignore
 func (o *OaklandsV1Routes) GetNewsletters(w http.ResponseWriter, r *http.Request) {
@@ -91,8 +91,8 @@ func (o *OaklandsV1Routes) GetNewsletters(w http.ResponseWriter, r *http.Request
 //	@Param			id				path		string	true	"The id of the newsletter. For quick access to the latest newsletter, use 'latest' as the value."	default(latest)
 //
 //	@Success		200				{object}	object{data=Newsletter}
-//	@Failure		503				{object}	models.ErrorResponse
 //	@Failure		500				{object}	models.ErrorResponse
+//	@Failure		503				{object}	models.ErrorResponse
 //
 // swagger:ignore
 func (o *OaklandsV1Routes) GetNewsletter(w http.ResponseWriter, r *http.Request) {
