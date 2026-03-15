@@ -204,6 +204,8 @@ components:
       type: object
     Oaklands.V1.Sync:
       properties:
+        classic_store:
+          $ref: '#/components/schemas/Oaklands.V1.SyncdInfoWithReset'
         meta:
           $ref: '#/components/schemas/Oaklands.V1.SyncMeta'
         stock_market:
@@ -221,7 +223,7 @@ components:
           type: string
       type: object
     Oaklands.V1.SyncdInfoWithReset:
-      description: Sync information for the stock market.
+      description: Sync information for the classic store.
       properties:
         last_sync:
           description: The last time that the resource was updated.

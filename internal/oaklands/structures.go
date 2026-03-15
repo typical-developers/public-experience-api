@@ -17,6 +17,7 @@ type SyncInfo struct {
 	LastContentSync time.Time
 	NextSyncCheck   time.Time
 	StockMarket     SyncInfoCategory
+	ClassicStore    SyncInfoCategory
 }
 
 type Changelogs struct {

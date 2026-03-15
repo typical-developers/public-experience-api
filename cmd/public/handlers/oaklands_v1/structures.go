@@ -119,6 +119,8 @@ type Sync struct {
 	Meta SyncMeta `json:"meta"`
 	// Sync information for the stock market.
 	StockMarket SyncdInfoWithReset `json:"stock_market"`
+	// Sync information for the classic store.
+	ClassicStore SyncdInfoWithReset `json:"classic_store"`
 } //	@name	Oaklands.V1.Sync
 
 type StoreItem struct {

@@ -236,8 +236,8 @@ func (r *OaklandsRepositoryImpl) ContentSync(ctx context.Context, data ContentSy
 
 	if len(data.StockMarket) > 0 {
 		nextSync := r.stockMarketReset(now)
-		pipeline.SAdd(ctx, redisKeyStockMarketLastSync, now.Format(time.RFC3339), 0)
-		pipeline.SAdd(ctx, redisKeyStockMarketNextSync, nextSync.Format(time.RFC3339), 0)
+		pipeline.Set(ctx, redisKeyStockMarketLastSync, now.Format(time.RFC3339), 0)
+		pipeline.Set(ctx, redisKeyStockMarketNextSync, nextSync.Format(time.RFC3339), 0)
 
 		for marketType, materials := range data.StockMarket {
 			pipeline.JSONSet(ctx, redisKeyStockMarket(marketType), "$", materials)
@@ -273,17 +273,21 @@ func (r *OaklandsRepositoryImpl) ContentSync(ctx context.Context, data ContentSy
 }
 
 func (r *OaklandsRepositoryImpl) GetSyncTimes(ctx context.Context) (*SyncInfo, error) {
-	v, err := r.redis.MGet(ctx,
+	keys := []string{
 		redisKeyLastSync,
 		redisKeyStockMarketLastSync,
 		redisKeyStockMarketNextSync,
-	).Result()
+		redisKeyClassicShopLastSync,
+		redisKeyClassicShopNextSync,
+	}
+
+	v, err := r.redis.MGet(ctx, keys...).Result()
 	if err != nil {
 		return nil, err
 	}
 
-	if len(v) != 3 {
-		return nil, fmt.Errorf("unexpected sync time result size: %d", len(v))
+	if len(v) != len(keys) {
+		return nil, fmt.Errorf("unexpected sync time result size: %d, expected %d.", len(v), len(keys))
 	}
 
 	lastContentSync, err := redisx.ParseTime(v[0])
@@ -301,15 +305,25 @@ func (r *OaklandsRepositoryImpl) GetSyncTimes(ctx context.Context) (*SyncInfo, e
 		return nil, err
 	}
 
+	classicShopLastSync, err := redisx.ParseTime(v[3])
+	if err != nil {
+		return nil, err
+	}
+
+	classicShopNextSync, err := redisx.ParseTime(v[4])
+	if err != nil {
+		return nil, err
+	}
+
 	info := &SyncInfo{}
-	if lastContentSync != nil {
-		info.LastContentSync = *lastContentSync
-	}
-	if stockMarketLastSync != nil {
-		info.StockMarket.LastSync = *stockMarketLastSync
-	}
-	info.StockMarket.NextSync = stockMarketNextSync
+	info.LastContentSync = *lastContentSync
 	info.NextSyncCheck = time.Now().UTC().Truncate(5 * time.Minute).Add(5 * time.Minute)
+
+	info.StockMarket.LastSync = *stockMarketLastSync
+	info.StockMarket.NextSync = stockMarketNextSync
+
+	info.ClassicStore.LastSync = *classicShopLastSync
+	info.ClassicStore.NextSync = classicShopNextSync
 
 	return info, nil
 }
