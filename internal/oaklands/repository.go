@@ -547,6 +547,10 @@ func (r *OaklandsRepositoryImpl) ListStores(ctx context.Context) ([]string, erro
 		return nil, err
 	}
 
+	if len(stores) <= 0 {
+		return nil, redis.Nil
+	}
+
 	return stores, nil
 }
 
