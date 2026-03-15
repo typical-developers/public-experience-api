@@ -33,6 +33,8 @@ func (o OaklandsV1Routes) GetSyncTimes(w http.ResponseWriter, r *http.Request) {
 				Type:    "ResourceNotCached",
 				Message: "The requested resource is not cached. Try again in a bit.",
 			}, http.StatusServiceUnavailable)
+
+			return
 		}
 
 		_ = httpx.WriteJSON(w, models.ErrorResponse{
@@ -52,6 +54,10 @@ func (o OaklandsV1Routes) GetSyncTimes(w http.ResponseWriter, r *http.Request) {
 			StockMarket: SyncdInfoWithReset{
 				LastSync: sync.StockMarket.LastSync,
 				NextSync: *sync.StockMarket.NextSync,
+			},
+			ClassicStore: SyncdInfoWithReset{
+				LastSync: sync.ClassicStore.LastSync,
+				NextSync: *sync.ClassicStore.NextSync,
 			},
 		},
 	}
