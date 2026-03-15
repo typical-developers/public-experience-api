@@ -39,6 +39,10 @@ func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
 	if _, err := opts.Cron.AddFunc("0 4,10,16,22 * * *", c.RefreshStockMarkets); err != nil {
 		panic(err)
 	}
+
+	if _, err := opts.Cron.AddFunc("0 4,16 * * *", c.RefreshClassicShop); err != nil {
+		panic(err)
+	}
 }
 
 // GetConfig will fetch for update config values from Oaklands.
@@ -109,5 +113,22 @@ func (c *OaklandsCronJobs) RefreshStockMarkets() {
 
 	if err := c.r.SetStockMarket(ctx, *stock); err != nil {
 		panic(err)
+	}
+}
+
+// RefreshClassicShop will fetch and update the classic shop.
+// This happens every 12 hours.
+func (c *OaklandsCronJobs) RefreshClassicShop() {
+	ctx := context.Background()
+
+	items, err := oaklands.GetClassicShop(context.Background(), c.opencloud)
+	if err != nil {
+		panic(err)
+	}
+
+	if len(items) > 0 {
+		if err := c.r.SetClassicStoreItems(ctx, items); err != nil {
+			panic(err)
+		}
 	}
 }

@@ -49,6 +49,9 @@ type OaklandsRepository interface {
 	ListStores(ctx context.Context) ([]string, error)
 	// SetStoreItems will set the list of items in each store.
 	SetStoreItems(ctx context.Context, store string, items []string) error
+	// SetClassicStoreItems will set the items for the classic store in specific.
+	// It will also automatically update the next sync data.
+	SetClassicStoreItems(ctx context.Context, items []string) error
 	// GetStoreItems will fetch the items in a store and their details.
 	GetStoreItems(ctx context.Context, store string) ([]ItemDetails, error)
 }
@@ -529,6 +532,21 @@ func (r *OaklandsRepositoryImpl) ListStores(ctx context.Context) ([]string, erro
 	}
 
 	return stores, nil
+}
+
+func (r *OaklandsRepositoryImpl) SetClassicStoreItems(ctx context.Context, items []string) error {
+	now := time.Now()
+	nextSync := r.classicShopReset(now)
+	pipeline := r.redis.Pipeline()
+
+	pipeline.Set(ctx, redisKeyClassicShopNextSync, nextSync.Format(time.RFC3339), 0)
+	pipeline.JSONSet(ctx, redisKeyStore("ClassicStore"), "$", items)
+
+	if _, err := pipeline.Exec(ctx); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (r *OaklandsRepositoryImpl) SetStoreItems(ctx context.Context, store string, items []string) error {
