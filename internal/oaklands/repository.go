@@ -83,6 +83,7 @@ const (
 	redisKeyTranslationsIndex = "oaklands:translations:index"
 
 	redisKeyStoresIndex         = "oaklands:store:index"
+	redisKeyClassicShopLastSync = "oaklands:store:ClassicStore:last_sync"
 	redisKeyClassicShopNextSync = "oaklands:store:ClassicStore:next_sync"
 )
 
@@ -252,6 +253,7 @@ func (r *OaklandsRepositoryImpl) ContentSync(ctx context.Context, data ContentSy
 	if len(data.StoreItems) > 0 {
 		if _, ok := data.StoreItems["ClassicStore"]; ok {
 			nextSync := r.classicShopReset(now)
+			pipeline.Set(ctx, redisKeyClassicShopLastSync, now.Format(time.RFC3339), 0)
 			pipeline.Set(ctx, redisKeyClassicShopNextSync, nextSync.Format(time.RFC3339), 0)
 		}
 
@@ -539,6 +541,7 @@ func (r *OaklandsRepositoryImpl) SetClassicStoreItems(ctx context.Context, items
 	nextSync := r.classicShopReset(now)
 	pipeline := r.redis.Pipeline()
 
+	pipeline.Set(ctx, redisKeyClassicShopLastSync, now.Format(time.RFC3339), 0)
 	pipeline.Set(ctx, redisKeyClassicShopNextSync, nextSync.Format(time.RFC3339), 0)
 	pipeline.JSONSet(ctx, redisKeyStore("ClassicStore"), "$", items)
 
