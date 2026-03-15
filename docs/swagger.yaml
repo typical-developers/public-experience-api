@@ -181,6 +181,27 @@ components:
           type: array
           uniqueItems: false
       type: object
+    Oaklands.V1.StoreItem:
+      properties:
+        currency:
+          description: The currency that is used to purchase the item.
+          type: string
+        description:
+          description: The description of the item.
+          type: string
+        display_name:
+          description: The display name of the item.
+          type: string
+        image:
+          description: The image of the item.
+          type: string
+        name:
+          description: The name (identifier) of the item.
+          type: string
+        price:
+          description: How much the item costs.
+          type: number
+      type: object
     Oaklands.V1.Sync:
       properties:
         meta:
@@ -556,6 +577,101 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Oaklands.V1.Newsletter'
+                type: object
+          description: OK
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
+          description: Internal Server Error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
+          description: Service Unavailable
+      tags:
+      - Oaklands
+  /v1/oaklands/stores:
+    get:
+      description: List the available stores.
+      parameters:
+      - description: ETag to validate cached response.
+        in: header
+        name: If-None-Match
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    items:
+                      type: string
+                    type: array
+                type: object
+          description: OK
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
+          description: Internal Server Error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
+          description: Service Unavailable
+      tags:
+      - Oaklands
+  /v1/oaklands/stores/{store_name}:
+    get:
+      description: Fetch the items inside of a specific store.
+      parameters:
+      - description: ETag to validate cached response.
+        in: header
+        name: If-None-Match
+        schema:
+          type: string
+      - description: The name of the store that you want to fetch.<br>You can fetch
+          a list of stores by requesting [`/v1/oaklands/stores`](/#tag/oaklands/GET/v1/oaklands/stores).
+        in: path
+        name: store_name
+        required: true
+        schema:
+          type: string
+      - description: The value to sort by.
+        in: query
+        name: sort_by
+        schema:
+          default: price
+          enum:
+          - price
+          - name
+          type: string
+      - description: The direction to order by.
+        in: query
+        name: order_by
+        schema:
+          default: desc
+          enum:
+          - desc
+          - asc
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    items:
+                      $ref: '#/components/schemas/Oaklands.V1.StoreItem'
+                    type: array
                 type: object
           description: OK
         "500":

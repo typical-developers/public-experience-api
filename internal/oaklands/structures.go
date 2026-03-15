@@ -29,3 +29,11 @@ type Newsletters struct {
 	ID   string
 	Date time.Time
 }
+
+type StoreItem struct {
+	Name        string
+	DisplayName string
+	Description string
+	Currency    string
+	Price       float64
+}

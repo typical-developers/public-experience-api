@@ -120,3 +120,18 @@ type Sync struct {
 	// Sync information for the stock market.
 	StockMarket SyncdInfoWithReset `json:"stock_market"`
 } //	@name	Oaklands.V1.Sync
+
+type StoreItem struct {
+	// The name (identifier) of the item.
+	Name string `json:"name"`
+	// The display name of the item.
+	DisplayName string `json:"display_name"`
+	// The image of the item.
+	Image *string `json:"image"`
+	// The description of the item.
+	Description string `json:"description"`
+	// The currency that is used to purchase the item.
+	Currency string `json:"currency"`
+	// How much the item costs.
+	Price float64 `json:"price"`
+} //	@name	Oaklands.V1.StoreItem

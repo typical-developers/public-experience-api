@@ -7,41 +7,32 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+// JSONCmdUnwrap will unwrap the value from a redis JSONCmd.
+// This will only work with "$" selectors.
+func JSONCmdUnwrap[T any](cmd *redis.JSONCmd, data *T) error {
+	var wrapped []T
+
+	result, err := cmd.Result()
+	if err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal([]byte(result), &wrapped); err != nil {
+		return err
+	}
+
+	if len(wrapped) == 0 {
+		return redis.Nil
+	}
+
+	*data = wrapped[0]
+	return nil
+}
+
+// JSONUnwrap will get a key-value from Redis and decode the JSON into a parameter value.
+//
+// Deprecated: JSONUnwrap is deprecated. Use JSONCmdUnwrap instead. Calling this method will use JSONCmdUnwrap under the hood.
 func JSONUnwrap[T any](ctx context.Context, r *redis.Client, key string, selector string, data *T) error {
 	cmd := r.JSONGet(ctx, key, selector)
-
-	err := cmd.Err()
-	if err != nil {
-		return err
-	}
-
-	if cmd.Val() == "" {
-		return nil
-	}
-
-	var raw any
-	if err := json.Unmarshal([]byte(cmd.Val()), &raw); err != nil {
-		return err
-	}
-
-	// Redis JSON.GET with a selector like "$" returns an array of matches.
-	if entries, ok := raw.([]any); ok {
-		if len(entries) == 0 || entries[0] == nil {
-			return nil
-		}
-
-		jsonB, err := json.Marshal(entries[0])
-		if err != nil {
-			return err
-		}
-
-		return json.Unmarshal(jsonB, data)
-	}
-
-	jsonB, err := json.Marshal(raw)
-	if err != nil {
-		return err
-	}
-
-	return json.Unmarshal(jsonB, data)
+	return JSONCmdUnwrap(cmd, data)
 }

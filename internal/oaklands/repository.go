@@ -42,6 +42,15 @@ type OaklandsRepository interface {
 	GetNewsletters(ctx context.Context) ([]Newsletters, error)
 	// GetNewsletter will return a specific newsletter version.
 	GetNewsletter(ctx context.Context, id string) (*Newsletter, error)
+
+	// GetItems will fetch the list of items and their details.
+	GetItems(ctx context.Context, items []string) ([]ItemDetails, error)
+	// ListStores will fetch a list of available stores.
+	ListStores(ctx context.Context) ([]string, error)
+	// SetStoreItems will set the list of items in each store.
+	SetStoreItems(ctx context.Context, store string, items []string) error
+	// GetStoreItems will fetch the items in a store and their details.
+	GetStoreItems(ctx context.Context, store string) ([]ItemDetails, error)
 }
 
 type OaklandsRepositoryImpl struct {
@@ -67,6 +76,11 @@ const (
 	redisKeyChangelogByID   = "oaklands:changelog:index:id"
 
 	redisKeyNewsletterByDate = "oaklands:newsletter:index:date"
+
+	redisKeyTranslationsIndex = "oaklands:translations:index"
+
+	redisKeyStoresIndex         = "oaklands:store:index"
+	redisKeyClassicShopNextSync = "oaklands:store:ClassicStore:next_sync"
 )
 
 func redisKeyChangelog(version string) string {
@@ -79,6 +93,18 @@ func redisKeyNewsletter(version string) string {
 
 func redisKeyStockMarket(marketType string) string {
 	return fmt.Sprintf("oaklands:stock_market:%s", strings.ToLower(marketType))
+}
+
+func redisKeyTranslation(language string) string {
+	return fmt.Sprintf("oaklands:translations:language:%s", strings.ToLower(language))
+}
+
+func redisKeyIem(item string) string {
+	return fmt.Sprintf("oaklands:item:%s", item)
+}
+
+func redisKeyStore(store string) string {
+	return fmt.Sprintf("oaklands:store:%s", store)
 }
 
 func NewOaklandsRepository(opts *OaklandsRepositoryOpts) OaklandsRepository {
@@ -120,6 +146,21 @@ func (r *OaklandsRepositoryImpl) stockMarketReset(now time.Time) time.Time {
 	return base.Add(((elapsed / interval) + 1) * interval)
 }
 
+// classicShopReset will get the timestamp for the next time the classic shop resets.
+func (r *OaklandsRepositoryImpl) classicShopReset(now time.Time) time.Time {
+	year, month, day := now.Date()
+
+	interval := 12 * time.Hour
+	base := time.Date(year, month, day, 4, 0, 0, 0, time.UTC)
+
+	if now.Before(base) {
+		base = base.Add(-24 * time.Hour)
+	}
+
+	elapsed := now.Sub(base)
+	return base.Add(((elapsed / interval) + 1) * interval)
+}
+
 func (r *OaklandsRepositoryImpl) UpdateConfig(ctx context.Context, data Config) error {
 	_, err := r.redis.JSONSet(ctx, redisKeyConfig, "$", data).Result()
 	if err != nil {
@@ -141,6 +182,15 @@ func (r *OaklandsRepositoryImpl) GetConfig(ctx context.Context) (*Config, error)
 func (r *OaklandsRepositoryImpl) ContentSync(ctx context.Context, data ContentSyncData) error {
 	now := time.Now().UTC()
 	pipeline := r.redis.Pipeline()
+
+	if len(data.Translations) > 0 {
+		pipeline.Del(ctx, redisKeyTranslationsIndex)
+
+		for language, translations := range data.Translations {
+			pipeline.Append(ctx, redisKeyTranslationsIndex, language)
+			pipeline.JSONSet(ctx, redisKeyTranslation(language), "$", translations)
+		}
+	}
 
 	if len(data.Changelogs) > 0 {
 		pipeline.Del(ctx, redisKeyChangelogByDate, redisKeyChangelogByID)
@@ -182,11 +232,29 @@ func (r *OaklandsRepositoryImpl) ContentSync(ctx context.Context, data ContentSy
 
 	if len(data.StockMarket) > 0 {
 		nextSync := r.stockMarketReset(now)
-		pipeline.Set(ctx, redisKeyStockMarketLastSync, now.Format(time.RFC3339), 0)
-		pipeline.Set(ctx, redisKeyStockMarketNextSync, nextSync.Format(time.RFC3339), 0)
+		pipeline.SAdd(ctx, redisKeyStockMarketLastSync, now.Format(time.RFC3339), 0)
+		pipeline.SAdd(ctx, redisKeyStockMarketNextSync, nextSync.Format(time.RFC3339), 0)
 
 		for marketType, materials := range data.StockMarket {
 			pipeline.JSONSet(ctx, redisKeyStockMarket(marketType), "$", materials)
+		}
+	}
+
+	if len(data.ItemDetails) > 0 {
+		for name, details := range data.ItemDetails {
+			pipeline.JSONSet(ctx, redisKeyIem(name), "$", details)
+		}
+	}
+
+	if len(data.StoreItems) > 0 {
+		if _, ok := data.StoreItems["ClassicStore"]; ok {
+			nextSync := r.classicShopReset(now)
+			pipeline.Set(ctx, redisKeyClassicShopNextSync, nextSync.Format(time.RFC3339), 0)
+		}
+
+		for store, items := range data.StoreItems {
+			pipeline.SAdd(ctx, redisKeyStoresIndex, store)
+			pipeline.JSONSet(ctx, redisKeyStore(store), "$", items)
 		}
 	}
 
@@ -424,4 +492,55 @@ func (r *OaklandsRepositoryImpl) GetNewsletter(ctx context.Context, id string) (
 	}
 
 	return &newsletter, nil
+}
+
+func (r *OaklandsRepositoryImpl) GetItems(ctx context.Context, items []string) ([]ItemDetails, error) {
+	pipeline := r.redis.Pipeline()
+	cmds := make([]*redis.JSONCmd, 0, len(items))
+
+	for _, item := range items {
+		cmds = append(cmds,
+			pipeline.JSONGet(ctx, redisKeyIem(item), "$"),
+		)
+	}
+
+	if _, err := pipeline.Exec(ctx); err != nil {
+		return nil, err
+	}
+
+	var details []ItemDetails
+	for _, cmd := range cmds {
+		var item ItemDetails
+		if err := redisx.JSONCmdUnwrap(cmd, &item); err != nil {
+			return nil, err
+		}
+
+		details = append(details, item)
+	}
+
+	return details, nil
+}
+
+func (r *OaklandsRepositoryImpl) ListStores(ctx context.Context) ([]string, error) {
+	stores, err := r.redis.SMembers(ctx, redisKeyStoresIndex).Result()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return stores, nil
+}
+
+func (r *OaklandsRepositoryImpl) SetStoreItems(ctx context.Context, store string, items []string) error {
+	_, err := r.redis.JSONSet(ctx, redisKeyStore(store), "$", items).Result()
+	return err
+}
+
+func (r *OaklandsRepositoryImpl) GetStoreItems(ctx context.Context, store string) ([]ItemDetails, error) {
+	var items []string
+	if err := r.jsonGet(ctx, redisKeyStore(store), "$", &items); err != nil {
+		return nil, err
+	}
+
+	return r.GetItems(ctx, items)
 }

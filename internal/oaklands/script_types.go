@@ -152,9 +152,49 @@ type StockMarketMaterial struct {
 }
 
 type ItemForm struct {
-	FormType    string         `json:"FormType"`
-	ConvertType string         `json:"ConvertType"`
-	Data        map[string]any `json:"Data"`
+	FormType    string `json:"FormType"`
+	ConvertType string `json:"ConvertType"`
+	Data        any    `json:"Data"`
+}
+
+type ItemFormStoreData struct {
+	Currency string  `json:"Currency"`
+	Price    float64 `json:"Price"`
+}
+
+func (f *ItemForm) UnmarshalJSON(data []byte) error {
+	var raw struct {
+		FormType    string          `json:"FormType"`
+		ConvertType string          `json:"ConvertType"`
+		Data        json.RawMessage `json:"Data"`
+	}
+
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+
+	f.FormType = raw.FormType
+	f.ConvertType = raw.ConvertType
+
+	switch raw.FormType {
+	case "store":
+		var storeData ItemFormStoreData
+		if err := json.Unmarshal(raw.Data, &storeData); err != nil {
+			return err
+		}
+		f.Data = storeData
+	default:
+		var data map[string]any
+		if len(raw.Data) > 0 && string(raw.Data) != "null" {
+			if err := json.Unmarshal(raw.Data, &data); err != nil {
+				return err
+			}
+
+			f.Data = data
+		}
+	}
+
+	return nil
 }
 
 type ItemDetails struct {

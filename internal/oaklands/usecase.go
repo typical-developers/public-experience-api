@@ -17,6 +17,9 @@ type OaklandsUsecase interface {
 
 	GetNewsletters(ctx context.Context) ([]Newsletters, error)
 	GetNewsletter(ctx context.Context, id string) (*Newsletter, error)
+
+	ListStores(ctx context.Context) ([]string, error)
+	GetStoreItems(ctx context.Context, store string) ([]StoreItem, error)
 }
 
 type OaklandsUsecaseImpl struct {
@@ -86,4 +89,40 @@ func (u *OaklandsUsecaseImpl) GetNewsletter(ctx context.Context, id string) (*Ne
 	}
 
 	return u.r.GetNewsletter(ctx, id)
+}
+
+func (u *OaklandsUsecaseImpl) ListStores(ctx context.Context) ([]string, error) {
+	return u.r.ListStores(ctx)
+}
+
+func (u *OaklandsUsecaseImpl) GetStoreItems(ctx context.Context, store string) ([]StoreItem, error) {
+	items, err := u.r.GetStoreItems(ctx, store)
+	if err != nil {
+		return nil, err
+	}
+
+	storeItems := make([]StoreItem, len(items))
+	for i, item := range items {
+		details := StoreItem{
+			Name:        item.Name,
+			DisplayName: item.DisplayName,
+			Description: item.Description,
+		}
+
+		for _, form := range item.Forms {
+			if form.FormType != "store" {
+				continue
+			}
+
+			storeInfo := form.Data.(ItemFormStoreData)
+			details.Currency = storeInfo.Currency
+			details.Price = storeInfo.Price
+
+			break
+		}
+
+		storeItems[i] = details
+	}
+
+	return storeItems, nil
 }
