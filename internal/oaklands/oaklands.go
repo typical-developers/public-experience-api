@@ -3,7 +3,6 @@ package oaklands
 import (
 	"context"
 	_ "embed"
-	"fmt"
 
 	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/internal/scripts"
@@ -124,11 +123,8 @@ func GetClassicShop(ctx context.Context, oc *opencloud.Client) ([]string, error)
 
 	data := []string{}
 	if err := result.DecodeResult(&data); err != nil {
-		println(err.Error())
 		return nil, err
 	}
-
-	fmt.Printf("%+v", data)
 
 	return data, nil
 }

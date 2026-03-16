@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -64,7 +63,6 @@ func (s *Script) poll(ctx context.Context, task *opencloud.LuauExecutionTask) (*
 			return task, ctx.Err()
 		case <-ticker.C:
 			task, resp, err := s.client.LuauExecution.GetLuauExecutionSessionTask(ctx, universeID, placeID, versionId, sessionId, taskId)
-			fmt.Printf("%+v\n", task)
 
 			if err != nil {
 				return task, err
