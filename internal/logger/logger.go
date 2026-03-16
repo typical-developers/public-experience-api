@@ -9,20 +9,22 @@ import (
 )
 
 // createLogger will look for ENVIRONMENT.
-// If the environment is DEVELOPMENT, it will use NewDevelopment.
-// Otherwise, will use NewProduction.
+// If the environment is development, it will use NewDevelopmentConfig.
+// Otherwise, it will use NewProductionConfig.
 func createLogger() *zap.Logger {
-	var z *zap.Logger
+	var config zap.Config
 
 	environment := strings.ToLower(os.Getenv("ENVIRONMENT"))
 
 	if environment == "development" {
-		z = zap.Must(zap.NewDevelopment())
+		config = zap.NewDevelopmentConfig()
 	} else {
-		z = zap.Must(zap.NewProduction())
+		config = zap.NewProductionConfig()
 	}
 
-	return z
+	config.Level = zap.NewAtomicLevelAt(getLogLevel())
+
+	return zap.Must(config.Build())
 }
 
 // getLogLevel will look for LOG_LEVEL in the environment.
@@ -52,11 +54,5 @@ func getLogLevel() zapcore.Level {
 
 func init() {
 	logger := createLogger()
-
-	config := zap.Config{
-		Level: zap.NewAtomicLevelAt(getLogLevel()),
-	}
-
-	zap.Must(config.Build())
 	zap.ReplaceGlobals(logger)
 }
