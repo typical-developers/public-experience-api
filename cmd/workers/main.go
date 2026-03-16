@@ -10,13 +10,34 @@ import (
 	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/cmd/workers/config"
 	"github.com/typical-developers/public-experience-api/cmd/workers/jobs"
+	_ "github.com/typical-developers/public-experience-api/internal/logger"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
+
+	"go.uber.org/zap"
 )
 
+type CustomCronLogger struct {
+	*zap.SugaredLogger
+}
+
+func (l CustomCronLogger) Info(msg string, keysAndValues ...any) {
+	l.Infow(msg, keysAndValues...)
+}
+
+func (l CustomCronLogger) Error(err error, msg string, keysAndValues ...any) {
+	args := append([]any{"error", err}, keysAndValues...)
+	l.Errorw(msg, args...)
+}
+
 func main() {
+	l := CustomCronLogger{zap.L().Sugar()}
+
 	c := cron.New(
+		cron.WithLogger(l),
 		cron.WithLocation(time.UTC),
-		cron.WithLogger(cron.DefaultLogger),
+		cron.WithChain(
+			cron.Recover(l),
+		),
 	)
 
 	redis := redis.NewClient(&redis.Options{

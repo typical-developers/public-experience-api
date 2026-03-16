@@ -21,6 +21,8 @@ require (
 	github.com/klauspost/cpuid/v2 v2.2.10 // indirect
 	github.com/stretchr/testify v1.9.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
+	go.uber.org/multierr v1.11.0 // indirect
+	go.uber.org/zap v1.27.1 // indirect
 )
 
 // replace github.com/typical-developers/goblox => ../goblox

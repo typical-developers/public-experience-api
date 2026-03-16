@@ -9,6 +9,7 @@ import (
 	"github.com/robfig/cron/v3"
 	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
+	"go.uber.org/zap"
 )
 
 type OaklandsCronJobs struct {
@@ -58,6 +59,10 @@ func (c *OaklandsCronJobs) GetConfig() {
 	if err := c.r.UpdateConfig(ctx, *config); err != nil {
 		panic(err)
 	}
+
+	zap.L().Info("successfully updated config",
+		zap.String("job", "GetConfig"),
+	)
 }
 
 // CheckForUpdates will run an API check to see if Oaklands has been updated.
@@ -95,6 +100,10 @@ func (c *OaklandsCronJobs) CheckForUpdates() {
 			panic(err)
 		}
 	}
+
+	zap.L().Info("successfully synced game content",
+		zap.String("job", "CheckForUpdates"),
+	)
 }
 
 // RefreshStockMarkets will fetch and update the stock market values for each relating stock market.
@@ -114,6 +123,10 @@ func (c *OaklandsCronJobs) RefreshStockMarkets() {
 	if err := c.r.SetStockMarket(ctx, *stock); err != nil {
 		panic(err)
 	}
+
+	zap.L().Info("successfully synced stock markets",
+		zap.String("job", "RefreshStockMarkets"),
+	)
 }
 
 // RefreshClassicShop will fetch and update the classic shop.
@@ -131,4 +144,8 @@ func (c *OaklandsCronJobs) RefreshClassicShop() {
 			panic(err)
 		}
 	}
+
+	zap.L().Info("successfully synced classic shop",
+		zap.String("job", "RefreshClassicShop"),
+	)
 }
