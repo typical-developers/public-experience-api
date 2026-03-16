@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/typical-developers/goblox/opencloud"
+	"go.uber.org/zap"
 )
 
 var (
@@ -63,6 +64,11 @@ func (s *Script) poll(ctx context.Context, task *opencloud.LuauExecutionTask) (*
 			return task, ctx.Err()
 		case <-ticker.C:
 			task, resp, err := s.client.LuauExecution.GetLuauExecutionSessionTask(ctx, universeID, placeID, versionId, sessionId, taskId)
+			zap.L().Debug("",
+				zap.String("state", string(task.State)),
+				zap.Any("results", &task.Output),
+				zap.String("binary_output", task.BinaryOutputURI),
+			)
 
 			if err != nil {
 				return task, err
