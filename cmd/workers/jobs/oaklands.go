@@ -29,11 +29,11 @@ func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
 		r:         opts.Repository,
 	}
 
-	if _, err := opts.Cron.AddFunc("@every 5m", c.GetConfig); err != nil {
+	if _, err := opts.Cron.AddFunc("*/5 * * * *", c.GetConfig); err != nil {
 		panic(err)
 	}
 
-	if _, err := opts.Cron.AddFunc("@every 5m", c.CheckForUpdates); err != nil {
+	if _, err := opts.Cron.AddFunc("*/5 * * * *", c.CheckForUpdates); err != nil {
 		panic(err)
 	}
 
