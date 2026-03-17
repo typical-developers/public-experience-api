@@ -14,10 +14,6 @@ type RetryConfig struct {
 }
 
 // WithRetry will retry the job on failure automatically.
-// This should not be used with high retry delay / attempts for the time being.
-//
-// TODO: Add some sort of InFlight check to prevent jobs from re-running while they are actively being retried.
-// For the time being, this implementation is just to make sure the jobs will actually retry on failure.
 func WithRetry(c RetryConfig) cron.JobWrapper {
 	if c.RetryAttempts <= 0 {
 		c.RetryAttempts = 1

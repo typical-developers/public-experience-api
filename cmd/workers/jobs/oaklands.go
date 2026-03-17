@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/redis/go-redis/v9"
-	"github.com/robfig/cron/v3"
 	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
 	"go.uber.org/zap"
@@ -18,7 +17,7 @@ type OaklandsCronJobs struct {
 }
 
 type OaklandsCronJobsOpts struct {
-	Cron            *cron.Cron
+	Handler         *Handler
 	OpencloudClient *opencloud.Client
 	Repository      oaklands.OaklandsRepository
 }
@@ -29,31 +28,49 @@ func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
 		r:         opts.Repository,
 	}
 
-	// if _, err := opts.Cron.AddFunc("@every 10s", c.TestJob); err != nil {
-	// 	println(err.Error())
-	// }
-
-	if _, err := opts.Cron.AddFunc("*/5 * * * *", c.GetConfig); err != nil {
-		panic(err)
+	jobs := []Job{
+		// {
+		// 	Spec: "@every 10s",
+		// 	Config: JobConfig{
+		// 		Enabled: true,
+		// 	},
+		// 	JobFunc: c.TestJob,
+		// },
+		{
+			Spec: "*/5 * * * *",
+			Config: JobConfig{
+				Enabled: true,
+			},
+			JobFunc: c.GetConfig,
+		},
+		{
+			Spec: "*/5 * * * *",
+			Config: JobConfig{
+				Enabled: true,
+			},
+			JobFunc: c.CheckForUpdates,
+		},
+		{
+			Spec: "0 4,10,16,22 * * *",
+			Config: JobConfig{
+				Enabled: true,
+			},
+			JobFunc: c.RefreshStockMarkets,
+		},
+		{
+			Spec: "0 4,16 * * *",
+			Config: JobConfig{
+				Enabled: true,
+			},
+			JobFunc: c.RefreshClassicShop,
+		},
 	}
 
-	if _, err := opts.Cron.AddFunc("*/5 * * * *", c.CheckForUpdates); err != nil {
-		panic(err)
-	}
-
-	if _, err := opts.Cron.AddFunc("0 4,10,16,22 * * *", c.RefreshStockMarkets); err != nil {
-		panic(err)
-	}
-
-	if _, err := opts.Cron.AddFunc("0 4,16 * * *", c.RefreshClassicShop); err != nil {
-		panic(err)
-	}
+	opts.Handler.AddJobs(jobs...)
 }
 
-// func (c *OaklandsCronJobs) TestJob() {
-// 	panicRate := float64(0.75)
-
-// 	time.Sleep(5 * time.Second)
+// func (c *OaklandsCronJobs) TestJob(_ context.Context) {
+// 	panicRate := float64(0.50)
 
 // 	if rand.Float64() < panicRate {
 // 		panic(fmt.Sprintf("test job panicked with rate %.2f", panicRate))
@@ -63,13 +80,13 @@ func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
 // 		zap.String("job", "TestJob"),
 // 		zap.Float64("panic_rate", panicRate),
 // 	)
+
+// 	return nil
 // }
 
 // GetConfig will fetch for update config values from Oaklands.
 // This happenes every 5 minutes.
-func (c *OaklandsCronJobs) GetConfig() {
-	ctx := context.Background()
-
+func (c *OaklandsCronJobs) GetConfig(ctx context.Context) {
 	config, err := oaklands.GetConfig(ctx, c.opencloud)
 	if err != nil {
 		panic(err)
@@ -87,9 +104,7 @@ func (c *OaklandsCronJobs) GetConfig() {
 // CheckForUpdates will run an API check to see if Oaklands has been updated.
 // If it has been, it will fetch for new data and update ephemeral storage.
 // This happenes every 5 minutes.
-func (c *OaklandsCronJobs) CheckForUpdates() {
-	ctx := context.Background()
-
+func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 	lastSync, err := c.r.GetSyncTimes(ctx)
 	if err != nil && !errors.Is(err, redis.Nil) {
 		panic(err)
@@ -127,9 +142,7 @@ func (c *OaklandsCronJobs) CheckForUpdates() {
 
 // RefreshStockMarkets will fetch and update the stock market values for each relating stock market.
 // This happens every 6 hours.
-func (c *OaklandsCronJobs) RefreshStockMarkets() {
-	ctx := context.Background()
-
+func (c *OaklandsCronJobs) RefreshStockMarkets(ctx context.Context) {
 	stock, err := oaklands.GetStockMarket(ctx, c.opencloud)
 	if err != nil {
 		panic(err)
@@ -150,9 +163,7 @@ func (c *OaklandsCronJobs) RefreshStockMarkets() {
 
 // RefreshClassicShop will fetch and update the classic shop.
 // This happens every 12 hours.
-func (c *OaklandsCronJobs) RefreshClassicShop() {
-	ctx := context.Background()
-
+func (c *OaklandsCronJobs) RefreshClassicShop(ctx context.Context) {
 	items, err := oaklands.GetClassicShop(context.Background(), c.opencloud)
 	if err != nil {
 		panic(err)
