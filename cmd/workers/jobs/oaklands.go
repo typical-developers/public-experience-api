@@ -79,7 +79,7 @@ func (c *OaklandsCronJobs) GetConfig() {
 		panic(err)
 	}
 
-	zap.L().Info("successfully updated config",
+	zap.L().Info("success",
 		zap.String("job", "GetConfig"),
 	)
 }
@@ -120,7 +120,7 @@ func (c *OaklandsCronJobs) CheckForUpdates() {
 		}
 	}
 
-	zap.L().Info("successfully synced game content",
+	zap.L().Info("success",
 		zap.String("job", "CheckForUpdates"),
 	)
 }
@@ -143,7 +143,7 @@ func (c *OaklandsCronJobs) RefreshStockMarkets() {
 		panic(err)
 	}
 
-	zap.L().Info("successfully synced stock markets",
+	zap.L().Info("success",
 		zap.String("job", "RefreshStockMarkets"),
 	)
 }
@@ -164,7 +164,7 @@ func (c *OaklandsCronJobs) RefreshClassicShop() {
 		}
 	}
 
-	zap.L().Info("successfully synced classic shop",
+	zap.L().Info("success",
 		zap.String("job", "RefreshClassicShop"),
 	)
 }
