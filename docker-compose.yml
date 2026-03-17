@@ -16,8 +16,6 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
-    env_file:
-      - .env
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
     volumes:
@@ -30,6 +28,7 @@ services:
       dockerfile: deployments/docker/workers/Dockerfile
     networks:
       - default
+    env_file: cmd/workers/.env
     depends_on:
       redis:
         condition: service_healthy
@@ -40,6 +39,7 @@ services:
       dockerfile: deployments/docker/public/Dockerfile
     networks:
       - default
+    env_file: cmd/public/.env
     depends_on:
       redis:
         condition: service_healthy
