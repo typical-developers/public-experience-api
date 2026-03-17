@@ -33,6 +33,10 @@ func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
 		// 	Spec: "@every 10s",
 		// 	Config: JobConfig{
 		// 		Enabled: true,
+		// 		Retry: &RetryConfig{
+		// 			RetryAttempts: 3,
+		// 			RetryDelay:    time.Duration(1 * time.Second),
+		// 		},
 		// 	},
 		// 	JobFunc: c.TestJob,
 		// },
@@ -40,6 +44,10 @@ func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
 			Spec: "*/5 * * * *",
 			Config: JobConfig{
 				Enabled: true,
+				Retry: &RetryConfig{
+					RetryAttempts: 3,
+					RetryDelay:    time.Duration(5 * time.Second),
+				},
 			},
 			JobFunc: c.GetConfig,
 		},
@@ -47,6 +55,10 @@ func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
 			Spec: "*/5 * * * *",
 			Config: JobConfig{
 				Enabled: true,
+				Retry: &RetryConfig{
+					RetryAttempts: 3,
+					RetryDelay:    time.Duration(5 * time.Second),
+				},
 			},
 			JobFunc: c.CheckForUpdates,
 		},
@@ -54,6 +66,10 @@ func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
 			Spec: "0 4,10,16,22 * * *",
 			Config: JobConfig{
 				Enabled: true,
+				Retry: &RetryConfig{
+					RetryAttempts: 3,
+					RetryDelay:    time.Duration(5 * time.Second),
+				},
 			},
 			JobFunc: c.RefreshStockMarkets,
 		},
@@ -61,6 +77,10 @@ func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
 			Spec: "0 4,16 * * *",
 			Config: JobConfig{
 				Enabled: true,
+				Retry: &RetryConfig{
+					RetryAttempts: 3,
+					RetryDelay:    time.Duration(5 * time.Second),
+				},
 			},
 			JobFunc: c.RefreshClassicShop,
 		},
@@ -70,7 +90,7 @@ func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
 }
 
 // func (c *OaklandsCronJobs) TestJob(_ context.Context) {
-// 	panicRate := float64(0.50)
+// 	panicRate := float64(1)
 
 // 	if rand.Float64() < panicRate {
 // 		panic(fmt.Sprintf("test job panicked with rate %.2f", panicRate))
@@ -80,8 +100,6 @@ func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
 // 		zap.String("job", "TestJob"),
 // 		zap.Float64("panic_rate", panicRate),
 // 	)
-
-// 	return nil
 // }
 
 // GetConfig will fetch for update config values from Oaklands.

@@ -38,11 +38,6 @@ func main() {
 		cron.WithChain(
 			cron.SkipIfStillRunning(l),
 			cron.Recover(l),
-			jobs.WithRetry(jobs.RetryConfig{
-				RetryAttempts: 3,
-				RetryDelay:    time.Duration(5 * time.Second),
-				Logger:        l,
-			}),
 		),
 	)
 
@@ -56,8 +51,10 @@ func main() {
 	oaklandsRepository := oaklands.NewOaklandsRepository(&oaklands.OaklandsRepositoryOpts{RedisClient: redis})
 
 	jobHandler := jobs.NewHandler(jobs.HandlerOpts{
-		Cron: c,
+		Cron:   c,
+		Logger: l,
 	})
+
 	jobs.NewOaklandsCronJobs(&jobs.OaklandsCronJobsOpts{
 		Handler:         jobHandler,
 		OpencloudClient: oc,

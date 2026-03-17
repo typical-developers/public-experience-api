@@ -5,13 +5,21 @@ import (
 	"fmt"
 	"reflect"
 	"runtime"
+	"strings"
+	"time"
 
 	"github.com/robfig/cron/v3"
 	"go.uber.org/zap"
 )
 
+type RetryConfig struct {
+	RetryAttempts int
+	RetryDelay    time.Duration
+}
+
 type JobConfig struct {
 	Enabled bool
+	Retry   *RetryConfig
 }
 
 type Job struct {
@@ -27,14 +35,19 @@ func (j *Job) Run(ctx context.Context) func() {
 	}
 }
 
-// name will get the name of the job based on the provided function.
-func (j *Job) name() string {
+// Name will get the name of the job based on the provided function.
+func (j *Job) Name() string {
 	rf := runtime.FuncForPC(reflect.ValueOf(j.JobFunc).Pointer())
 	if rf == nil {
 		return fmt.Sprintf("Job %s", j.Spec)
 	}
 
-	return rf.Name()
+	name := rf.Name()
+	if idx := strings.LastIndex(name, "."); idx >= 0 && idx < len(name)-1 {
+		name = name[idx+1:]
+	}
+
+	return strings.TrimSuffix(name, "-fm")
 }
 
 func NewJob(spec string, cmd func(context.Context), config JobConfig) *Job {
@@ -49,18 +62,21 @@ func NewJob(spec string, cmd func(context.Context), config JobConfig) *Job {
 }
 
 type Handler struct {
-	c   *cron.Cron
 	ctx context.Context
+	c   *cron.Cron
+	l   cron.Logger
 }
 
 type HandlerOpts struct {
-	Cron *cron.Cron
+	Cron   *cron.Cron
+	Logger cron.Logger
 }
 
 func NewHandler(opts HandlerOpts, jobs ...Job) *Handler {
 	h := &Handler{
-		c:   opts.Cron,
 		ctx: context.Background(),
+		c:   opts.Cron,
+		l:   opts.Logger,
 	}
 
 	if len(jobs) > 0 {
@@ -76,17 +92,20 @@ func (h *Handler) AddJobs(jobs ...Job) {
 			continue
 		}
 
-		if _, err := h.c.AddFunc(job.Spec, job.Run(h.ctx)); err != nil {
+		wrappers := []cron.JobWrapper{}
+		if job.Config.Retry != nil {
+			wrappers = append(wrappers, WithRetry(job, h.l))
+		}
+
+		chain := cron.NewChain(wrappers...).
+			Then(cron.FuncJob(job.Run(h.ctx)))
+
+		if _, err := h.c.AddFunc(job.Spec, chain.Run); err != nil {
 			zap.L().Error("registry failed",
-				zap.String("job", job.name()),
+				zap.String("job", job.Name()),
 				zap.String("spec", job.Spec),
 				zap.Error(err),
 			)
 		}
 	}
-}
-
-func (h *Handler) Start() {
-	h.c.Start()
-	runtime.Goexit()
 }
