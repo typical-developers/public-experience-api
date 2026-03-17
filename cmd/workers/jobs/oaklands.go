@@ -29,6 +29,10 @@ func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
 		r:         opts.Repository,
 	}
 
+	// if _, err := opts.Cron.AddFunc("@every 10s", c.TestJob); err != nil {
+	// 	println(err.Error())
+	// }
+
 	if _, err := opts.Cron.AddFunc("*/5 * * * *", c.GetConfig); err != nil {
 		panic(err)
 	}
@@ -45,6 +49,21 @@ func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
 		panic(err)
 	}
 }
+
+// func (c *OaklandsCronJobs) TestJob() {
+// 	panicRate := float64(0.75)
+
+// 	time.Sleep(5 * time.Second)
+
+// 	if rand.Float64() < panicRate {
+// 		panic(fmt.Sprintf("test job panicked with rate %.2f", panicRate))
+// 	}
+
+// 	zap.L().Info("test job completed without panic",
+// 		zap.String("job", "TestJob"),
+// 		zap.Float64("panic_rate", panicRate),
+// 	)
+// }
 
 // GetConfig will fetch for update config values from Oaklands.
 // This happenes every 5 minutes.

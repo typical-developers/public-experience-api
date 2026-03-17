@@ -37,6 +37,11 @@ func main() {
 		cron.WithLocation(time.UTC),
 		cron.WithChain(
 			cron.Recover(l),
+			jobs.WithRetry(jobs.RetryConfig{
+				RetryAttempts: 3,
+				RetryDelay:    time.Duration(5 * time.Second),
+				Logger:        l,
+			}),
 		),
 	)
 
