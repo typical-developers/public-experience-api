@@ -20,7 +20,7 @@ type RetryConfig struct {
 // For the time being, this implementation is just to make sure the jobs will actually retry on failure.
 func WithRetry(c RetryConfig) cron.JobWrapper {
 	job := func(j cron.Job) {
-		for attempt := range c.RetryAttempts {
+		for attempt := 1; attempt <= c.RetryAttempts; attempt++ {
 			failed := false
 
 			var panicResult any
@@ -39,7 +39,7 @@ func WithRetry(c RetryConfig) cron.JobWrapper {
 				return
 			}
 
-			if attempt >= c.RetryAttempts {
+			if attempt == c.RetryAttempts {
 				panic(panicResult)
 			}
 
