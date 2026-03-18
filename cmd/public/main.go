@@ -1,10 +1,12 @@
 package main
 
 import (
+	"embed"
 	"fmt"
+	"io/fs"
 	"net/http"
-	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -24,15 +26,33 @@ var (
 	HttpErrorNotFound = apperror.NewAppError("HttpErrorNotFound", "This page could not be found.", http.StatusNotFound, nil)
 )
 
+//go:embed all:static
+var staticFiles embed.FS
+
 // serveStatic will serve static files on the root for unmatched routes.
 func serveStatic() http.HandlerFunc {
 	root := "static"
-	fs := http.FileServer(http.Dir(root))
+	staticRoot, err := fs.Sub(staticFiles, root)
+	if err != nil {
+		panic(err)
+	}
+
+	fileServer := http.FileServer(http.FS(staticRoot))
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		path := filepath.Join(root, r.URL.Path)
-		info, err := os.Stat(path)
-		if os.IsNotExist(err) {
+		path := filepath.Clean(r.URL.Path)
+		path = filepath.ToSlash(path)
+		if path == "." || path == "/" {
+			_ = httpx.WriteJSON(w, models.ErrorResponse{
+				Type:    HttpErrorNotFound.Type,
+				Message: HttpErrorNotFound.Message,
+			}, HttpErrorNotFound.Status)
+			return
+		}
+		path = strings.TrimPrefix(path, "/")
+
+		info, err := fs.Stat(staticRoot, path)
+		if err != nil {
 			_ = httpx.WriteJSON(w, models.ErrorResponse{
 				Type:    HttpErrorNotFound.Type,
 				Message: HttpErrorNotFound.Message,
@@ -41,7 +61,7 @@ func serveStatic() http.HandlerFunc {
 		}
 
 		if info.IsDir() {
-			if _, err := os.Stat(filepath.Join(path, "index.html")); os.IsNotExist(err) {
+			if _, err := fs.Stat(staticRoot, filepath.ToSlash(filepath.Join(path, "index.html"))); err != nil {
 				_ = httpx.WriteJSON(w, models.ErrorResponse{
 					Type:    HttpErrorNotFound.Type,
 					Message: HttpErrorNotFound.Message,
@@ -50,7 +70,7 @@ func serveStatic() http.HandlerFunc {
 			}
 		}
 
-		http.StripPrefix("/", fs).ServeHTTP(w, r)
+		http.StripPrefix("/", fileServer).ServeHTTP(w, r)
 	}
 }
 
