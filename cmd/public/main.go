@@ -23,12 +23,12 @@ var (
 	HttpErrorNotFound = apperror.NewAppError("HttpErrorNotFound", "This page could not be found.", http.StatusNotFound, nil)
 )
 
-// serveStatic will serve static files on the root.
-func serveStatic(r chi.Router) {
+// serveStatic will serve static files on the root for unmatched routes.
+func serveStatic() http.HandlerFunc {
 	root := "static"
 	fs := http.FileServer(http.Dir(root))
 
-	r.Handle("/*", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		path := filepath.Join(root, r.URL.Path)
 		info, err := os.Stat(path)
 		if os.IsNotExist(err) {
@@ -50,7 +50,7 @@ func serveStatic(r chi.Router) {
 		}
 
 		http.StripPrefix("/", fs).ServeHTTP(w, r)
-	}))
+	}
 }
 
 //	@Title				Typical Developers - Public Experience API
@@ -102,7 +102,7 @@ func main() {
 		Usecase:         oaklandsUsecase,
 	})
 
-	serveStatic(r)
+	r.NotFound(serveStatic())
 
 	port := fmt.Sprintf(":%s", config.C.Port)
 	panic(http.ListenAndServe(port, r))
