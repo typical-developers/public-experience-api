@@ -1,12 +1,8 @@
 package main
 
 import (
-	"embed"
 	"fmt"
-	"io/fs"
 	"net/http"
-	"path/filepath"
-	"strings"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -14,65 +10,16 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/cmd/public/config"
-	models "github.com/typical-developers/public-experience-api/cmd/public/handlers"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/health"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/oaklands_v1"
+	"github.com/typical-developers/public-experience-api/cmd/public/handlers/static"
 	"github.com/typical-developers/public-experience-api/internal/apperror"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
-	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
 
 var (
 	HttpErrorNotFound = apperror.NewAppError("HttpErrorNotFound", "This page could not be found.", http.StatusNotFound, nil)
 )
-
-//go:embed all:static
-var staticFiles embed.FS
-
-// serveStatic will serve static files on the root for unmatched routes.
-func serveStatic() http.HandlerFunc {
-	root := "static"
-	staticRoot, err := fs.Sub(staticFiles, root)
-	if err != nil {
-		panic(err)
-	}
-
-	fileServer := http.FileServer(http.FS(staticRoot))
-
-	return func(w http.ResponseWriter, r *http.Request) {
-		path := filepath.Clean(r.URL.Path)
-		path = filepath.ToSlash(path)
-		if path == "." || path == "/" {
-			_ = httpx.WriteJSON(w, models.ErrorResponse{
-				Type:    HttpErrorNotFound.Type,
-				Message: HttpErrorNotFound.Message,
-			}, HttpErrorNotFound.Status)
-			return
-		}
-		path = strings.TrimPrefix(path, "/")
-
-		info, err := fs.Stat(staticRoot, path)
-		if err != nil {
-			_ = httpx.WriteJSON(w, models.ErrorResponse{
-				Type:    HttpErrorNotFound.Type,
-				Message: HttpErrorNotFound.Message,
-			}, HttpErrorNotFound.Status)
-			return
-		}
-
-		if info.IsDir() {
-			if _, err := fs.Stat(staticRoot, filepath.ToSlash(filepath.Join(path, "index.html"))); err != nil {
-				_ = httpx.WriteJSON(w, models.ErrorResponse{
-					Type:    HttpErrorNotFound.Type,
-					Message: HttpErrorNotFound.Message,
-				}, HttpErrorNotFound.Status)
-				return
-			}
-		}
-
-		http.StripPrefix("/", fileServer).ServeHTTP(w, r)
-	}
-}
 
 //	@Title				Typical Developers - Public Experience API
 //
@@ -124,7 +71,7 @@ func main() {
 		Usecase:         oaklandsUsecase,
 	})
 
-	r.NotFound(serveStatic())
+	r.NotFound(static.ServeStatic())
 
 	port := fmt.Sprintf(":%s", config.C.Port)
 	panic(http.ListenAndServe(port, r))
