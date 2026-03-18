@@ -13,6 +13,7 @@ import (
 	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/cmd/public/config"
 	models "github.com/typical-developers/public-experience-api/cmd/public/handlers"
+	"github.com/typical-developers/public-experience-api/cmd/public/handlers/health"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/oaklands_v1"
 	"github.com/typical-developers/public-experience-api/internal/apperror"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
@@ -97,6 +98,7 @@ func main() {
 	oaklandsRepository := oaklands.NewOaklandsRepository(&oaklands.OaklandsRepositoryOpts{RedisClient: redis})
 	oaklandsUsecase := oaklands.NewOaklandsUsecase(oaklandsRepository)
 
+	health.NewHealth(r)
 	oaklands_v1.NewOaklandsV1(r, &oaklands_v1.OaklandsV1Opts{
 		OpencloudClient: oc,
 		Usecase:         oaklandsUsecase,
