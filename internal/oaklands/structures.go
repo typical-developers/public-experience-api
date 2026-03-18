@@ -35,6 +35,7 @@ type StoreItem struct {
 	Name        string
 	DisplayName string
 	Description string
+	Type        string
 	Currency    string
 	Price       float64
 }

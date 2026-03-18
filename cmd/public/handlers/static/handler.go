@@ -29,6 +29,7 @@ func init() {
 	fsHandler = http.FileServer(http.FS(root))
 }
 
+// ServeStatic will return an http handler for serving static files.
 func ServeStatic() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		path := filepath.Clean(r.URL.Path)
@@ -65,4 +66,35 @@ func ServeStatic() http.HandlerFunc {
 
 		http.StripPrefix("/", fsHandler).ServeHTTP(w, r)
 	}
+}
+
+// OaklandsAssetExists returns the asset path when a matching file exists.
+func OaklandsAssetExists(assetType, assetName string) *string {
+	assetDir := filepath.ToSlash(filepath.Join(
+		"assets",
+		strings.Trim(assetType, "/"),
+	))
+
+	files, err := fs.ReadDir(root, assetDir)
+	if err != nil {
+		return nil
+	}
+
+	lookupName := strings.Trim(assetName, "/")
+	for _, file := range files {
+		if file.IsDir() {
+			continue
+		}
+
+		filename := file.Name()
+		nameWithoutExt := strings.TrimSuffix(filename, filepath.Ext(filename))
+		if nameWithoutExt != lookupName {
+			continue
+		}
+
+		path := "/" + filepath.ToSlash(filepath.Join(assetDir, filename))
+		return &path
+	}
+
+	return nil
 }

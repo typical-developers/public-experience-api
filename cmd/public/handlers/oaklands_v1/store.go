@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/redis/go-redis/v9"
 	models "github.com/typical-developers/public-experience-api/cmd/public/handlers"
+	"github.com/typical-developers/public-experience-api/cmd/public/handlers/static"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
@@ -75,11 +76,7 @@ func (o *OaklandsV1Routes) GetStore(w http.ResponseWriter, r *http.Request) {
 		response.Data[i] = StoreItem{
 			Name:        item.Name,
 			DisplayName: item.DisplayName,
-
-			// TODO: Images will be added in the future.
-			// Need to figure out the best way to streamline creating them.
-			Image: nil,
-
+			Image:       static.OaklandsAssetExists(item.Type, item.Name),
 			Description: item.Description,
 			Currency:    item.Currency,
 			Price:       item.Price,
