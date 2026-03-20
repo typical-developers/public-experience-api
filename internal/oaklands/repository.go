@@ -54,6 +54,9 @@ type OaklandsRepository interface {
 	SetClassicStoreItems(ctx context.Context, items []string) error
 	// GetStoreItems will fetch the items in a store and their details.
 	GetStoreItems(ctx context.Context, store string) ([]ItemDetails, error)
+
+	// GetTranslations will fetch the translations for the specified locale.
+	GetTranslations(ctx context.Context, locale string) (*map[string]string, error)
 }
 
 type OaklandsRepositoryImpl struct {
@@ -582,4 +585,13 @@ func (r *OaklandsRepositoryImpl) GetStoreItems(ctx context.Context, store string
 	}
 
 	return r.GetItems(ctx, items)
+}
+
+func (r *OaklandsRepositoryImpl) GetTranslations(ctx context.Context, locale string) (*map[string]string, error) {
+	var translations map[string]string
+	if err := r.jsonGet(ctx, redisKeyTranslation(locale), "$", &translations); err != nil {
+		return nil, err
+	}
+
+	return &translations, nil
 }

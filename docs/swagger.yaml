@@ -722,6 +722,48 @@ paths:
           description: Service Unavailable
       tags:
       - Oaklands
+  /v1/oaklands/translations:
+    get:
+      description: List the available translations.
+      parameters:
+      - description: ETag to validate cached response.
+        in: header
+        name: If-None-Match
+        schema:
+          type: string
+      - description: Return a subset of keys that have a prefix (i.e. using `ItemName`
+          would return values for the keys `ItemName` and `ItemName_description`).<br>It
+          is suggested to only return the keys you are needing.
+        in: query
+        name: prefix
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    additionalProperties:
+                      type: string
+                    type: object
+                type: object
+          description: OK
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
+          description: Internal Server Error
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/API.ErrorResponse'
+          description: Service Unavailable
+      tags:
+      - Oaklands
 tags:
 - description: All of the available Oaklands endpoints.
   name: Oaklands

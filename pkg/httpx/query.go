@@ -14,3 +14,15 @@ func QueryGet(r *http.Request, key string, fallback ...string) string {
 
 	return ""
 }
+
+func QueryGetAll(r *http.Request, key string, fallback ...string) []string {
+	if v := r.URL.Query()[key]; len(v) > 0 {
+		return v
+	}
+
+	if len(fallback) > 0 {
+		return fallback
+	}
+
+	return nil
+}

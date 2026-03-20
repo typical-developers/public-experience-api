@@ -48,5 +48,7 @@ func NewOaklandsV1(r *chi.Mux, opts *OaklandsV1Opts) {
 			r.Get("/", o.ListStores)
 			r.Get("/{store_name}", o.GetStore)
 		})
+
+		r.Get("/translations", o.GetTranslations)
 	})
 }

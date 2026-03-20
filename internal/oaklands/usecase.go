@@ -20,6 +20,8 @@ type OaklandsUsecase interface {
 
 	ListStores(ctx context.Context) ([]string, error)
 	GetStoreItems(ctx context.Context, store string) ([]StoreItem, error)
+
+	GetTranslations(ctx context.Context, locale string) (*map[string]string, error)
 }
 
 type OaklandsUsecaseImpl struct {
@@ -126,4 +128,8 @@ func (u *OaklandsUsecaseImpl) GetStoreItems(ctx context.Context, store string) (
 	}
 
 	return storeItems, nil
+}
+
+func (u *OaklandsUsecaseImpl) GetTranslations(ctx context.Context, locale string) (*map[string]string, error) {
+	return u.r.GetTranslations(ctx, locale)
 }
