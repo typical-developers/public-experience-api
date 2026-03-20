@@ -35,12 +35,12 @@ func NewOaklandsV1(r *chi.Mux, opts *OaklandsV1Opts) {
 		})
 
 		r.Route("/changelogs", func(r chi.Router) {
-			r.Get("/", o.GetChangelog)
-			r.Get("/{version}", o.GetChangelogVersion)
+			r.Get("/", o.ListChangelogs)
+			r.Get("/{version}", o.GetChangelog)
 		})
 
 		r.Route("/newsletters", func(r chi.Router) {
-			r.Get("/", o.GetNewsletters)
+			r.Get("/", o.ListNewsletters)
 			r.Get("/{id}", o.GetNewsletter)
 		})
 

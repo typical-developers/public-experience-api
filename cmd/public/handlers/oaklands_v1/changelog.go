@@ -26,7 +26,7 @@ import (
 //	@Failure		503				{object}	models.ErrorResponse
 //
 // swagger:ignore
-func (o *OaklandsV1Routes) GetChangelogVersion(w http.ResponseWriter, r *http.Request) {
+func (o *OaklandsV1Routes) GetChangelog(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	version := chi.URLParam(r, "version")
@@ -97,7 +97,7 @@ func (o *OaklandsV1Routes) sortChangelogs(values []oaklands.Changelogs, orderBy 
 //	@Failure		503				{object}	models.ErrorResponse
 //
 // swagger:ignore
-func (o *OaklandsV1Routes) GetChangelog(w http.ResponseWriter, r *http.Request) {
+func (o *OaklandsV1Routes) ListChangelogs(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	orderBy := httpx.QueryGet(r, "order_by", "desc")

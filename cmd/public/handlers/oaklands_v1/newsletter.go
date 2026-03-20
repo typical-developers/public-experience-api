@@ -40,7 +40,7 @@ func (o *OaklandsV1Routes) sortNewsletters(values []oaklands.Newsletters, orderB
 //	@Failure		503				{object}	models.ErrorResponse
 //
 // swagger:ignore
-func (o *OaklandsV1Routes) GetNewsletters(w http.ResponseWriter, r *http.Request) {
+func (o *OaklandsV1Routes) ListNewsletters(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	orderBy := httpx.QueryGet(r, "order_by", "desc")
