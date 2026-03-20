@@ -9,6 +9,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/redis/go-redis/v9 v9.18.0
 	github.com/robfig/cron/v3 v3.0.1
+	github.com/typical-developers/discord-webhooks-go/v2 v2.0.2
 	github.com/typical-developers/goblox v0.0.0-20260312234757-5a027d43801f
 	github.com/urfave/cli/v3 v3.7.0
 	go.uber.org/zap v1.27.1

@@ -92,7 +92,9 @@ func (h *Handler) AddJobs(jobs ...Job) {
 			continue
 		}
 
-		wrappers := []cron.JobWrapper{}
+		wrappers := []cron.JobWrapper{
+			WebhookLogPanic(job),
+		}
 		if job.Config.Retry != nil {
 			wrappers = append(wrappers, WithRetry(job, h.l))
 		}

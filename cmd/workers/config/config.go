@@ -11,6 +11,9 @@ type Config struct {
 	// The Opencloud API key necessary for accessing Roblox's Opencloud endpoints.
 	OpencloudKey string `env:"OPENCLOUD_KEY,required"`
 
+	// The webhook used for logging errors and panics.
+	LogWebhookURL *string `env:"LOG_WEBHOOK_URL"`
+
 	// The config for the Redis instance used for ephemeral storage.
 	Redis struct {
 		Host     string `env:"HOST" envDefault:"localhost"`
