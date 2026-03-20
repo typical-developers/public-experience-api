@@ -191,7 +191,7 @@ func (r *OaklandsRepositoryImpl) ContentSync(ctx context.Context, data ContentSy
 		pipeline.Del(ctx, redisKeyTranslationsIndex)
 
 		for language, translations := range data.Translations {
-			pipeline.Append(ctx, redisKeyTranslationsIndex, language)
+			pipeline.SAdd(ctx, redisKeyTranslationsIndex, language)
 			pipeline.JSONSet(ctx, redisKeyTranslation(language), "$", translations)
 		}
 	}
