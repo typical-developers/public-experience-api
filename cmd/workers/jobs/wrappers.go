@@ -81,7 +81,7 @@ func WithRetry(job Job, l cron.Logger) cron.JobWrapper {
 type logPanicPayload struct {
 	Job   string `json:"job"`
 	Error string `json:"error"`
-	Time  string `json:"Time"`
+	Time  string `json:"time"`
 }
 
 func logPanic(job Job, panicValue any) {
