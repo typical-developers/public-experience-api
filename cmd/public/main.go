@@ -35,7 +35,7 @@ var (
 //	@Description		---
 //	@Description		# Ratelimits
 //	@Description		At the moment, the API does not have any rate limits. Please use the API responsibly by following good practices.
-//	@Description		Abuse detection will result in a indefinite ban from accessing the API. Please reach out in our [Discord Server](https.discord.gg/typical)
+//	@Description		Abuse detection will result in a indefinite ban from accessing the API. Please reach out in our [Discord Server](https://discord.gg/typical)
 //	@Description		if you have ran into this issue.
 //
 //	@Tag.Name			Oaklands

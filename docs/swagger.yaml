@@ -249,7 +249,7 @@ info:
     ---
     # Ratelimits
     At the moment, the API does not have any rate limits. Please use the API responsibly by following good practices.
-    Abuse detection will result in a indefinite ban from accessing the API. Please reach out in our [Discord Server](https.discord.gg/typical)
+    Abuse detection will result in a indefinite ban from accessing the API. Please reach out in our [Discord Server](https://discord.gg/typical)
     if you have ran into this issue.
   title: Typical Developers - Public Experience API
   version: ""
