@@ -1,6 +1,7 @@
 package config
 
 import (
+	"strings"
 	"sync"
 
 	"github.com/caarlos0/env/v10"
@@ -8,6 +9,12 @@ import (
 )
 
 type Config struct {
+	// The environment that the server is currently running in.
+	Environment string `env:"ENVIRONMENT" envDefault:"production"`
+	// The log level that the logger should run at. If no value is provided,
+	// it will adjust between `info` and `debug` depending on the environment set.
+	LogLevel string `env:"LOG_LEVEL"`
+
 	// The Opencloud API key necessary for accessing Roblox's Opencloud endpoints.
 	OpencloudKey string `env:"OPENCLOUD_KEY,required"`
 
@@ -31,6 +38,14 @@ var (
 func setupConfig() {
 	if err := env.Parse(&C); err != nil {
 		panic(err)
+	}
+
+	if strings.TrimSpace(C.LogLevel) == "" {
+		if strings.EqualFold(C.Environment, "development") {
+			C.LogLevel = "debug"
+		} else {
+			C.LogLevel = "info"
+		}
 	}
 }
 
