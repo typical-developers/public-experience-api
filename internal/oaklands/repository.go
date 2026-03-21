@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -36,7 +37,7 @@ type OaklandsRepository interface {
 	// GetChangelogs will return all of the available changelogs.
 	GetChangelogs(ctx context.Context) ([]Changelogs, error)
 	// GetChangelogVersion will return a specific changelog's version.
-	GetChangelogVersion(ctx context.Context, version string) (*ChangelogVersion, error)
+	GetChangelogVersion(ctx context.Context, version string, useID bool) (*ChangelogVersion, error)
 
 	// GetNewsleters will return all of the available newsletters.
 	GetNewsletters(ctx context.Context) ([]Newsletters, error)
@@ -445,8 +446,26 @@ func (r *OaklandsRepositoryImpl) GetChangelogs(ctx context.Context) ([]Changelog
 	return changelogs, nil
 }
 
-func (r *OaklandsRepositoryImpl) GetChangelogVersion(ctx context.Context, version string) (*ChangelogVersion, error) {
-	if strings.EqualFold(version, "latest") {
+func (r *OaklandsRepositoryImpl) GetChangelogVersion(ctx context.Context, version string, useID bool) (*ChangelogVersion, error) {
+	if useID {
+		id, err := strconv.ParseInt(version, 10, 32)
+		if err != nil {
+			return nil, redis.Nil
+		}
+
+		versions, err := r.redis.ZRangeByScore(ctx, redisKeyChangelogByID, &redis.ZRangeBy{
+			Min: fmt.Sprintf("%d", id),
+			Max: fmt.Sprintf("%d", id),
+		}).Result()
+		if err != nil {
+			return nil, err
+		}
+		if len(versions) == 0 {
+			return nil, redis.Nil
+		}
+
+		version = versions[0]
+	} else if strings.EqualFold(version, "latest") {
 		versions, err := r.redis.ZRangeArgs(ctx, redis.ZRangeArgs{
 			Key:   redisKeyChangelogByID,
 			Start: 0,

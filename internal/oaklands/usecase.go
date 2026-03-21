@@ -13,7 +13,7 @@ type OaklandsUsecase interface {
 	GetStockMarketOres(ctx context.Context) (*StockMarket, error)
 
 	GetChangelogs(ctx context.Context) ([]Changelogs, error)
-	GetChangelogVersion(ctx context.Context, version string) (*ChangelogVersion, error)
+	GetChangelogVersion(ctx context.Context, version string, useID bool) (*ChangelogVersion, error)
 
 	GetNewsletters(ctx context.Context) ([]Newsletters, error)
 	GetNewsletter(ctx context.Context, id string) (*Newsletter, error)
@@ -52,8 +52,8 @@ func (u *OaklandsUsecaseImpl) GetChangelogs(ctx context.Context) ([]Changelogs, 
 	return u.r.GetChangelogs(ctx)
 }
 
-func (u *OaklandsUsecaseImpl) GetChangelogVersion(ctx context.Context, version string) (*ChangelogVersion, error) {
-	return u.r.GetChangelogVersion(ctx, version)
+func (u *OaklandsUsecaseImpl) GetChangelogVersion(ctx context.Context, version string, useID bool) (*ChangelogVersion, error) {
+	return u.r.GetChangelogVersion(ctx, version, useID)
 }
 
 func (u *OaklandsUsecaseImpl) GetNewsletters(ctx context.Context) ([]Newsletters, error) {

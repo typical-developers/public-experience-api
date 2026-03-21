@@ -29,8 +29,9 @@ import (
 func (o *OaklandsV1Routes) GetChangelog(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
+	_, useId := r.URL.Query()["useId"]
 	version := chi.URLParam(r, "version")
-	changelog, err := o.uc.GetChangelogVersion(ctx, version)
+	changelog, err := o.uc.GetChangelogVersion(ctx, version, useId)
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
 			_ = httpx.WriteJSON(w, models.ErrorResponse{
