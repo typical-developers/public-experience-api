@@ -447,7 +447,23 @@ func (r *OaklandsRepositoryImpl) GetChangelogs(ctx context.Context) ([]Changelog
 }
 
 func (r *OaklandsRepositoryImpl) GetChangelogVersion(ctx context.Context, version string, useID bool) (*ChangelogVersion, error) {
-	if useID {
+	if strings.EqualFold(version, "latest") {
+		versions, err := r.redis.ZRangeArgs(ctx, redis.ZRangeArgs{
+			Key:   redisKeyChangelogByID,
+			Start: 0,
+			Stop:  0,
+			Rev:   true,
+		}).Result()
+
+		if err != nil {
+			return nil, err
+		}
+		if len(versions) == 0 {
+			return nil, redis.Nil
+		}
+
+		version = versions[0]
+	} else if useID {
 		id, err := strconv.ParseInt(version, 10, 32)
 		if err != nil {
 			return nil, redis.Nil
@@ -457,22 +473,6 @@ func (r *OaklandsRepositoryImpl) GetChangelogVersion(ctx context.Context, versio
 			Min: fmt.Sprintf("%d", id),
 			Max: fmt.Sprintf("%d", id),
 		}).Result()
-		if err != nil {
-			return nil, err
-		}
-		if len(versions) == 0 {
-			return nil, redis.Nil
-		}
-
-		version = versions[0]
-	} else if strings.EqualFold(version, "latest") {
-		versions, err := r.redis.ZRangeArgs(ctx, redis.ZRangeArgs{
-			Key:   redisKeyChangelogByID,
-			Start: 0,
-			Stop:  0,
-			Rev:   true,
-		}).Result()
-
 		if err != nil {
 			return nil, err
 		}
