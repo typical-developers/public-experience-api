@@ -10,7 +10,7 @@ import (
 	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/cmd/workers/config"
 	"github.com/typical-developers/public-experience-api/cmd/workers/jobs"
-	_ "github.com/typical-developers/public-experience-api/internal/logger"
+	"github.com/typical-developers/public-experience-api/internal/logger"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
 
 	"go.uber.org/zap"
@@ -30,6 +30,11 @@ func (l CustomCronLogger) Error(err error, msg string, keysAndValues ...any) {
 }
 
 func main() {
+	logger.Init(logger.Options{
+		Environment: config.C.Environment,
+		LogLevel:    config.C.LogLevel,
+	})
+
 	l := CustomCronLogger{zap.L().Sugar()}
 
 	c := cron.New(

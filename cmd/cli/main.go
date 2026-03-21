@@ -9,12 +9,14 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/cmd/cli/config"
-	_ "github.com/typical-developers/public-experience-api/internal/logger"
+	"github.com/typical-developers/public-experience-api/internal/logger"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
 	"github.com/urfave/cli/v3"
 )
 
 func main() {
+	logger.Init(logger.Options{})
+
 	oc := opencloud.NewClient().WithAPIKey(config.C.OpencloudKey)
 	redis := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%d", config.C.Redis.Host, config.C.Redis.Port),

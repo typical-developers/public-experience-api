@@ -1,20 +1,27 @@
 package logger
 
 import (
-	"os"
 	"strings"
+	"sync"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
-// createLogger will look for ENVIRONMENT.
+type Options struct {
+	Environment string
+	LogLevel    string
+}
+
+var once sync.Once
+
+// Build creates a logger from the provided options.
 // If the environment is development, it will use NewDevelopmentConfig.
 // Otherwise, it will use NewProductionConfig.
-func createLogger() *zap.Logger {
+func Build(opts Options) (*zap.Logger, error) {
 	var config zap.Config
 
-	environment := strings.ToLower(os.Getenv("ENVIRONMENT"))
+	environment := strings.ToLower(strings.TrimSpace(opts.Environment))
 
 	if environment == "development" {
 		config = zap.NewDevelopmentConfig()
@@ -22,15 +29,31 @@ func createLogger() *zap.Logger {
 		config = zap.NewProductionConfig()
 	}
 
-	config.Level = zap.NewAtomicLevelAt(getLogLevel())
+	config.Level = zap.NewAtomicLevelAt(parseLogLevel(opts.LogLevel))
 
-	return zap.Must(config.Build())
+	return config.Build()
 }
 
-// getLogLevel will look for LOG_LEVEL in the environment.
-// defaults to Info.
-func getLogLevel() zapcore.Level {
-	level := strings.ToLower(os.Getenv("LOG_LEVEL"))
+// Init builds and installs the global zap logger once.
+func Init(opts Options) *zap.Logger {
+	var logger *zap.Logger
+
+	once.Do(func() {
+		logger = zap.Must(Build(opts))
+		zap.ReplaceGlobals(logger)
+	})
+
+	if logger == nil {
+		logger = zap.L()
+	}
+
+	return logger
+}
+
+// parseLogLevel converts a string log level into zap's level type.
+// Defaults to Info.
+func parseLogLevel(level string) zapcore.Level {
+	level = strings.ToLower(strings.TrimSpace(level))
 
 	switch level {
 	case "debug":
@@ -50,9 +73,4 @@ func getLogLevel() zapcore.Level {
 	default:
 		return zap.InfoLevel
 	}
-}
-
-func init() {
-	logger := createLogger()
-	zap.ReplaceGlobals(logger)
 }

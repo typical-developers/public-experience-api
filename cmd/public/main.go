@@ -14,6 +14,7 @@ import (
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/oaklands_v1"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/static"
 	"github.com/typical-developers/public-experience-api/internal/apperror"
+	"github.com/typical-developers/public-experience-api/internal/logger"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
 )
 
@@ -43,6 +44,11 @@ var (
 //
 // swagger:ignore
 func main() {
+	logger.Init(logger.Options{
+		Environment: config.C.Environment,
+		LogLevel:    config.C.LogLevel,
+	})
+
 	oc := opencloud.NewClient().WithAPIKey(config.C.OpencloudKey)
 	redis := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%d", config.C.Redis.Host, config.C.Redis.Port),
