@@ -20,6 +20,7 @@ import (
 //
 //	@Param			If-None-Match	header		string	false	"ETag to validate cached response."
 //	@Param			version			path		string	true	"The version of changelog. For quick access to the latest changelog, use 'latest' as the value." default(latest)
+//	@Param			useId			query		string	false	"Use the changelog's id instead. You do not have to provide a value to this, you can just add it as `?useId`."
 //
 //	@Success		200				{object}	object{data=Changelog}
 //	@Failure		500				{object}	models.ErrorResponse
