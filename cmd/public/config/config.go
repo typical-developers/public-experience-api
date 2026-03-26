@@ -10,6 +10,7 @@ import (
 
 type Config struct {
 	// The environment that the server is currently running in.
+	// Possible values are "production" and "development"
 	Environment string `env:"ENVIRONMENT" envDefault:"production"`
 	// The log level that the logger should run at. If no value is provided,
 	// it will adjust between `info` and `debug` depending on the environment set.
@@ -20,6 +21,9 @@ type Config struct {
 
 	// The Opencloud API key necessary for accessing Roblox's Opencloud endpoints.
 	OpencloudKey string `env:"OPENCLOUD_KEY,required"`
+
+	// A place version override to run when executing Luau scripts in Oaklands.
+	OaklandsPlaceVerisonOverride *string `env:"OAKLANDS_PLACE_VERSION_OVERRIDE"`
 
 	// The config for the Redis instance used for ephemeral storage.
 	Redis struct {

@@ -6,6 +6,7 @@ import (
 
 	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/internal/scripts"
+	"go.uber.org/zap"
 )
 
 var (
@@ -22,6 +23,30 @@ var (
 	//go:embed scripts/ClassicShop.luau
 	ClassicShopScript string
 )
+
+var (
+	PlaceVersionOverride *string
+	LuauExecutionPlaceID = ProductionPlaceID
+)
+
+// SetProduction will change the `LuauExecutionPlaceID` to `ProductionPlaceID`.
+// By default, ProductionPlaceID will be used for Luau scripts.
+// Calling this method will set it to Production.
+func SetProduction() {
+	LuauExecutionPlaceID = ProductionPlaceID
+}
+
+// SetStaging will change the `LuauExecutionPlaceID` to `StagingPlaceID`.
+// By default, ProductionPlaceID will be used for Luau scripts.
+// Calling this method will set it to Staging.
+func SetStaging() {
+	LuauExecutionPlaceID = StagingPlaceID
+}
+
+// SetPlaceVersionOverride will set a place version to use instead of defaulting to the most recent version.
+func SetPlaceVersionOverride(version string) {
+	PlaceVersionOverride = &version
+}
 
 type Config struct {
 	// The latest newsletter override.
@@ -67,11 +92,21 @@ func GetConfig(ctx context.Context, oc *opencloud.Client) (*Config, error) {
 func GetContentSync(ctx context.Context, oc *opencloud.Client) (*ContentSyncData, error) {
 	script := scripts.NewScript(oc, ContentSyncScript)
 
-	result, err := script.Execute(ctx, scripts.ExecuteOptions{
+	opts := scripts.ExecuteOptions{
 		UniverseID:         UniverseID,
-		PlaceID:            StagingPlaceID,
+		PlaceID:            LuauExecutionPlaceID,
 		EnableBinaryOutput: new(true),
-	})
+	}
+	if PlaceVersionOverride != nil {
+		zap.L().Debug("version",
+			zap.String("message", "PlaceVersionOverride is not nil, running script in specified version."),
+			zap.String("version", *PlaceVersionOverride),
+		)
+
+		opts.Version = PlaceVersionOverride
+	}
+
+	result, err := script.Execute(ctx, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -90,12 +125,21 @@ type StockMarketData map[string][]StockMarketMaterial
 func GetStockMarket(ctx context.Context, oc *opencloud.Client) (*StockMarketData, error) {
 	script := scripts.NewScript(oc, StockMarketScript)
 
-	result, err := script.Execute(ctx, scripts.ExecuteOptions{
+	opts := scripts.ExecuteOptions{
 		UniverseID:         UniverseID,
-		PlaceID:            StagingPlaceID,
+		PlaceID:            LuauExecutionPlaceID,
 		EnableBinaryOutput: new(true),
-	})
+	}
+	if PlaceVersionOverride != nil {
+		zap.L().Debug("version",
+			zap.String("message", "PlaceVersionOverride is not nil, running script in specified version."),
+			zap.String("version", *PlaceVersionOverride),
+		)
 
+		opts.Version = PlaceVersionOverride
+	}
+
+	result, err := script.Execute(ctx, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -112,11 +156,20 @@ func GetStockMarket(ctx context.Context, oc *opencloud.Client) (*StockMarketData
 func GetClassicShop(ctx context.Context, oc *opencloud.Client) ([]string, error) {
 	script := scripts.NewScript(oc, ClassicShopScript)
 
-	result, err := script.Execute(ctx, scripts.ExecuteOptions{
+	opts := scripts.ExecuteOptions{
 		UniverseID: UniverseID,
-		PlaceID:    StagingPlaceID,
-	})
+		PlaceID:    LuauExecutionPlaceID,
+	}
+	if PlaceVersionOverride != nil {
+		zap.L().Debug("version",
+			zap.String("message", "PlaceVersionOverride is not nil, running script in specified version."),
+			zap.String("version", *PlaceVersionOverride),
+		)
 
+		opts.Version = PlaceVersionOverride
+	}
+
+	result, err := script.Execute(ctx, opts)
 	if err != nil {
 		return nil, err
 	}

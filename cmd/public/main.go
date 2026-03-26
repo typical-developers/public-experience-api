@@ -49,6 +49,14 @@ func main() {
 		LogLevel:    config.C.LogLevel,
 	})
 
+	if config.C.Environment == "development" {
+		oaklands.SetStaging()
+	}
+
+	if config.C.OaklandsPlaceVerisonOverride != nil {
+		oaklands.SetPlaceVersionOverride(*config.C.OaklandsPlaceVerisonOverride)
+	}
+
 	oc := opencloud.NewClient().WithAPIKey(config.C.OpencloudKey)
 	redis := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%d", config.C.Redis.Host, config.C.Redis.Port),

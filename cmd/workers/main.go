@@ -35,8 +35,15 @@ func main() {
 		LogLevel:    config.C.LogLevel,
 	})
 
-	l := CustomCronLogger{zap.L().Sugar()}
+	if config.C.Environment == "development" {
+		oaklands.SetStaging()
+	}
 
+	if config.C.OaklandsPlaceVerisonOverride != nil {
+		oaklands.SetPlaceVersionOverride(*config.C.OaklandsPlaceVerisonOverride)
+	}
+
+	l := CustomCronLogger{zap.L().Sugar()}
 	c := cron.New(
 		cron.WithLogger(l),
 		cron.WithLocation(time.UTC),
