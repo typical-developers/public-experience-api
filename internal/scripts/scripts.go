@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -64,7 +65,7 @@ func (s *Script) poll(ctx context.Context, task *opencloud.LuauExecutionTask) (*
 			return task, ctx.Err()
 		case <-ticker.C:
 			task, resp, err := s.client.LuauExecution.GetLuauExecutionSessionTask(ctx, universeID, placeID, versionId, sessionId, taskId)
-			zap.L().Debug("",
+			zap.L().Debug("task state updated",
 				zap.String("state", string(task.State)),
 				zap.Any("results", &task.Output),
 				zap.String("binary_output", task.BinaryOutputURI),
@@ -75,7 +76,9 @@ func (s *Script) poll(ctx context.Context, task *opencloud.LuauExecutionTask) (*
 			}
 
 			if resp.StatusCode == http.StatusTooManyRequests {
-				// TODO: log warning here for ratelimit
+				zap.L().Warn("ratelimit exhausted",
+					zap.String("msg", fmt.Sprintf("task %s is currently being ratelimited. will continue trying.", taskId)),
+				)
 				continue
 			}
 
