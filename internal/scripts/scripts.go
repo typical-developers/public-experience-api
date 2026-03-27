@@ -124,6 +124,8 @@ func (e *ExecuteResult) DecodeResult(v any) error {
 
 	result := e.results[0]
 	if wrapped, ok := result.(map[string]any); ok {
+		// Since you are still able to return data in the response relative to the binary output,
+		// the result gets wrapped into `ReturnValues`.
 		if returnValues, exists := wrapped["ReturnValues"]; exists {
 			result = returnValues
 		}
