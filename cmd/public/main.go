@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -49,7 +50,7 @@ func main() {
 		LogLevel:    config.C.LogLevel,
 	})
 
-	if config.C.Environment == "development" {
+	if strings.ToLower(config.C.Environment) == "development" {
 		oaklands.SetStaging()
 	}
 

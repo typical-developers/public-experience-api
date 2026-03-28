@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -35,7 +36,7 @@ func main() {
 		LogLevel:    config.C.LogLevel,
 	})
 
-	if config.C.Environment == "development" {
+	if strings.ToLower(config.C.Environment) == "development" {
 		oaklands.SetStaging()
 	}
 
