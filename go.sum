@@ -35,6 +35,8 @@ github.com/typical-developers/discord-webhooks-go/v2 v2.0.2 h1:gBcBG3qzH1zYSTud7
 github.com/typical-developers/discord-webhooks-go/v2 v2.0.2/go.mod h1:XWjaUwN2zI+ZnVB5kyqynRnDN9Ye0rFZdpClz10oo/Y=
 github.com/typical-developers/goblox v0.0.0-20260312234757-5a027d43801f h1:gdbWH3hGbygqr02CC5SLannvQiqvviSxbh4hNW9GrLQ=
 github.com/typical-developers/goblox v0.0.0-20260312234757-5a027d43801f/go.mod h1:ksnbAdAHt9ldtzMWheeOettTV5pXzxxPWrmiBWLVyYo=
+github.com/typical-developers/goblox v0.0.0-20260328195209-c5f28e5c5e56 h1:Izsq9CalvYrmIFP+FQH9moWq56OdUFQMa4BwSdRMHLs=
+github.com/typical-developers/goblox v0.0.0-20260328195209-c5f28e5c5e56/go.mod h1:ksnbAdAHt9ldtzMWheeOettTV5pXzxxPWrmiBWLVyYo=
 github.com/urfave/cli/v3 v3.7.0 h1:AGSnbUyjtLiM+WJUb4dzXKldl/gL+F8OwmRDtVr6g2U=
 github.com/urfave/cli/v3 v3.7.0/go.mod h1:ysVLtOEmg2tOy6PknnYVhDoouyC/6N42TMeoMzskhso=
 github.com/zeebo/xxh3 v1.0.2 h1:xZmwmqxHZA8AI603jOQ0tMqmBr9lPeFwGg6d+xy9DC0=
