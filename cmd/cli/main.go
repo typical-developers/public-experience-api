@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/redis/go-redis/v9"
 	"github.com/typical-developers/goblox/opencloud"
@@ -16,6 +17,14 @@ import (
 
 func main() {
 	logger.Init(logger.Options{})
+
+	if strings.ToLower(config.C.Environment) == "development" {
+		oaklands.SetStaging()
+	}
+
+	if config.C.OaklandsPlaceVerisonOverride != nil {
+		oaklands.SetPlaceVersionOverride(*config.C.OaklandsPlaceVerisonOverride)
+	}
 
 	oc := opencloud.NewClient().WithAPIKey(config.C.OpencloudKey)
 	redis := redis.NewClient(&redis.Options{
