@@ -14,13 +14,8 @@ import (
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/health"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/oaklands_v1"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/static"
-	"github.com/typical-developers/public-experience-api/internal/apperror"
 	"github.com/typical-developers/public-experience-api/internal/logger"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
-)
-
-var (
-	HttpErrorNotFound = apperror.NewAppError("HttpErrorNotFound", "This page could not be found.", http.StatusNotFound, nil)
 )
 
 //	@Title				Typical Developers - Public Experience API

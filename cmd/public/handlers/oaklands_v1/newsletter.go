@@ -1,14 +1,12 @@
 package oaklands_v1
 
 import (
-	"errors"
 	"net/http"
 	"sort"
 	"time"
 
 	"github.com/go-chi/chi"
-	"github.com/redis/go-redis/v9"
-	models "github.com/typical-developers/public-experience-api/cmd/public/handlers"
+	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
@@ -36,8 +34,8 @@ func (o *OaklandsV1Routes) sortNewsletters(values []oaklands.Newsletters, orderB
 //	@Param			order_by		query		string	false	"The direction to order by. This will use the changelog's date to order."	default(desc)	enums(desc, asc)
 //
 //	@Success		200				{object}	object{data=[]NewsletterEntry}
-//	@Failure		500				{object}	models.ErrorResponse
-//	@Failure		503				{object}	models.ErrorResponse
+//	@Failure		500				{object}	rest.ErrorResponse
+//	@Failure		503				{object}	rest.ErrorResponse
 //
 // swagger:ignore
 func (o *OaklandsV1Routes) ListNewsletters(w http.ResponseWriter, r *http.Request) {
@@ -47,25 +45,12 @@ func (o *OaklandsV1Routes) ListNewsletters(w http.ResponseWriter, r *http.Reques
 
 	newsletters, err := o.uc.GetNewsletters(ctx)
 	if err != nil {
-		if errors.Is(err, redis.Nil) {
-			_ = httpx.WriteJSON(w, models.ErrorResponse{
-				Type:    "ResourceNotCached",
-				Message: "The requested resource is not cached. Try again in a bit.",
-			}, http.StatusServiceUnavailable)
-
-			return
-		}
-
-		_ = httpx.WriteJSON(w, models.ErrorResponse{
-			Type:    "InternalServerError",
-			Message: "There was an internal server error, try again later.",
-		}, http.StatusInternalServerError)
-
+		rest.WriteRESTError(w, err)
 		return
 	}
 
 	newsletters = o.sortNewsletters(newsletters, orderBy)
-	response := models.Response[[]NewsletterEntry]{
+	response := rest.Response[[]NewsletterEntry]{
 		Data: make([]NewsletterEntry, len(newsletters)),
 	}
 
@@ -91,8 +76,8 @@ func (o *OaklandsV1Routes) ListNewsletters(w http.ResponseWriter, r *http.Reques
 //	@Param			id				path		string	true	"The id of the newsletter. For quick access to the latest newsletter, use 'latest' as the value."	default(latest)
 //
 //	@Success		200				{object}	object{data=Newsletter}
-//	@Failure		500				{object}	models.ErrorResponse
-//	@Failure		503				{object}	models.ErrorResponse
+//	@Failure		500				{object}	rest.ErrorResponse
+//	@Failure		503				{object}	rest.ErrorResponse
 //
 // swagger:ignore
 func (o *OaklandsV1Routes) GetNewsletter(w http.ResponseWriter, r *http.Request) {
@@ -101,25 +86,12 @@ func (o *OaklandsV1Routes) GetNewsletter(w http.ResponseWriter, r *http.Request)
 	id := chi.URLParam(r, "id")
 	newsletter, err := o.uc.GetNewsletter(ctx, id)
 	if err != nil {
-		if errors.Is(err, redis.Nil) {
-			_ = httpx.WriteJSON(w, models.ErrorResponse{
-				Type:    "NotFound",
-				Message: "This newsletter does not exist.",
-			}, http.StatusNotFound)
-
-			return
-		}
-
-		_ = httpx.WriteJSON(w, models.ErrorResponse{
-			Type:    "InternalServerError",
-			Message: "There was an internal server error, try again later.",
-		}, http.StatusInternalServerError)
-
+		rest.WriteRESTError(w, err)
 		return
 	}
 
 	releaseDate, _ := time.Parse(time.RFC3339, newsletter.DateToISO8601())
-	response := models.Response[Newsletter]{
+	response := rest.Response[Newsletter]{
 		Data: Newsletter{
 			Header:        newsletter.Header,
 			Subheader:     newsletter.Subheader,

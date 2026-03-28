@@ -1,14 +1,12 @@
 package oaklands_v1
 
 import (
-	"errors"
 	"net/http"
 	"sort"
 	"time"
 
 	"github.com/go-chi/chi"
-	"github.com/redis/go-redis/v9"
-	models "github.com/typical-developers/public-experience-api/cmd/public/handlers"
+	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
@@ -23,8 +21,8 @@ import (
 //	@Param			useId			query		string	false	"Use the changelog's id instead. You do not have to provide a value to this, you can just add it as `?useId`."
 //
 //	@Success		200				{object}	object{data=Changelog}
-//	@Failure		500				{object}	models.ErrorResponse
-//	@Failure		503				{object}	models.ErrorResponse
+//	@Failure		500				{object}	rest.ErrorResponse
+//	@Failure		503				{object}	rest.ErrorResponse
 //
 // swagger:ignore
 func (o *OaklandsV1Routes) GetChangelog(w http.ResponseWriter, r *http.Request) {
@@ -34,25 +32,12 @@ func (o *OaklandsV1Routes) GetChangelog(w http.ResponseWriter, r *http.Request) 
 	version := chi.URLParam(r, "version")
 	changelog, err := o.uc.GetChangelogVersion(ctx, version, useId)
 	if err != nil {
-		if errors.Is(err, redis.Nil) {
-			_ = httpx.WriteJSON(w, models.ErrorResponse{
-				Type:    "NotFound",
-				Message: "This changelog does not exist.",
-			}, http.StatusNotFound)
-
-			return
-		}
-
-		_ = httpx.WriteJSON(w, models.ErrorResponse{
-			Type:    "InternalServerError",
-			Message: "There was an internal server error, try again later.",
-		}, http.StatusInternalServerError)
-
+		rest.WriteRESTError(w, err)
 		return
 	}
 
 	releaseDate, _ := time.Parse(time.RFC3339, changelog.DateToISO8601())
-	response := models.Response[Changelog]{
+	response := rest.Response[Changelog]{
 		Data: Changelog{
 			ChangelogVersion: ChangelogVersion{
 				ID:      changelog.ID,
@@ -95,8 +80,8 @@ func (o *OaklandsV1Routes) sortChangelogs(values []oaklands.Changelogs, orderBy 
 //	@Param			order_by		query		string	false	"The direction to order by. This will use the changelog's date to order."	default(desc)	enums(desc, asc)
 //
 //	@Success		200				{object}	object{data=[]ChangelogVersion}
-//	@Failure		500				{object}	models.ErrorResponse
-//	@Failure		503				{object}	models.ErrorResponse
+//	@Failure		500				{object}	rest.ErrorResponse
+//	@Failure		503				{object}	rest.ErrorResponse
 //
 // swagger:ignore
 func (o *OaklandsV1Routes) ListChangelogs(w http.ResponseWriter, r *http.Request) {
@@ -106,26 +91,13 @@ func (o *OaklandsV1Routes) ListChangelogs(w http.ResponseWriter, r *http.Request
 
 	changelogs, err := o.uc.GetChangelogs(ctx)
 	if err != nil {
-		_ = httpx.WriteJSON(w, models.ErrorResponse{
-			Type:    "InternalServerError",
-			Message: "There was an internal server error, try again later.",
-		}, http.StatusInternalServerError)
-
+		rest.WriteRESTError(w, err)
 		return
 	}
 
 	changelogs = o.sortChangelogs(changelogs, orderBy)
-	response := models.Response[[]ChangelogVersion]{
+	response := rest.Response[[]ChangelogVersion]{
 		Data: make([]ChangelogVersion, len(changelogs)),
-	}
-
-	if len(changelogs) <= 0 {
-		_ = httpx.WriteJSON(w, models.ErrorResponse{
-			Type:    "ResourceNotCached",
-			Message: "The requested resource is not cached. Try again in a bit.",
-		}, http.StatusServiceUnavailable)
-
-		return
 	}
 
 	for i, version := range changelogs {

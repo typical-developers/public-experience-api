@@ -1,12 +1,10 @@
 package oaklands_v1
 
 import (
-	"errors"
 	"net/http"
 	"strings"
 
-	"github.com/redis/go-redis/v9"
-	models "github.com/typical-developers/public-experience-api/cmd/public/handlers"
+	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
 
@@ -34,8 +32,8 @@ func (o *OaklandsV1Routes) prefixTranslations(translations *map[string]string, p
 //	@Param			prefix			query		string	false	"Return a subset of keys that have a prefix (i.e. using `ItemName` would return values for the keys `ItemName` and `ItemName_description`).<br>It is suggested to only return the keys you are needing."
 //
 //	@Success		200				{object}	object{data=map[string]string}
-//	@Failure		500				{object}	models.ErrorResponse
-//	@Failure		503				{object}	models.ErrorResponse
+//	@Failure		500				{object}	rest.ErrorResponse
+//	@Failure		503				{object}	rest.ErrorResponse
 //
 // swagger:ignore
 func (o *OaklandsV1Routes) GetTranslations(w http.ResponseWriter, r *http.Request) {
@@ -45,20 +43,7 @@ func (o *OaklandsV1Routes) GetTranslations(w http.ResponseWriter, r *http.Reques
 
 	translations, err := o.uc.GetTranslations(ctx, "en_us")
 	if err != nil {
-		if errors.Is(err, redis.Nil) {
-			_ = httpx.WriteJSON(w, models.ErrorResponse{
-				Type:    "ResourceNotCached",
-				Message: "The requested resource is not cached. Try again in a bit.",
-			}, http.StatusServiceUnavailable)
-
-			return
-		}
-
-		_ = httpx.WriteJSON(w, models.ErrorResponse{
-			Type:    "InternalServerError",
-			Message: "There was an internal server error, try again later.",
-		}, http.StatusInternalServerError)
-
+		rest.WriteRESTError(w, err)
 		return
 	}
 
@@ -66,7 +51,7 @@ func (o *OaklandsV1Routes) GetTranslations(w http.ResponseWriter, r *http.Reques
 		translations = o.prefixTranslations(translations, prefix...)
 	}
 
-	response := models.Response[map[string]string]{
+	response := rest.Response[map[string]string]{
 		Data: *translations,
 	}
 

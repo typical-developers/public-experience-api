@@ -2,12 +2,10 @@ package oaklands_v1
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"sort"
 
-	"github.com/redis/go-redis/v9"
-	models "github.com/typical-developers/public-experience-api/cmd/public/handlers"
+	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
@@ -82,8 +80,8 @@ func (o *OaklandsV1Routes) sortStockMarketMaterials(values []oaklands.StockMarke
 	return values
 }
 
-func newStockMarketResponse(materials []oaklands.StockMarketMaterial) models.Response[[]StockMarket] {
-	response := models.Response[[]StockMarket]{
+func newStockMarketResponse(materials []oaklands.StockMarketMaterial) rest.Response[[]StockMarket] {
+	response := rest.Response[[]StockMarket]{
 		Data: make([]StockMarket, len(materials)),
 	}
 
@@ -123,19 +121,7 @@ func (o *OaklandsV1Routes) writeStockMarket(
 
 	market, err := getter(ctx)
 	if err != nil {
-		if errors.Is(err, redis.Nil) {
-			_ = httpx.WriteJSON(w, models.ErrorResponse{
-				Type:    "ResourceNotCached",
-				Message: "The requested resource is not cached. Try again in a bit.",
-			}, http.StatusServiceUnavailable)
-			return
-		}
-
-		_ = httpx.WriteJSON(w, models.ErrorResponse{
-			Type:    "InternalServerError",
-			Message: "There was an internal server error, try again later.",
-		}, http.StatusInternalServerError)
-
+		rest.WriteRESTError(w, err)
 		return
 	}
 
@@ -160,8 +146,8 @@ func (o *OaklandsV1Routes) writeStockMarket(
 //	@Param			order_by		query		string	false	"The direction to order by."	default(desc)				enums(desc, asc)
 //
 //	@Success		200				{object}	object{data=[]StockMarket}
-//	@Failure		503				{object}	models.ErrorResponse
-//	@Failure		500				{object}	models.ErrorResponse
+//	@Failure		503				{object}	rest.ErrorResponse
+//	@Failure		500				{object}	rest.ErrorResponse
 //
 // swagger:ignore
 func (o *OaklandsV1Routes) GetStockMarketTrees(w http.ResponseWriter, r *http.Request) {
@@ -178,8 +164,8 @@ func (o *OaklandsV1Routes) GetStockMarketTrees(w http.ResponseWriter, r *http.Re
 //	@Param			order_by		query		string	false	"The direction to order by."	default(desc)				enums(desc, asc)
 //
 //	@Success		200				{object}	object{data=[]StockMarket}
-//	@Failure		503				{object}	models.ErrorResponse
-//	@Failure		500				{object}	models.ErrorResponse
+//	@Failure		503				{object}	rest.ErrorResponse
+//	@Failure		500				{object}	rest.ErrorResponse
 //
 // swagger:ignore
 func (o *OaklandsV1Routes) GetStockMarketRocks(w http.ResponseWriter, r *http.Request) {
@@ -196,8 +182,8 @@ func (o *OaklandsV1Routes) GetStockMarketRocks(w http.ResponseWriter, r *http.Re
 //	@Param			order_by		query		string	false	"The direction to order by."	default(desc)				enums(desc, asc)
 //
 //	@Success		200				{object}	object{data=[]StockMarket}
-//	@Failure		503				{object}	models.ErrorResponse
-//	@Failure		500				{object}	models.ErrorResponse
+//	@Failure		503				{object}	rest.ErrorResponse
+//	@Failure		500				{object}	rest.ErrorResponse
 //
 // swagger:ignore
 func (o *OaklandsV1Routes) GetStockMarketOres(w http.ResponseWriter, r *http.Request) {

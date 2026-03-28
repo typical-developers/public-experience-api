@@ -1,11 +1,9 @@
 package oaklands_v1
 
 import (
-	"errors"
 	"net/http"
 
-	"github.com/redis/go-redis/v9"
-	models "github.com/typical-developers/public-experience-api/cmd/public/handlers"
+	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
 
@@ -19,8 +17,8 @@ import (
 //	@Tags			Oaklands
 //
 //	@Success		200	{object}	object{data=Sync}
-//	@Failure		500	{object}	models.ErrorResponse
-//	@Failure		503	{object}	models.ErrorResponse
+//	@Failure		500	{object}	rest.ErrorResponse
+//	@Failure		503	{object}	rest.ErrorResponse
 //
 // swagger:ignore
 func (o OaklandsV1Routes) GetSyncTimes(w http.ResponseWriter, r *http.Request) {
@@ -28,24 +26,11 @@ func (o OaklandsV1Routes) GetSyncTimes(w http.ResponseWriter, r *http.Request) {
 
 	sync, err := o.uc.GetSyncTimes(ctx)
 	if err != nil {
-		if errors.Is(err, redis.Nil) {
-			_ = httpx.WriteJSON(w, models.ErrorResponse{
-				Type:    "ResourceNotCached",
-				Message: "The requested resource is not cached. Try again in a bit.",
-			}, http.StatusServiceUnavailable)
-
-			return
-		}
-
-		_ = httpx.WriteJSON(w, models.ErrorResponse{
-			Type:    "InternalServerError",
-			Message: "There was an internal server error, try again later.",
-		}, http.StatusInternalServerError)
-
+		rest.WriteRESTError(w, err)
 		return
 	}
 
-	response := models.Response[Sync]{
+	response := rest.Response[Sync]{
 		Data: Sync{
 			Meta: SyncMeta{
 				LastUpdate: sync.LastContentSync,

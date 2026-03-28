@@ -2,12 +2,14 @@ package static
 
 import (
 	"embed"
+	"errors"
 	"io/fs"
 	"net/http"
 	"path/filepath"
 	"strings"
 
-	models "github.com/typical-developers/public-experience-api/cmd/public/handlers"
+	"github.com/typical-developers/public-experience-api/cmd/public/rest"
+	"github.com/typical-developers/public-experience-api/internal/apperror"
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
 
@@ -29,37 +31,40 @@ func init() {
 	fsHandler = http.FileServer(http.FS(root))
 }
 
+// checkForFile will check if a file exists based on its uPath.
+func checkForFile(uPath string) *apperror.AppError {
+	path := filepath.Clean(uPath)
+	path = filepath.ToSlash(path)
+
+	if path == "." || path == "/" {
+		return rest.HttpErrorNotFound
+	}
+	path = strings.TrimPrefix(path, "/")
+
+	file, err := fs.Stat(root, path)
+	if err != nil {
+		if errors.Is(err, fs.ErrNotExist) {
+			return rest.HttpErrorNotFound
+		}
+
+		return rest.HttpInternalServerError.WithError(err)
+	}
+
+	if file.IsDir() {
+		return rest.HttpErrorNotFound
+	}
+
+	return nil
+}
+
 // ServeStatic will return an http handler for serving static files.
 func ServeStatic() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		path := filepath.Clean(r.URL.Path)
-		path = filepath.ToSlash(path)
-
-		if path == "." || path == "/" {
-			_ = httpx.WriteJSON(w, models.ErrorResponse{
-				Type:    "HttpErrorNotFound",
-				Message: "This page could not be found.",
-			}, http.StatusNotFound)
-
-			return
-		}
-		path = strings.TrimPrefix(path, "/")
-
-		file, err := fs.Stat(root, path)
-		if err != nil {
-			_ = httpx.WriteJSON(w, models.ErrorResponse{
-				Type:    "HttpErrorNotFound",
-				Message: "This page could not be found.",
-			}, http.StatusNotFound)
-
-			return
-		}
-
-		if file.IsDir() {
-			_ = httpx.WriteJSON(w, models.ErrorResponse{
-				Type:    "HttpErrorNotFound",
-				Message: "This page could not be found.",
-			}, http.StatusNotFound)
+		if err := checkForFile(r.URL.Path); err != nil {
+			_ = httpx.WriteJSON(w, rest.ErrorResponse{
+				Type:    err.Type,
+				Message: err.Message,
+			}, err.Status)
 
 			return
 		}

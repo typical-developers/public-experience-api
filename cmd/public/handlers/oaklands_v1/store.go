@@ -1,14 +1,12 @@
 package oaklands_v1
 
 import (
-	"errors"
 	"net/http"
 	"sort"
 
 	"github.com/go-chi/chi"
-	"github.com/redis/go-redis/v9"
-	models "github.com/typical-developers/public-experience-api/cmd/public/handlers"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/static"
+	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
@@ -45,8 +43,8 @@ func (o *OaklandsV1Routes) sortStoreItems(items []oaklands.StoreItem, sortBy, or
 //	@Param			order_by		query		string	false	"The direction to order by."	default(desc)	enums(desc, asc)
 //
 //	@Success		200				{object}	object{data=[]StoreItem}
-//	@Failure		500				{object}	models.ErrorResponse
-//	@Failure		503				{object}	models.ErrorResponse
+//	@Failure		500				{object}	rest.ErrorResponse
+//	@Failure		503				{object}	rest.ErrorResponse
 //
 // swagger:ignore
 func (o *OaklandsV1Routes) GetStore(w http.ResponseWriter, r *http.Request) {
@@ -58,17 +56,13 @@ func (o *OaklandsV1Routes) GetStore(w http.ResponseWriter, r *http.Request) {
 
 	items, err := o.uc.GetStoreItems(ctx, storeName)
 	if err != nil {
-		_ = httpx.WriteJSON(w, models.ErrorResponse{
-			Type:    "InternalServerError",
-			Message: "There was an internal server error, try again later.",
-		}, http.StatusInternalServerError)
-
+		rest.WriteRESTError(w, err)
 		return
 	}
 
 	items = o.sortStoreItems(items, sort, order)
 
-	response := models.Response[[]StoreItem]{
+	response := rest.Response[[]StoreItem]{
 		Data: make([]StoreItem, len(items)),
 	}
 
@@ -97,8 +91,8 @@ func (o *OaklandsV1Routes) GetStore(w http.ResponseWriter, r *http.Request) {
 //	@Param			If-None-Match	header		string	false	"ETag to validate cached response."
 //
 //	@Success		200				{object}	object{data=[]string}
-//	@Failure		500				{object}	models.ErrorResponse
-//	@Failure		503				{object}	models.ErrorResponse
+//	@Failure		500				{object}	rest.ErrorResponse
+//	@Failure		503				{object}	rest.ErrorResponse
 //
 // swagger:ignore
 func (o *OaklandsV1Routes) ListStores(w http.ResponseWriter, r *http.Request) {
@@ -106,24 +100,11 @@ func (o *OaklandsV1Routes) ListStores(w http.ResponseWriter, r *http.Request) {
 
 	stores, err := o.uc.ListStores(ctx)
 	if err != nil {
-		if errors.Is(err, redis.Nil) {
-			_ = httpx.WriteJSON(w, models.ErrorResponse{
-				Type:    "ResourceNotCached",
-				Message: "The requested resource is not cached. Try again in a bit.",
-			}, http.StatusServiceUnavailable)
-
-			return
-		}
-
-		_ = httpx.WriteJSON(w, models.ErrorResponse{
-			Type:    "InternalServerError",
-			Message: "There was an internal server error, try again later.",
-		}, http.StatusInternalServerError)
-
+		rest.WriteRESTError(w, err)
 		return
 	}
 
-	response := models.Response[[]string]{
+	response := rest.Response[[]string]{
 		Data: stores,
 	}
 
