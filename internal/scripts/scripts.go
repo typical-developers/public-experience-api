@@ -82,6 +82,10 @@ func (s *Script) poll(ctx context.Context, task *opencloud.LuauExecutionTask) (*
 				continue
 			}
 
+			if resp.StatusCode == http.StatusUnauthorized || resp.StatusCode == http.StatusForbidden {
+				return nil, ErrNotAllowed
+			}
+
 			switch task.State {
 			case opencloud.LuauExecutionStateProcessing, opencloud.LuauExecutionStateQueued:
 				continue
