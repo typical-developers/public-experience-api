@@ -14,15 +14,6 @@ import (
 	"go.uber.org/zap"
 )
 
-var (
-	ErrNoScriptOutput = errors.New("no script output")
-	ErrNoBinaryOutput = errors.New("no binary output")
-
-	ErrScriptExecutionFailed            = errors.New("script execution failed")
-	ErrScriptExecutionCancelled         = errors.New("script execution was cancelled")
-	ErrScriptExecutionErrorUnknownState = errors.New("script execution returned an unknown state")
-)
-
 type Script struct {
 	content string
 	client  *opencloud.Client
