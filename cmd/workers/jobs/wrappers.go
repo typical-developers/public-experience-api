@@ -26,6 +26,26 @@ func init() {
 	}
 }
 
+type panicDetails struct {
+	Value any
+	Stack []byte
+}
+
+func (p panicDetails) Error() string {
+	return fmt.Sprintf("%v", p.Value)
+}
+
+func capturePanicDetails(panicValue any) panicDetails {
+	if details, ok := panicValue.(panicDetails); ok {
+		return details
+	}
+
+	return panicDetails{
+		Value: panicValue,
+		Stack: debug.Stack(),
+	}
+}
+
 // WithRetry will retry the job on failure automatically.
 func WithRetry(job Job, l cron.Logger) cron.JobWrapper {
 	if job.Config.Retry.RetryAttempts <= 0 {
@@ -39,12 +59,12 @@ func WithRetry(job Job, l cron.Logger) cron.JobWrapper {
 		for attempt := 1; attempt <= job.Config.Retry.RetryAttempts; attempt++ {
 			failed := false
 
-			var panicResult any
+			var panicResult panicDetails
 			func() {
 				defer func() {
 					if r := recover(); r != nil {
 						failed = true
-						panicResult = r
+						panicResult = capturePanicDetails(r)
 					}
 				}()
 
@@ -91,10 +111,11 @@ func logPanic(job Job, panicValue any) {
 
 	ctx := context.Background()
 	now := time.Now().UTC()
+	panicDetails := capturePanicDetails(panicValue)
 
 	panicInfo, err := json.MarshalIndent(logPanicPayload{
 		Job:   job.Name(),
-		Error: fmt.Sprintf("%v", panicValue),
+		Error: panicDetails.Error(),
 		Time:  now.Format(time.RFC3339),
 	}, "", " ")
 	if err != nil {
@@ -111,7 +132,7 @@ func logPanic(job Job, panicValue any) {
 
 	stack := webhooks.WebhookFile{
 		FileName: "stack.txt",
-		Reader:   bytes.NewReader(debug.Stack()),
+		Reader:   bytes.NewReader(panicDetails.Stack),
 	}
 
 	if _, _, err := PanicWebook.Execute(ctx, webhooks.MessagePayload{
