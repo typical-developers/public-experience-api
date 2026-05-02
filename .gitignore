@@ -1,3 +1,4 @@
 .env
 **/tmp/*
 .gocache
+AGENTS.md
