@@ -11,7 +11,7 @@ import (
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
 
-func (o *OaklandsV1Routes) sortNewsletters(values []oaklands.Newsletters, orderBy string) []oaklands.Newsletters {
+func (o *OaklandsV1Routes) sortNewsletters(values []oaklands.NewsletterEntry, orderBy string) []oaklands.NewsletterEntry {
 	descending := orderBy == "desc"
 
 	sort.Slice(values, func(i, j int) bool {
@@ -56,8 +56,10 @@ func (o *OaklandsV1Routes) ListNewsletters(w http.ResponseWriter, r *http.Reques
 
 	for i, entry := range newsletters {
 		response.Data[i] = NewsletterEntry{
-			ID:   entry.ID,
-			Date: entry.Date,
+			ID:            entry.ID,
+			Header:        entry.Header,
+			BannerImageId: entry.BannerImageId,
+			Date:          entry.Date,
 		}
 	}
 

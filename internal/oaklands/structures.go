@@ -26,9 +26,11 @@ type Changelogs struct {
 	Date    time.Time
 }
 
-type Newsletters struct {
-	ID   string
-	Date time.Time
+type NewsletterEntry struct {
+	ID            string
+	Header        string
+	BannerImageId string
+	Date          time.Time
 }
 
 type StoreItem struct {

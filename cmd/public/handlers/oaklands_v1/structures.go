@@ -91,7 +91,13 @@ type Newsletter struct {
 } //	@name	Oaklands.V1.Newsletter
 
 type NewsletterEntry struct {
-	ID   string    `json:"id"`
+	// The ID for the newsletter.
+	ID string `json:"id"`
+	// The primary header of the newsletter.
+	Header string `json:"header"`
+	// The Roblox ID for the banner of the newsletter.
+	BannerImageId string `json:"banner_image_id"`
+	// The date that the newsletter was released.
 	Date time.Time `json:"date"`
 } //	@name	Oaklands.V1.NewsletterEntry
 

@@ -40,7 +40,7 @@ type OaklandsRepository interface {
 	GetChangelogVersion(ctx context.Context, version string, useID bool) (*ChangelogVersion, error)
 
 	// GetNewsleters will return all of the available newsletters.
-	GetNewsletters(ctx context.Context) ([]Newsletters, error)
+	GetNewsletters(ctx context.Context) ([]NewsletterEntry, error)
 	// GetNewsletter will return a specific newsletter version.
 	GetNewsletter(ctx context.Context, id string) (*Newsletter, error)
 
@@ -491,7 +491,7 @@ func (r *OaklandsRepositoryImpl) GetChangelogVersion(ctx context.Context, versio
 	return &changelog, nil
 }
 
-func (r *OaklandsRepositoryImpl) GetNewsletters(ctx context.Context) ([]Newsletters, error) {
+func (r *OaklandsRepositoryImpl) GetNewsletters(ctx context.Context) ([]NewsletterEntry, error) {
 	entries, err := r.redis.ZRangeWithScores(ctx, redisKeyNewsletterByDate, 0, -1).Result()
 	if err != nil {
 		return nil, err
@@ -501,16 +501,39 @@ func (r *OaklandsRepositoryImpl) GetNewsletters(ctx context.Context) ([]Newslett
 		return nil, redis.Nil
 	}
 
-	newsletters := make([]Newsletters, 0, len(entries))
+	cmds := make(map[string]*redis.JSONCmd, 0)
+	pipeline := r.redis.Pipeline()
+
 	for _, entry := range entries {
 		id, ok := entry.Member.(string)
 		if !ok {
 			id = fmt.Sprintf("%v", entry.Member)
 		}
 
-		newsletters = append(newsletters, Newsletters{
-			ID:   id,
-			Date: time.Unix(int64(entry.Score), 0).UTC(),
+		cmds[id] = pipeline.JSONGet(ctx, redisKeyNewsletter(id), "$")
+	}
+
+	if _, err := pipeline.Exec(ctx); err != nil {
+		return nil, err
+	}
+
+	newsletters := make([]NewsletterEntry, 0, len(cmds))
+	for id, cmd := range cmds {
+		var newsletter Newsletter
+		if err := redisx.JSONCmdUnwrap(cmd, &newsletter); err != nil {
+			return nil, err
+		}
+
+		parsedDate, err := time.Parse(time.RFC3339, newsletter.DateToISO8601())
+		if err != nil {
+			return nil, err
+		}
+
+		newsletters = append(newsletters, NewsletterEntry{
+			ID:            id,
+			Header:        newsletter.Header,
+			BannerImageId: newsletter.BannerImageId,
+			Date:          parsedDate,
 		})
 	}
 

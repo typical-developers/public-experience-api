@@ -15,7 +15,7 @@ type OaklandsUsecase interface {
 	GetChangelogs(ctx context.Context) ([]Changelogs, error)
 	GetChangelogVersion(ctx context.Context, version string, useID bool) (*ChangelogVersion, error)
 
-	GetNewsletters(ctx context.Context) ([]Newsletters, error)
+	GetNewsletters(ctx context.Context) ([]NewsletterEntry, error)
 	GetNewsletter(ctx context.Context, id string) (*Newsletter, error)
 
 	ListStores(ctx context.Context) ([]string, error)
@@ -56,7 +56,7 @@ func (u *OaklandsUsecaseImpl) GetChangelogVersion(ctx context.Context, version s
 	return u.r.GetChangelogVersion(ctx, version, useID)
 }
 
-func (u *OaklandsUsecaseImpl) GetNewsletters(ctx context.Context) ([]Newsletters, error) {
+func (u *OaklandsUsecaseImpl) GetNewsletters(ctx context.Context) ([]NewsletterEntry, error) {
 	config, err := u.r.GetConfig(ctx)
 	if err != nil {
 		return nil, err
@@ -76,7 +76,7 @@ func (u *OaklandsUsecaseImpl) GetNewsletters(ctx context.Context) ([]Newsletters
 		hidden[id] = struct{}{}
 	}
 
-	return slices.DeleteFunc(newsletters, func(newsletter Newsletters) bool {
+	return slices.DeleteFunc(newsletters, func(newsletter NewsletterEntry) bool {
 		_, ok := hidden[newsletter.ID]
 		return ok
 	}), nil
