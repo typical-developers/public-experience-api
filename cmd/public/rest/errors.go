@@ -21,7 +21,7 @@ func WriteRESTError(w http.ResponseWriter, err error) {
 	var restError *apperror.AppError
 
 	if errors.Is(err, redis.Nil) {
-		restError = HttpErrorNotFound
+		restError = HttpErrorResourceNotCached
 	} else {
 		restError = HttpInternalServerError
 	}
