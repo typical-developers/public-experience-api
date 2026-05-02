@@ -111,10 +111,20 @@
             },
             "Oaklands.V1.NewsletterEntry": {
                 "properties": {
+                    "banner_image_id": {
+                        "description": "The Roblox ID for the banner of the newsletter.",
+                        "type": "string"
+                    },
                     "date": {
+                        "description": "The date that the newsletter was released.",
+                        "type": "string"
+                    },
+                    "header": {
+                        "description": "The primary header of the newsletter.",
                         "type": "string"
                     },
                     "id": {
+                        "description": "The ID for the newsletter.",
                         "type": "string"
                     }
                 },
