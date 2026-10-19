@@ -203,3 +203,15 @@ type ItemDetails struct {
 	Description string     `json:"Description"`
 	Forms       []ItemForm `json:"Forms"`
 }
+
+type MinimapPosition struct {
+	Min int64 `json:"Min"`
+	Max int64 `json:"Max"`
+}
+
+type MinimapLayer struct {
+	LayerID  string          `json:"LayerID"`
+	X        MinimapPosition `json:"X"`
+	Z        MinimapPosition `json:"Z"`
+	ImageIDs []string        `json:"ImageIDs"`
+}

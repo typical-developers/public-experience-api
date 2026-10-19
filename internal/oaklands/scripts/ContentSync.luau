@@ -18,6 +18,7 @@ local Newsletters = require(game.ServerScriptService.PublicAPIUtility.Newsletter
 local MaterialStockMarket = require(game.ServerScriptService.PublicAPIUtility.MaterialStockMarket)
 local Items = require(game.ServerScriptService.PublicAPIUtility.Items)
 local StoreItems = require(game.ServerScriptService.PublicAPIUtility.StoreItems)
+local Minimap = require(game.ServerScriptService.PublicAPIUtility.Minimap)
 
 local BinaryOutputBuffer = PublicAPIUtility:EncodeBinaryOutput({
     Translations = Translations,
@@ -25,7 +26,8 @@ local BinaryOutputBuffer = PublicAPIUtility:EncodeBinaryOutput({
     Newsletters = Newsletters,
     StockMarket = MaterialStockMarket,
     ItemDetails = Items,
-    StoreItems = StoreItems
+    StoreItems = StoreItems,
+    Minimap = Minimap,
 })
 
 local Result: LuauExecutionTaskOutput = {

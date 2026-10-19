@@ -109,6 +109,18 @@ type OaklandsNewsletter struct {
 	Section       []OaklandsNewsletterSection
 }
 
+type OaklandsMinimapPosition struct {
+	Min int64
+	Max int64
+}
+
+type OaklandsMinimap struct {
+	LayerID string
+	X       OaklandsMinimapPosition
+	Z       OaklandsMinimapPosition
+	Images  []string
+}
+
 type OaklandsStore struct {
 	Config       *RedisValue[OaklandsConfig]
 	Version      *RedisValue[OaklandsVersion]
@@ -121,6 +133,8 @@ type OaklandsStore struct {
 	Newsletter       *RedisHash[OaklandsNewsletter]
 	NewsletterLatest *RedisValue[string]
 	Translations     *RedisHash[map[string]string]
+
+	Minimap *RedisValue[[]OaklandsMinimap]
 }
 
 func NewOaklandsStore(c redis.UniversalClient) *OaklandsStore {

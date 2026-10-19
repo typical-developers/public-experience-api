@@ -294,6 +294,23 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 			panic(err)
 		}
 	}
+
+	minimap := []data.OaklandsMinimap{}
+	for _, layer := range content.Minimap {
+		minimap = append(minimap, data.OaklandsMinimap{
+			LayerID: layer.LayerID,
+			X: data.OaklandsMinimapPosition{
+				Min: layer.X.Min,
+				Max: layer.X.Max,
+			},
+			Z: data.OaklandsMinimapPosition{
+				Min: layer.Z.Min,
+				Max: layer.Z.Max,
+			},
+			Images: layer.ImageIDs,
+		})
+	}
+	c.store.Minimap.Set(ctx, minimap)
 }
 
 // RefreshClassicShop will fetch and update the classic shop.
