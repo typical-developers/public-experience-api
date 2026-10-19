@@ -61,7 +61,6 @@ func main() {
 	})
 
 	oc := opencloud.NewClient().WithAPIKey(config.C.OpencloudKey)
-	oaklandsRepository := oaklands.NewOaklandsRepository(&oaklands.OaklandsRepositoryOpts{RedisClient: redis})
 
 	jobHandler := jobs.NewHandler(jobs.HandlerOpts{
 		Cron:   c,
@@ -71,7 +70,7 @@ func main() {
 	jobs.NewOaklandsCronJobs(&jobs.OaklandsCronJobsOpts{
 		Handler:         jobHandler,
 		OpencloudClient: oc,
-		Repository:      oaklandsRepository,
+		Redis:           redis,
 	})
 
 	c.Start()

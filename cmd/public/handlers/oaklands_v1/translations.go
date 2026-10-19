@@ -8,10 +8,10 @@ import (
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
 
-func (o *OaklandsV1Routes) prefixTranslations(translations *map[string]string, prefixes ...string) *map[string]string {
+func (o *OaklandsV1Routes) prefixTranslations(translations map[string]string, prefixes ...string) map[string]string {
 	filteredTranslations := make(map[string]string, 0)
 	for _, prefix := range prefixes {
-		for key, value := range *translations {
+		for key, value := range translations {
 			if !strings.HasPrefix(key, prefix) {
 				continue
 			}
@@ -20,10 +20,10 @@ func (o *OaklandsV1Routes) prefixTranslations(translations *map[string]string, p
 		}
 	}
 
-	return &filteredTranslations
+	return filteredTranslations
 }
 
-//	@Router			/v1/oaklands/translations [GET]
+//	@Router			/oaklands/v1/translations [GET]
 //	@Description	List the available translations.
 //
 //	@Tags			Oaklands
@@ -41,7 +41,7 @@ func (o *OaklandsV1Routes) GetTranslations(w http.ResponseWriter, r *http.Reques
 
 	prefix := httpx.QueryGetAll(r, "prefix")
 
-	translations, err := o.uc.GetTranslations(ctx, "en_us")
+	translations, err := o.store.Translations.Get(ctx, "en_us")
 	if err != nil {
 		rest.WriteRESTError(w, err)
 		return
@@ -52,7 +52,7 @@ func (o *OaklandsV1Routes) GetTranslations(w http.ResponseWriter, r *http.Reques
 	}
 
 	response := rest.Response[map[string]string]{
-		Data: *translations,
+		Data: translations,
 	}
 
 	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {

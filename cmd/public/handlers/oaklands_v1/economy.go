@@ -136,54 +136,60 @@ func (o *OaklandsV1Routes) writeStockMarket(
 	}
 }
 
-//	@Router			/v1/oaklands/economy/stock-market/trees [GET]
+//	@Router			/oaklands/v1/economy/stock-market/trees [GET]
 //	@Description	Fetch the current tree stock market.
 //
-//	@Tags			Oaklands
+//	@Deprecated
 //
-//	@Param			If-None-Match	header		string	false	"ETag to validate cached response."
-//	@Param			sort_by			query		string	false	"The field to sort by."			default(current_multiplier)	enums(name, current_multiplier, last_multiplier, values.current_value, values.base_value)
-//	@Param			order_by		query		string	false	"The direction to order by."	default(desc)				enums(desc, asc)
+//	@Tags		Oaklands
 //
-//	@Success		200				{object}	object{data=[]StockMarket}
-//	@Failure		503				{object}	rest.ErrorResponse
-//	@Failure		500				{object}	rest.ErrorResponse
+//	@Param		If-None-Match	header		string	false	"ETag to validate cached response."
+//	@Param		sort_by			query		string	false	"The field to sort by."			default(current_multiplier)	enums(name, current_multiplier, last_multiplier, values.current_value, values.base_value)
+//	@Param		order_by		query		string	false	"The direction to order by."	default(desc)				enums(desc, asc)
+//
+//	@Success	200				{object}	object{data=[]StockMarket}
+//	@Failure	503				{object}	rest.ErrorResponse
+//	@Failure	500				{object}	rest.ErrorResponse
 //
 // swagger:ignore
 func (o *OaklandsV1Routes) GetStockMarketTrees(w http.ResponseWriter, r *http.Request) {
 	o.writeStockMarket(w, r, o.uc.GetStockMarketTrees)
 }
 
-//	@Router			/v1/oaklands/economy/stock-market/rocks [GET]
+//	@Router			/oaklands/v1/economy/stock-market/rocks [GET]
 //	@Description	Fetch the current rock stock market.
 //
-//	@Tags			Oaklands
+//	@Deprecated
 //
-//	@Param			If-None-Match	header		string	false	"ETag to validate cached response."
-//	@Param			sort_by			query		string	false	"The field to sort by."			default(current_multiplier)	enums(name, current_multiplier, last_multiplier, values.current_value, values.base_value)
-//	@Param			order_by		query		string	false	"The direction to order by."	default(desc)				enums(desc, asc)
+//	@Tags		Oaklands
 //
-//	@Success		200				{object}	object{data=[]StockMarket}
-//	@Failure		503				{object}	rest.ErrorResponse
-//	@Failure		500				{object}	rest.ErrorResponse
+//	@Param		If-None-Match	header		string	false	"ETag to validate cached response."
+//	@Param		sort_by			query		string	false	"The field to sort by."			default(current_multiplier)	enums(name, current_multiplier, last_multiplier, values.current_value, values.base_value)
+//	@Param		order_by		query		string	false	"The direction to order by."	default(desc)				enums(desc, asc)
+//
+//	@Success	200				{object}	object{data=[]StockMarket}
+//	@Failure	503				{object}	rest.ErrorResponse
+//	@Failure	500				{object}	rest.ErrorResponse
 //
 // swagger:ignore
 func (o *OaklandsV1Routes) GetStockMarketRocks(w http.ResponseWriter, r *http.Request) {
 	o.writeStockMarket(w, r, o.uc.GetStockMarketRocks)
 }
 
-//	@Router			/v1/oaklands/economy/stock-market/ores [GET]
+//	@Router			/oaklands/v1/economy/stock-market/ores [GET]
 //	@Description	Fetch the current ore stock market.
 //
-//	@Tags			Oaklands
+//	@Deprecated
 //
-//	@Param			If-None-Match	header		string	false	"ETag to validate cached response."
-//	@Param			sort_by			query		string	false	"The field to sort by."			default(current_multiplier)	enums(name, current_multiplier, last_multiplier, values.current_value, values.base_value)
-//	@Param			order_by		query		string	false	"The direction to order by."	default(desc)				enums(desc, asc)
+//	@Tags		Oaklands
 //
-//	@Success		200				{object}	object{data=[]StockMarket}
-//	@Failure		503				{object}	rest.ErrorResponse
-//	@Failure		500				{object}	rest.ErrorResponse
+//	@Param		If-None-Match	header		string	false	"ETag to validate cached response."
+//	@Param		sort_by			query		string	false	"The field to sort by."			default(current_multiplier)	enums(name, current_multiplier, last_multiplier, values.current_value, values.base_value)
+//	@Param		order_by		query		string	false	"The direction to order by."	default(desc)				enums(desc, asc)
+//
+//	@Success	200				{object}	object{data=[]StockMarket}
+//	@Failure	503				{object}	rest.ErrorResponse
+//	@Failure	500				{object}	rest.ErrorResponse
 //
 // swagger:ignore
 func (o *OaklandsV1Routes) GetStockMarketOres(w http.ResponseWriter, r *http.Request) {

@@ -1,1166 +1,947 @@
 {
-    "components": {
-        "schemas": {
-            "API.ErrorResponse": {
-                "properties": {
-                    "message": {
-                        "description": "The message for the returned error.",
-                        "type": "string"
-                    },
-                    "type": {
-                        "description": "The type of error that was returned.",
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "Oaklands.V1.Changelog": {
-                "properties": {
-                    "added": {
-                        "items": {
-                            "type": "string"
-                        },
-                        "type": "array",
-                        "uniqueItems": false
-                    },
-                    "changed": {
-                        "items": {
-                            "type": "string"
-                        },
-                        "type": "array",
-                        "uniqueItems": false
-                    },
-                    "date": {
-                        "type": "string"
-                    },
-                    "fixed": {
-                        "items": {
-                            "type": "string"
-                        },
-                        "type": "array",
-                        "uniqueItems": false
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "version": {
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "Oaklands.V1.ChangelogVersion": {
-                "properties": {
-                    "date": {
-                        "type": "string"
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "version": {
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "Oaklands.V1.MaterialValues": {
-                "properties": {
-                    "base_value": {
-                        "description": "The base value for the material.",
-                        "type": "number"
-                    },
-                    "current_value": {
-                        "description": "The current value of the material.",
-                        "type": "number"
-                    },
-                    "type": {
-                        "description": "The type of material.",
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "Oaklands.V1.Newsletter": {
-                "properties": {
-                    "banner_image_id": {
-                        "description": "The Roblox ID for the banner of the newsletter.",
-                        "type": "string"
-                    },
-                    "date": {
-                        "description": "The date that the newsletter was released.",
-                        "type": "string"
-                    },
-                    "header": {
-                        "description": "The primary header of the newsletter.",
-                        "type": "string"
-                    },
-                    "sections": {
-                        "description": "Sections of the newsletter.",
-                        "items": {
-                            "$ref": "#/components/schemas/Oaklands.V1.NewsletterSection"
-                        },
-                        "type": "array",
-                        "uniqueItems": false
-                    },
-                    "subheader": {
-                        "description": "The secondary header of the newsletter.",
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "Oaklands.V1.NewsletterEntry": {
-                "properties": {
-                    "banner_image_id": {
-                        "description": "The Roblox ID for the banner of the newsletter.",
-                        "type": "string"
-                    },
-                    "date": {
-                        "description": "The date that the newsletter was released.",
-                        "type": "string"
-                    },
-                    "header": {
-                        "description": "The primary header of the newsletter.",
-                        "type": "string"
-                    },
-                    "id": {
-                        "description": "The ID for the newsletter.",
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "Oaklands.V1.NewsletterImage": {
-                "properties": {
-                    "image_id": {
-                        "description": "The Roblox ID for the image in the section.",
-                        "type": "string"
-                    },
-                    "type": {
-                        "description": "The content type.",
-                        "enum": [
-                            "paragraph",
-                            "image",
-                            "image_carousel",
-                            "video"
-                        ],
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "Oaklands.V1.NewsletterImageCarousel": {
-                "properties": {
-                    "image_ids": {
-                        "description": "The Roblox IDs for the images in the section.",
-                        "items": {
-                            "type": "string"
-                        },
-                        "type": "array",
-                        "uniqueItems": false
-                    },
-                    "type": {
-                        "description": "The content type.",
-                        "enum": [
-                            "paragraph",
-                            "image",
-                            "image_carousel",
-                            "video"
-                        ],
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "Oaklands.V1.NewsletterParagraph": {
-                "properties": {
-                    "text": {
-                        "description": "The text contents.",
-                        "type": "string"
-                    },
-                    "type": {
-                        "description": "The content type.",
-                        "enum": [
-                            "paragraph",
-                            "image",
-                            "image_carousel",
-                            "video"
-                        ],
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "Oaklands.V1.NewsletterSection": {
-                "properties": {
-                    "content": {
-                        "description": "The type of content in the section.",
-                        "items": {
-                            "oneOf": [
-                                {
-                                    "$ref": "#/components/schemas/Oaklands.V1.NewsletterParagraph"
-                                },
-                                {
-                                    "$ref": "#/components/schemas/Oaklands.V1.NewsletterImage"
-                                },
-                                {
-                                    "$ref": "#/components/schemas/Oaklands.V1.NewsletterImageCarousel"
-                                },
-                                {
-                                    "$ref": "#/components/schemas/Oaklands.V1.NewsletterVideo"
-                                }
-                            ]
-                        },
-                        "type": "array",
-                        "uniqueItems": false
-                    },
-                    "header": {
-                        "description": "The header of the section.",
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "Oaklands.V1.NewsletterVideo": {
-                "properties": {
-                    "type": {
-                        "description": "The content type.",
-                        "enum": [
-                            "paragraph",
-                            "image",
-                            "image_carousel",
-                            "video"
-                        ],
-                        "type": "string"
-                    },
-                    "video_id": {
-                        "description": "The Roblox ID for the video in the section.",
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "Oaklands.V1.StockMarket": {
-                "properties": {
-                    "currency_type": {
-                        "description": "The currency of the material.",
-                        "type": "string"
-                    },
-                    "current_multiplier": {
-                        "description": "The current multiplier.",
-                        "type": "number"
-                    },
-                    "display_name": {
-                        "description": "The display name of the material.",
-                        "type": "string"
-                    },
-                    "last_multiplier": {
-                        "description": "The multipler from the last time the stock refreshed.",
-                        "type": "number"
-                    },
-                    "name": {
-                        "description": "The identifier for the material.",
-                        "type": "string"
-                    },
-                    "values": {
-                        "description": "The values of the different types for the materials",
-                        "items": {
-                            "$ref": "#/components/schemas/Oaklands.V1.MaterialValues"
-                        },
-                        "type": "array",
-                        "uniqueItems": false
-                    }
-                },
-                "type": "object"
-            },
-            "Oaklands.V1.StoreItem": {
-                "properties": {
-                    "currency": {
-                        "description": "The currency that is used to purchase the item.",
-                        "type": "string"
-                    },
-                    "description": {
-                        "description": "The description of the item.",
-                        "type": "string"
-                    },
-                    "display_name": {
-                        "description": "The display name of the item.",
-                        "type": "string"
-                    },
-                    "image": {
-                        "description": "The image of the item.",
-                        "type": "string"
-                    },
-                    "name": {
-                        "description": "The name (identifier) of the item.",
-                        "type": "string"
-                    },
-                    "price": {
-                        "description": "How much the item costs.",
-                        "type": "number"
-                    }
-                },
-                "type": "object"
-            },
-            "Oaklands.V1.Sync": {
-                "properties": {
-                    "classic_store": {
-                        "$ref": "#/components/schemas/Oaklands.V1.SyncdInfoWithReset"
-                    },
-                    "meta": {
-                        "$ref": "#/components/schemas/Oaklands.V1.SyncMeta"
-                    },
-                    "stock_market": {
-                        "$ref": "#/components/schemas/Oaklands.V1.SyncdInfoWithReset"
-                    }
-                },
-                "type": "object"
-            },
-            "Oaklands.V1.SyncMeta": {
-                "description": "Information from the experience that is used for sync checks.",
-                "properties": {
-                    "last_update": {
-                        "description": "The last time that data from Oaklands that can be updated from experience changes was synced and updated.",
-                        "type": "string"
-                    },
-                    "next_check": {
-                        "description": "The next time Oaklands will be checked for an update.",
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "Oaklands.V1.SyncdInfoWithReset": {
-                "description": "Sync information for the classic store.",
-                "properties": {
-                    "last_sync": {
-                        "description": "The last time that the resource was updated.",
-                        "type": "string"
-                    },
-                    "next_sync": {
-                        "description": "The next time that the resource will be updated",
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            }
-        }
-    },
+    "swagger": "2.0",
     "info": {
         "description": "This is the official, publicly accessible, API to get data in Typical Developers' experiences.\n# Notes\n- All dates and timestamps are returned in [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) format and are set as a UTC timezone.\u003cbr\u003e\n---\n# Caching\nAll responses will return an `ETag` header, which is an MD5 hash of the response. You are able to use this hash to verify\nif there's updated content by supplying a `If-None-Match` in the requests header for the next request you make.\u003cbr\u003e\n- Status `200 - OK` will be returned if the resource has been updated.\n- Status `304 - Not Modified` will be returned if the resource has not been updated.\n---\n# Ratelimits\nAt the moment, the API does not have any rate limits. Please use the API responsibly by following good practices.\nAbuse detection will result in a indefinite ban from accessing the API. Please reach out in our [Discord Server](https://discord.gg/typical)\nif you have ran into this issue.",
         "title": "Typical Developers - Public Experience API",
-        "version": ""
-    },
-    "externalDocs": {
-        "description": "",
-        "url": ""
+        "contact": {}
     },
     "paths": {
-        "/v1/oaklands/changelogs": {
+        "/oaklands/v1/changelogs": {
             "get": {
                 "description": "Fetch a list of changelog versions with their information.",
+                "tags": [
+                    "Oaklands"
+                ],
                 "parameters": [
                     {
+                        "type": "string",
                         "description": "ETag to validate cached response.",
-                        "in": "header",
                         "name": "If-None-Match",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "in": "header"
                     },
                     {
+                        "enum": [
+                            "desc",
+                            "asc"
+                        ],
+                        "type": "string",
+                        "default": "desc",
                         "description": "The direction to order by. This will use the changelog's date to order.",
-                        "in": "query",
                         "name": "order_by",
-                        "schema": {
-                            "default": "desc",
-                            "enum": [
-                                "desc",
-                                "asc"
-                            ],
-                            "type": "string"
-                        }
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "items": {
-                                                "$ref": "#/components/schemas/Oaklands.V1.ChangelogVersion"
-                                            },
-                                            "type": "array"
-                                        }
-                                    },
-                                    "type": "object"
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Oaklands.V1.ChangelogVersion"
+                                    }
                                 }
                             }
-                        },
-                        "description": "OK"
+                        }
                     },
                     "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
                     },
                     "503": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Service Unavailable"
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
                     }
-                },
-                "tags": [
-                    "Oaklands"
-                ]
+                }
             }
         },
-        "/v1/oaklands/changelogs/{version}": {
+        "/oaklands/v1/changelogs/{version}": {
             "get": {
                 "description": "Fetch a changelog version.",
+                "tags": [
+                    "Oaklands"
+                ],
                 "parameters": [
                     {
+                        "type": "string",
                         "description": "ETag to validate cached response.",
-                        "in": "header",
                         "name": "If-None-Match",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "in": "header"
                     },
                     {
+                        "type": "string",
+                        "default": "latest",
                         "description": "The version of changelog. For quick access to the latest changelog, use 'latest' as the value.",
-                        "in": "path",
                         "name": "version",
-                        "required": true,
-                        "schema": {
-                            "default": "latest",
-                            "type": "string"
-                        }
+                        "in": "path",
+                        "required": true
                     },
                     {
+                        "type": "string",
                         "description": "Use the changelog's id instead. You do not have to provide a value to this, you can just add it as `?useId`.",
-                        "in": "query",
                         "name": "useId",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/components/schemas/Oaklands.V1.Changelog"
-                                        }
-                                    },
-                                    "type": "object"
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "$ref": "#/definitions/Oaklands.V1.Changelog"
                                 }
                             }
-                        },
-                        "description": "OK"
+                        }
                     },
                     "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
                     },
                     "503": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Service Unavailable"
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
                     }
-                },
-                "tags": [
-                    "Oaklands"
-                ]
+                }
             }
         },
-        "/v1/oaklands/economy/stock-market/ores": {
+        "/oaklands/v1/economy/stock-market/ores": {
             "get": {
                 "description": "Fetch the current ore stock market.",
+                "tags": [
+                    "Oaklands"
+                ],
+                "deprecated": true,
                 "parameters": [
                     {
+                        "type": "string",
                         "description": "ETag to validate cached response.",
-                        "in": "header",
                         "name": "If-None-Match",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "in": "header"
                     },
                     {
+                        "enum": [
+                            "name",
+                            "current_multiplier",
+                            "last_multiplier",
+                            "values.current_value",
+                            "values.base_value"
+                        ],
+                        "type": "string",
+                        "default": "current_multiplier",
                         "description": "The field to sort by.",
-                        "in": "query",
                         "name": "sort_by",
-                        "schema": {
-                            "default": "current_multiplier",
-                            "enum": [
-                                "name",
-                                "current_multiplier",
-                                "last_multiplier",
-                                "values.current_value",
-                                "values.base_value"
-                            ],
-                            "type": "string"
-                        }
+                        "in": "query"
                     },
                     {
+                        "enum": [
+                            "desc",
+                            "asc"
+                        ],
+                        "type": "string",
+                        "default": "desc",
                         "description": "The direction to order by.",
-                        "in": "query",
                         "name": "order_by",
-                        "schema": {
-                            "default": "desc",
-                            "enum": [
-                                "desc",
-                                "asc"
-                            ],
-                            "type": "string"
-                        }
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "items": {
-                                                "$ref": "#/components/schemas/Oaklands.V1.StockMarket"
-                                            },
-                                            "type": "array"
-                                        }
-                                    },
-                                    "type": "object"
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Oaklands.V1.StockMarket"
+                                    }
                                 }
                             }
-                        },
-                        "description": "OK"
+                        }
                     },
                     "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
                     },
                     "503": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Service Unavailable"
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
                     }
-                },
-                "tags": [
-                    "Oaklands"
-                ]
+                }
             }
         },
-        "/v1/oaklands/economy/stock-market/rocks": {
+        "/oaklands/v1/economy/stock-market/rocks": {
             "get": {
                 "description": "Fetch the current rock stock market.",
+                "tags": [
+                    "Oaklands"
+                ],
+                "deprecated": true,
                 "parameters": [
                     {
+                        "type": "string",
                         "description": "ETag to validate cached response.",
-                        "in": "header",
                         "name": "If-None-Match",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "in": "header"
                     },
                     {
+                        "enum": [
+                            "name",
+                            "current_multiplier",
+                            "last_multiplier",
+                            "values.current_value",
+                            "values.base_value"
+                        ],
+                        "type": "string",
+                        "default": "current_multiplier",
                         "description": "The field to sort by.",
-                        "in": "query",
                         "name": "sort_by",
-                        "schema": {
-                            "default": "current_multiplier",
-                            "enum": [
-                                "name",
-                                "current_multiplier",
-                                "last_multiplier",
-                                "values.current_value",
-                                "values.base_value"
-                            ],
-                            "type": "string"
-                        }
+                        "in": "query"
                     },
                     {
+                        "enum": [
+                            "desc",
+                            "asc"
+                        ],
+                        "type": "string",
+                        "default": "desc",
                         "description": "The direction to order by.",
-                        "in": "query",
                         "name": "order_by",
-                        "schema": {
-                            "default": "desc",
-                            "enum": [
-                                "desc",
-                                "asc"
-                            ],
-                            "type": "string"
-                        }
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "items": {
-                                                "$ref": "#/components/schemas/Oaklands.V1.StockMarket"
-                                            },
-                                            "type": "array"
-                                        }
-                                    },
-                                    "type": "object"
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Oaklands.V1.StockMarket"
+                                    }
                                 }
                             }
-                        },
-                        "description": "OK"
+                        }
                     },
                     "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
                     },
                     "503": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Service Unavailable"
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
                     }
-                },
-                "tags": [
-                    "Oaklands"
-                ]
+                }
             }
         },
-        "/v1/oaklands/economy/stock-market/trees": {
+        "/oaklands/v1/economy/stock-market/trees": {
             "get": {
                 "description": "Fetch the current tree stock market.",
+                "tags": [
+                    "Oaklands"
+                ],
+                "deprecated": true,
                 "parameters": [
                     {
+                        "type": "string",
                         "description": "ETag to validate cached response.",
-                        "in": "header",
                         "name": "If-None-Match",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "in": "header"
                     },
                     {
+                        "enum": [
+                            "name",
+                            "current_multiplier",
+                            "last_multiplier",
+                            "values.current_value",
+                            "values.base_value"
+                        ],
+                        "type": "string",
+                        "default": "current_multiplier",
                         "description": "The field to sort by.",
-                        "in": "query",
                         "name": "sort_by",
-                        "schema": {
-                            "default": "current_multiplier",
-                            "enum": [
-                                "name",
-                                "current_multiplier",
-                                "last_multiplier",
-                                "values.current_value",
-                                "values.base_value"
-                            ],
-                            "type": "string"
-                        }
+                        "in": "query"
                     },
                     {
+                        "enum": [
+                            "desc",
+                            "asc"
+                        ],
+                        "type": "string",
+                        "default": "desc",
                         "description": "The direction to order by.",
-                        "in": "query",
                         "name": "order_by",
-                        "schema": {
-                            "default": "desc",
-                            "enum": [
-                                "desc",
-                                "asc"
-                            ],
-                            "type": "string"
-                        }
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "items": {
-                                                "$ref": "#/components/schemas/Oaklands.V1.StockMarket"
-                                            },
-                                            "type": "array"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        },
-                        "description": "OK"
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
-                    },
-                    "503": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Service Unavailable"
-                    }
-                },
-                "tags": [
-                    "Oaklands"
-                ]
-            }
-        },
-        "/v1/oaklands/newsletters": {
-            "get": {
-                "description": "Fetch a list of newsletters.",
-                "parameters": [
-                    {
-                        "description": "ETag to validate cached response.",
-                        "in": "header",
-                        "name": "If-None-Match",
+                        "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Oaklands.V1.StockMarket"
+                                    }
+                                }
+                            }
                         }
                     },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/oaklands/v1/newsletters": {
+            "get": {
+                "description": "Fetch a list of newsletters.",
+                "tags": [
+                    "Oaklands"
+                ],
+                "parameters": [
                     {
+                        "type": "string",
+                        "description": "ETag to validate cached response.",
+                        "name": "If-None-Match",
+                        "in": "header"
+                    },
+                    {
+                        "enum": [
+                            "desc",
+                            "asc"
+                        ],
+                        "type": "string",
+                        "default": "desc",
                         "description": "The direction to order by. This will use the changelog's date to order.",
-                        "in": "query",
                         "name": "order_by",
-                        "schema": {
-                            "default": "desc",
-                            "enum": [
-                                "desc",
-                                "asc"
-                            ],
-                            "type": "string"
-                        }
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "items": {
-                                                "$ref": "#/components/schemas/Oaklands.V1.NewsletterEntry"
-                                            },
-                                            "type": "array"
-                                        }
-                                    },
-                                    "type": "object"
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Oaklands.V1.NewsletterEntry"
+                                    }
                                 }
                             }
-                        },
-                        "description": "OK"
+                        }
                     },
                     "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
                     },
                     "503": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Service Unavailable"
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
                     }
-                },
-                "tags": [
-                    "Oaklands"
-                ]
+                }
             }
         },
-        "/v1/oaklands/newsletters/{id}": {
+        "/oaklands/v1/newsletters/{id}": {
             "get": {
                 "description": "Fetch a list of newsletters.",
+                "tags": [
+                    "Oaklands"
+                ],
                 "parameters": [
                     {
+                        "type": "string",
                         "description": "ETag to validate cached response.",
-                        "in": "header",
                         "name": "If-None-Match",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "in": "header"
                     },
                     {
+                        "type": "string",
+                        "default": "latest",
                         "description": "The id of the newsletter. For quick access to the latest newsletter, use 'latest' as the value.",
-                        "in": "path",
                         "name": "id",
-                        "required": true,
-                        "schema": {
-                            "default": "latest",
-                            "type": "string"
-                        }
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/components/schemas/Oaklands.V1.Newsletter"
-                                        }
-                                    },
-                                    "type": "object"
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "$ref": "#/definitions/Oaklands.V1.Newsletter"
                                 }
                             }
-                        },
-                        "description": "OK"
+                        }
                     },
                     "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
                     },
                     "503": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Service Unavailable"
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
                     }
-                },
-                "tags": [
-                    "Oaklands"
-                ]
+                }
             }
         },
-        "/v1/oaklands/stores": {
+        "/oaklands/v1/stores": {
             "get": {
                 "description": "List the available stores.",
+                "tags": [
+                    "Oaklands"
+                ],
                 "parameters": [
                     {
+                        "type": "string",
                         "description": "ETag to validate cached response.",
-                        "in": "header",
                         "name": "If-None-Match",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "in": "header"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "items": {
-                                                "type": "string"
-                                            },
-                                            "type": "array"
-                                        }
-                                    },
-                                    "type": "object"
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
                                 }
                             }
-                        },
-                        "description": "OK"
+                        }
                     },
                     "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
                     },
                     "503": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Service Unavailable"
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
                     }
-                },
-                "tags": [
-                    "Oaklands"
-                ]
+                }
             }
         },
-        "/v1/oaklands/stores/{store_name}": {
+        "/oaklands/v1/stores/{store_name}": {
             "get": {
                 "description": "Fetch the items inside of a specific store.",
+                "tags": [
+                    "Oaklands"
+                ],
                 "parameters": [
                     {
+                        "type": "string",
                         "description": "ETag to validate cached response.",
-                        "in": "header",
                         "name": "If-None-Match",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "in": "header"
                     },
                     {
-                        "description": "The name of the store that you want to fetch.\u003cbr\u003eYou can fetch a list of stores by requesting [`/v1/oaklands/stores`](/#tag/oaklands/GET/v1/oaklands/stores).",
-                        "in": "path",
+                        "type": "string",
+                        "description": "The name of the store that you want to fetch.\u003cbr\u003eYou can fetch a list of stores by requesting [`/oaklands/v1/stores`](/#tag/oaklands/GET/oaklands/v1/stores).",
                         "name": "store_name",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
+                        "in": "path",
+                        "required": true
                     },
                     {
+                        "enum": [
+                            "price",
+                            "name"
+                        ],
+                        "type": "string",
+                        "default": "price",
                         "description": "The value to sort by.",
-                        "in": "query",
                         "name": "sort_by",
-                        "schema": {
-                            "default": "price",
-                            "enum": [
-                                "price",
-                                "name"
-                            ],
-                            "type": "string"
-                        }
+                        "in": "query"
                     },
                     {
+                        "enum": [
+                            "desc",
+                            "asc"
+                        ],
+                        "type": "string",
+                        "default": "desc",
                         "description": "The direction to order by.",
-                        "in": "query",
                         "name": "order_by",
-                        "schema": {
-                            "default": "desc",
-                            "enum": [
-                                "desc",
-                                "asc"
-                            ],
-                            "type": "string"
-                        }
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "items": {
-                                                "$ref": "#/components/schemas/Oaklands.V1.StoreItem"
-                                            },
-                                            "type": "array"
-                                        }
-                                    },
-                                    "type": "object"
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Oaklands.V1.StoreItem"
+                                    }
+                                },
+                                "restock_at": {
+                                    "type": "string"
                                 }
                             }
-                        },
-                        "description": "OK"
+                        }
                     },
                     "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
                     },
                     "503": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Service Unavailable"
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
                     }
-                },
-                "tags": [
-                    "Oaklands"
-                ]
+                }
             }
         },
-        "/v1/oaklands/sync": {
+        "/oaklands/v1/sync": {
             "get": {
                 "description": "Fetch information on when data was last synced from the game.\nIt should be noted that a majority of data is fetched when checking if the experience was updated,\nsuch as newsletters and changelogs. Some content with resync at certain intervals by itself\nalongside update sync checks.\u003cbr\u003e\u003cbr\u003e\nInternally, updates are checked for every **5 minutes**.",
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/components/schemas/Oaklands.V1.Sync"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        },
-                        "description": "OK"
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
-                    },
-                    "503": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Service Unavailable"
-                    }
-                },
                 "tags": [
                     "Oaklands"
-                ]
-            }
-        },
-        "/v1/oaklands/translations": {
-            "get": {
-                "description": "List the available translations.",
-                "parameters": [
-                    {
-                        "description": "ETag to validate cached response.",
-                        "in": "header",
-                        "name": "If-None-Match",
+                ],
+                "deprecated": true,
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "$ref": "#/definitions/Oaklands.V1.Sync"
+                                }
+                            }
                         }
                     },
-                    {
-                        "description": "Return a subset of keys that have a prefix (i.e. using `ItemName` would return values for the keys `ItemName` and `ItemName_description`).\u003cbr\u003eIt is suggested to only return the keys you are needing.",
-                        "in": "query",
-                        "name": "prefix",
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/API.ErrorResponse"
                         }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/oaklands/v1/translations": {
+            "get": {
+                "description": "List the available translations.",
+                "tags": [
+                    "Oaklands"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ETag to validate cached response.",
+                        "name": "If-None-Match",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Return a subset of keys that have a prefix (i.e. using `ItemName` would return values for the keys `ItemName` and `ItemName_description`).\u003cbr\u003eIt is suggested to only return the keys you are needing.",
+                        "name": "prefix",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "additionalProperties": {
-                                                "type": "string"
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    }
                                 }
                             }
-                        },
-                        "description": "OK"
+                        }
                     },
                     "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
                     },
                     "503": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/API.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Service Unavailable"
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
                     }
-                },
+                }
+            }
+        },
+        "/oaklands/v1/version-info": {
+            "get": {
+                "description": "Fetch version information for the game.\nIt should be noted that data is fetched whenever the published version changes.\nInternally, updates are checked for every **1 minute**.",
                 "tags": [
                     "Oaklands"
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "$ref": "#/definitions/oaklands_v1.VersionInfo"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
+                    }
+                }
             }
         }
     },
-    "openapi": "3.1.0",
+    "definitions": {
+        "API.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "description": "The message for the returned error.",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "The type of error that was returned.",
+                    "type": "string"
+                }
+            }
+        },
+        "Oaklands.V1.Changelog": {
+            "type": "object",
+            "properties": {
+                "added": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "changed": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "date": {
+                    "type": "string"
+                },
+                "fixed": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "Oaklands.V1.ChangelogVersion": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "Oaklands.V1.MaterialValues": {
+            "type": "object",
+            "properties": {
+                "base_value": {
+                    "description": "The base value for the material.",
+                    "type": "number"
+                },
+                "current_value": {
+                    "description": "The current value of the material.",
+                    "type": "number"
+                },
+                "type": {
+                    "description": "The type of material.",
+                    "type": "string"
+                }
+            }
+        },
+        "Oaklands.V1.Newsletter": {
+            "type": "object",
+            "properties": {
+                "banner_image_id": {
+                    "description": "The Roblox ID for the banner of the newsletter.",
+                    "type": "string"
+                },
+                "date": {
+                    "description": "The date that the newsletter was released.",
+                    "type": "string"
+                },
+                "header": {
+                    "description": "The primary header of the newsletter.",
+                    "type": "string"
+                },
+                "sections": {
+                    "description": "Sections of the newsletter.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Oaklands.V1.NewsletterSection"
+                    }
+                },
+                "subheader": {
+                    "description": "The secondary header of the newsletter.",
+                    "type": "string"
+                }
+            }
+        },
+        "Oaklands.V1.NewsletterEntry": {
+            "type": "object",
+            "properties": {
+                "banner_image_id": {
+                    "description": "The Roblox ID for the banner of the newsletter.",
+                    "type": "string"
+                },
+                "date": {
+                    "description": "The date that the newsletter was released.",
+                    "type": "string"
+                },
+                "header": {
+                    "description": "The primary header of the newsletter.",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "The ID for the newsletter.",
+                    "type": "string"
+                }
+            }
+        },
+        "Oaklands.V1.NewsletterSection": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "The type of content in the section.",
+                    "type": "array",
+                    "items": {}
+                },
+                "header": {
+                    "description": "The header of the section.",
+                    "type": "string"
+                }
+            }
+        },
+        "Oaklands.V1.StockMarket": {
+            "type": "object",
+            "properties": {
+                "currency_type": {
+                    "description": "The currency of the material.",
+                    "type": "string"
+                },
+                "current_multiplier": {
+                    "description": "The current multiplier.",
+                    "type": "number"
+                },
+                "display_name": {
+                    "description": "The display name of the material.",
+                    "type": "string"
+                },
+                "last_multiplier": {
+                    "description": "The multipler from the last time the stock refreshed.",
+                    "type": "number"
+                },
+                "name": {
+                    "description": "The identifier for the material.",
+                    "type": "string"
+                },
+                "values": {
+                    "description": "The values of the different types for the materials",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Oaklands.V1.MaterialValues"
+                    }
+                }
+            }
+        },
+        "Oaklands.V1.StoreItem": {
+            "type": "object",
+            "properties": {
+                "currency": {
+                    "description": "The currency that is used to purchase the item.",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "The description of the item.",
+                    "type": "string"
+                },
+                "display_name": {
+                    "description": "The display name of the item.",
+                    "type": "string"
+                },
+                "image": {
+                    "description": "The image of the item.",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name (identifier) of the item.",
+                    "type": "string"
+                },
+                "price": {
+                    "description": "How much the item costs.",
+                    "type": "number"
+                }
+            }
+        },
+        "Oaklands.V1.Sync": {
+            "type": "object",
+            "properties": {
+                "classic_store": {
+                    "description": "Sync information for the classic store.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Oaklands.V1.SyncdInfoWithReset"
+                        }
+                    ]
+                },
+                "meta": {
+                    "description": "Information from the experience that is used for sync checks.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Oaklands.V1.SyncMeta"
+                        }
+                    ]
+                },
+                "stock_market": {
+                    "description": "Sync information for the stock market.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Oaklands.V1.SyncdInfoWithReset"
+                        }
+                    ]
+                }
+            }
+        },
+        "Oaklands.V1.SyncMeta": {
+            "type": "object",
+            "properties": {
+                "last_update": {
+                    "description": "The last time that data from Oaklands that can be updated from experience changes was synced and updated.",
+                    "type": "string"
+                },
+                "next_check": {
+                    "description": "The next time Oaklands will be checked for an update.",
+                    "type": "string"
+                }
+            }
+        },
+        "Oaklands.V1.SyncdInfoWithReset": {
+            "type": "object",
+            "properties": {
+                "last_sync": {
+                    "description": "The last time that the resource was updated.",
+                    "type": "string"
+                },
+                "next_sync": {
+                    "description": "The next time that the resource will be updated",
+                    "type": "string"
+                }
+            }
+        },
+        "oaklands_v1.VersionInfo": {
+            "type": "object",
+            "properties": {
+                "last_update": {
+                    "description": "The last time the experience had an update published.",
+                    "type": "string"
+                },
+                "next_check": {
+                    "description": "The next time that the experience will be checked for updates.",
+                    "type": "string"
+                },
+                "version": {
+                    "description": "The current published version of the experience.",
+                    "type": "string"
+                }
+            }
+        }
+    },
     "tags": [
         {
             "description": "All of the available Oaklands endpoints.",

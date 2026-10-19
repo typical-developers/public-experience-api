@@ -1,249 +1,192 @@
-components:
-  schemas:
-    API.ErrorResponse:
-      properties:
-        message:
-          description: The message for the returned error.
+definitions:
+  API.ErrorResponse:
+    properties:
+      message:
+        description: The message for the returned error.
+        type: string
+      type:
+        description: The type of error that was returned.
+        type: string
+    type: object
+  Oaklands.V1.Changelog:
+    properties:
+      added:
+        items:
           type: string
-        type:
-          description: The type of error that was returned.
+        type: array
+      changed:
+        items:
           type: string
-      type: object
-    Oaklands.V1.Changelog:
-      properties:
-        added:
-          items:
-            type: string
-          type: array
-          uniqueItems: false
-        changed:
-          items:
-            type: string
-          type: array
-          uniqueItems: false
-        date:
+        type: array
+      date:
+        type: string
+      fixed:
+        items:
           type: string
-        fixed:
-          items:
-            type: string
-          type: array
-          uniqueItems: false
-        id:
-          type: integer
-        version:
-          type: string
-      type: object
-    Oaklands.V1.ChangelogVersion:
-      properties:
-        date:
-          type: string
-        id:
-          type: integer
-        version:
-          type: string
-      type: object
-    Oaklands.V1.MaterialValues:
-      properties:
-        base_value:
-          description: The base value for the material.
-          type: number
-        current_value:
-          description: The current value of the material.
-          type: number
-        type:
-          description: The type of material.
-          type: string
-      type: object
-    Oaklands.V1.Newsletter:
-      properties:
-        banner_image_id:
-          description: The Roblox ID for the banner of the newsletter.
-          type: string
-        date:
-          description: The date that the newsletter was released.
-          type: string
-        header:
-          description: The primary header of the newsletter.
-          type: string
-        sections:
-          description: Sections of the newsletter.
-          items:
-            $ref: '#/components/schemas/Oaklands.V1.NewsletterSection'
-          type: array
-          uniqueItems: false
-        subheader:
-          description: The secondary header of the newsletter.
-          type: string
-      type: object
-    Oaklands.V1.NewsletterEntry:
-      properties:
-        banner_image_id:
-          description: The Roblox ID for the banner of the newsletter.
-          type: string
-        date:
-          description: The date that the newsletter was released.
-          type: string
-        header:
-          description: The primary header of the newsletter.
-          type: string
-        id:
-          description: The ID for the newsletter.
-          type: string
-      type: object
-    Oaklands.V1.NewsletterImage:
-      properties:
-        image_id:
-          description: The Roblox ID for the image in the section.
-          type: string
-        type:
-          description: The content type.
-          enum:
-          - paragraph
-          - image
-          - image_carousel
-          - video
-          type: string
-      type: object
-    Oaklands.V1.NewsletterImageCarousel:
-      properties:
-        image_ids:
-          description: The Roblox IDs for the images in the section.
-          items:
-            type: string
-          type: array
-          uniqueItems: false
-        type:
-          description: The content type.
-          enum:
-          - paragraph
-          - image
-          - image_carousel
-          - video
-          type: string
-      type: object
-    Oaklands.V1.NewsletterParagraph:
-      properties:
-        text:
-          description: The text contents.
-          type: string
-        type:
-          description: The content type.
-          enum:
-          - paragraph
-          - image
-          - image_carousel
-          - video
-          type: string
-      type: object
-    Oaklands.V1.NewsletterSection:
-      properties:
-        content:
-          description: The type of content in the section.
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/Oaklands.V1.NewsletterParagraph'
-            - $ref: '#/components/schemas/Oaklands.V1.NewsletterImage'
-            - $ref: '#/components/schemas/Oaklands.V1.NewsletterImageCarousel'
-            - $ref: '#/components/schemas/Oaklands.V1.NewsletterVideo'
-          type: array
-          uniqueItems: false
-        header:
-          description: The header of the section.
-          type: string
-      type: object
-    Oaklands.V1.NewsletterVideo:
-      properties:
-        type:
-          description: The content type.
-          enum:
-          - paragraph
-          - image
-          - image_carousel
-          - video
-          type: string
-        video_id:
-          description: The Roblox ID for the video in the section.
-          type: string
-      type: object
-    Oaklands.V1.StockMarket:
-      properties:
-        currency_type:
-          description: The currency of the material.
-          type: string
-        current_multiplier:
-          description: The current multiplier.
-          type: number
-        display_name:
-          description: The display name of the material.
-          type: string
-        last_multiplier:
-          description: The multipler from the last time the stock refreshed.
-          type: number
-        name:
-          description: The identifier for the material.
-          type: string
-        values:
-          description: The values of the different types for the materials
-          items:
-            $ref: '#/components/schemas/Oaklands.V1.MaterialValues'
-          type: array
-          uniqueItems: false
-      type: object
-    Oaklands.V1.StoreItem:
-      properties:
-        currency:
-          description: The currency that is used to purchase the item.
-          type: string
-        description:
-          description: The description of the item.
-          type: string
-        display_name:
-          description: The display name of the item.
-          type: string
-        image:
-          description: The image of the item.
-          type: string
-        name:
-          description: The name (identifier) of the item.
-          type: string
-        price:
-          description: How much the item costs.
-          type: number
-      type: object
-    Oaklands.V1.Sync:
-      properties:
-        classic_store:
-          $ref: '#/components/schemas/Oaklands.V1.SyncdInfoWithReset'
-        meta:
-          $ref: '#/components/schemas/Oaklands.V1.SyncMeta'
-        stock_market:
-          $ref: '#/components/schemas/Oaklands.V1.SyncdInfoWithReset'
-      type: object
-    Oaklands.V1.SyncMeta:
-      description: Information from the experience that is used for sync checks.
-      properties:
-        last_update:
-          description: The last time that data from Oaklands that can be updated from
-            experience changes was synced and updated.
-          type: string
-        next_check:
-          description: The next time Oaklands will be checked for an update.
-          type: string
-      type: object
-    Oaklands.V1.SyncdInfoWithReset:
-      description: Sync information for the classic store.
-      properties:
-        last_sync:
-          description: The last time that the resource was updated.
-          type: string
-        next_sync:
-          description: The next time that the resource will be updated
-          type: string
-      type: object
-externalDocs:
-  description: ""
-  url: ""
+        type: array
+      id:
+        type: integer
+      version:
+        type: string
+    type: object
+  Oaklands.V1.ChangelogVersion:
+    properties:
+      date:
+        type: string
+      id:
+        type: integer
+      version:
+        type: string
+    type: object
+  Oaklands.V1.MaterialValues:
+    properties:
+      base_value:
+        description: The base value for the material.
+        type: number
+      current_value:
+        description: The current value of the material.
+        type: number
+      type:
+        description: The type of material.
+        type: string
+    type: object
+  Oaklands.V1.Newsletter:
+    properties:
+      banner_image_id:
+        description: The Roblox ID for the banner of the newsletter.
+        type: string
+      date:
+        description: The date that the newsletter was released.
+        type: string
+      header:
+        description: The primary header of the newsletter.
+        type: string
+      sections:
+        description: Sections of the newsletter.
+        items:
+          $ref: '#/definitions/Oaklands.V1.NewsletterSection'
+        type: array
+      subheader:
+        description: The secondary header of the newsletter.
+        type: string
+    type: object
+  Oaklands.V1.NewsletterEntry:
+    properties:
+      banner_image_id:
+        description: The Roblox ID for the banner of the newsletter.
+        type: string
+      date:
+        description: The date that the newsletter was released.
+        type: string
+      header:
+        description: The primary header of the newsletter.
+        type: string
+      id:
+        description: The ID for the newsletter.
+        type: string
+    type: object
+  Oaklands.V1.NewsletterSection:
+    properties:
+      content:
+        description: The type of content in the section.
+        items: {}
+        type: array
+      header:
+        description: The header of the section.
+        type: string
+    type: object
+  Oaklands.V1.StockMarket:
+    properties:
+      currency_type:
+        description: The currency of the material.
+        type: string
+      current_multiplier:
+        description: The current multiplier.
+        type: number
+      display_name:
+        description: The display name of the material.
+        type: string
+      last_multiplier:
+        description: The multipler from the last time the stock refreshed.
+        type: number
+      name:
+        description: The identifier for the material.
+        type: string
+      values:
+        description: The values of the different types for the materials
+        items:
+          $ref: '#/definitions/Oaklands.V1.MaterialValues'
+        type: array
+    type: object
+  Oaklands.V1.StoreItem:
+    properties:
+      currency:
+        description: The currency that is used to purchase the item.
+        type: string
+      description:
+        description: The description of the item.
+        type: string
+      display_name:
+        description: The display name of the item.
+        type: string
+      image:
+        description: The image of the item.
+        type: string
+      name:
+        description: The name (identifier) of the item.
+        type: string
+      price:
+        description: How much the item costs.
+        type: number
+    type: object
+  Oaklands.V1.Sync:
+    properties:
+      classic_store:
+        allOf:
+        - $ref: '#/definitions/Oaklands.V1.SyncdInfoWithReset'
+        description: Sync information for the classic store.
+      meta:
+        allOf:
+        - $ref: '#/definitions/Oaklands.V1.SyncMeta'
+        description: Information from the experience that is used for sync checks.
+      stock_market:
+        allOf:
+        - $ref: '#/definitions/Oaklands.V1.SyncdInfoWithReset'
+        description: Sync information for the stock market.
+    type: object
+  Oaklands.V1.SyncMeta:
+    properties:
+      last_update:
+        description: The last time that data from Oaklands that can be updated from
+          experience changes was synced and updated.
+        type: string
+      next_check:
+        description: The next time Oaklands will be checked for an update.
+        type: string
+    type: object
+  Oaklands.V1.SyncdInfoWithReset:
+    properties:
+      last_sync:
+        description: The last time that the resource was updated.
+        type: string
+      next_sync:
+        description: The next time that the resource will be updated
+        type: string
+    type: object
+  oaklands_v1.VersionInfo:
+    properties:
+      last_update:
+        description: The last time the experience had an update published.
+        type: string
+      next_check:
+        description: The next time that the experience will be checked for updates.
+        type: string
+      version:
+        description: The current published version of the experience.
+        type: string
+    type: object
 info:
+  contact: {}
   description: |-
     This is the official, publicly accessible, API to get data in Typical Developers' experiences.
     # Notes
@@ -260,452 +203,379 @@ info:
     Abuse detection will result in a indefinite ban from accessing the API. Please reach out in our [Discord Server](https://discord.gg/typical)
     if you have ran into this issue.
   title: Typical Developers - Public Experience API
-  version: ""
-openapi: 3.1.0
 paths:
-  /v1/oaklands/changelogs:
+  /oaklands/v1/changelogs:
     get:
       description: Fetch a list of changelog versions with their information.
       parameters:
       - description: ETag to validate cached response.
         in: header
         name: If-None-Match
-        schema:
-          type: string
-      - description: The direction to order by. This will use the changelog's date
+        type: string
+      - default: desc
+        description: The direction to order by. This will use the changelog's date
           to order.
+        enum:
+        - desc
+        - asc
         in: query
         name: order_by
-        schema:
-          default: desc
-          enum:
-          - desc
-          - asc
-          type: string
+        type: string
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                properties:
-                  data:
-                    items:
-                      $ref: '#/components/schemas/Oaklands.V1.ChangelogVersion'
-                    type: array
-                type: object
           description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/Oaklands.V1.ChangelogVersion'
+                type: array
+            type: object
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
         "503":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
       tags:
       - Oaklands
-  /v1/oaklands/changelogs/{version}:
+  /oaklands/v1/changelogs/{version}:
     get:
       description: Fetch a changelog version.
       parameters:
       - description: ETag to validate cached response.
         in: header
         name: If-None-Match
-        schema:
-          type: string
-      - description: The version of changelog. For quick access to the latest changelog,
+        type: string
+      - default: latest
+        description: The version of changelog. For quick access to the latest changelog,
           use 'latest' as the value.
         in: path
         name: version
         required: true
-        schema:
-          default: latest
-          type: string
+        type: string
       - description: Use the changelog's id instead. You do not have to provide a
           value to this, you can just add it as `?useId`.
         in: query
         name: useId
-        schema:
-          type: string
+        type: string
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Oaklands.V1.Changelog'
-                type: object
           description: OK
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/Oaklands.V1.Changelog'
+            type: object
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
         "503":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
       tags:
       - Oaklands
-  /v1/oaklands/economy/stock-market/ores:
+  /oaklands/v1/economy/stock-market/ores:
     get:
+      deprecated: true
       description: Fetch the current ore stock market.
       parameters:
       - description: ETag to validate cached response.
         in: header
         name: If-None-Match
-        schema:
-          type: string
-      - description: The field to sort by.
+        type: string
+      - default: current_multiplier
+        description: The field to sort by.
+        enum:
+        - name
+        - current_multiplier
+        - last_multiplier
+        - values.current_value
+        - values.base_value
         in: query
         name: sort_by
-        schema:
-          default: current_multiplier
-          enum:
-          - name
-          - current_multiplier
-          - last_multiplier
-          - values.current_value
-          - values.base_value
-          type: string
-      - description: The direction to order by.
+        type: string
+      - default: desc
+        description: The direction to order by.
+        enum:
+        - desc
+        - asc
         in: query
         name: order_by
-        schema:
-          default: desc
-          enum:
-          - desc
-          - asc
-          type: string
+        type: string
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                properties:
-                  data:
-                    items:
-                      $ref: '#/components/schemas/Oaklands.V1.StockMarket'
-                    type: array
-                type: object
           description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/Oaklands.V1.StockMarket'
+                type: array
+            type: object
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
         "503":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
       tags:
       - Oaklands
-  /v1/oaklands/economy/stock-market/rocks:
+  /oaklands/v1/economy/stock-market/rocks:
     get:
+      deprecated: true
       description: Fetch the current rock stock market.
       parameters:
       - description: ETag to validate cached response.
         in: header
         name: If-None-Match
-        schema:
-          type: string
-      - description: The field to sort by.
+        type: string
+      - default: current_multiplier
+        description: The field to sort by.
+        enum:
+        - name
+        - current_multiplier
+        - last_multiplier
+        - values.current_value
+        - values.base_value
         in: query
         name: sort_by
-        schema:
-          default: current_multiplier
-          enum:
-          - name
-          - current_multiplier
-          - last_multiplier
-          - values.current_value
-          - values.base_value
-          type: string
-      - description: The direction to order by.
+        type: string
+      - default: desc
+        description: The direction to order by.
+        enum:
+        - desc
+        - asc
         in: query
         name: order_by
-        schema:
-          default: desc
-          enum:
-          - desc
-          - asc
-          type: string
+        type: string
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                properties:
-                  data:
-                    items:
-                      $ref: '#/components/schemas/Oaklands.V1.StockMarket'
-                    type: array
-                type: object
           description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/Oaklands.V1.StockMarket'
+                type: array
+            type: object
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
         "503":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
       tags:
       - Oaklands
-  /v1/oaklands/economy/stock-market/trees:
+  /oaklands/v1/economy/stock-market/trees:
     get:
+      deprecated: true
       description: Fetch the current tree stock market.
       parameters:
       - description: ETag to validate cached response.
         in: header
         name: If-None-Match
-        schema:
-          type: string
-      - description: The field to sort by.
+        type: string
+      - default: current_multiplier
+        description: The field to sort by.
+        enum:
+        - name
+        - current_multiplier
+        - last_multiplier
+        - values.current_value
+        - values.base_value
         in: query
         name: sort_by
-        schema:
-          default: current_multiplier
-          enum:
-          - name
-          - current_multiplier
-          - last_multiplier
-          - values.current_value
-          - values.base_value
-          type: string
-      - description: The direction to order by.
+        type: string
+      - default: desc
+        description: The direction to order by.
+        enum:
+        - desc
+        - asc
         in: query
         name: order_by
-        schema:
-          default: desc
-          enum:
-          - desc
-          - asc
-          type: string
+        type: string
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                properties:
-                  data:
-                    items:
-                      $ref: '#/components/schemas/Oaklands.V1.StockMarket'
-                    type: array
-                type: object
           description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/Oaklands.V1.StockMarket'
+                type: array
+            type: object
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
         "503":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
       tags:
       - Oaklands
-  /v1/oaklands/newsletters:
+  /oaklands/v1/newsletters:
     get:
       description: Fetch a list of newsletters.
       parameters:
       - description: ETag to validate cached response.
         in: header
         name: If-None-Match
-        schema:
-          type: string
-      - description: The direction to order by. This will use the changelog's date
+        type: string
+      - default: desc
+        description: The direction to order by. This will use the changelog's date
           to order.
+        enum:
+        - desc
+        - asc
         in: query
         name: order_by
-        schema:
-          default: desc
-          enum:
-          - desc
-          - asc
-          type: string
+        type: string
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                properties:
-                  data:
-                    items:
-                      $ref: '#/components/schemas/Oaklands.V1.NewsletterEntry'
-                    type: array
-                type: object
           description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/Oaklands.V1.NewsletterEntry'
+                type: array
+            type: object
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
         "503":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
       tags:
       - Oaklands
-  /v1/oaklands/newsletters/{id}:
+  /oaklands/v1/newsletters/{id}:
     get:
       description: Fetch a list of newsletters.
       parameters:
       - description: ETag to validate cached response.
         in: header
         name: If-None-Match
-        schema:
-          type: string
-      - description: The id of the newsletter. For quick access to the latest newsletter,
+        type: string
+      - default: latest
+        description: The id of the newsletter. For quick access to the latest newsletter,
           use 'latest' as the value.
         in: path
         name: id
         required: true
-        schema:
-          default: latest
-          type: string
+        type: string
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Oaklands.V1.Newsletter'
-                type: object
           description: OK
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/Oaklands.V1.Newsletter'
+            type: object
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
         "503":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
       tags:
       - Oaklands
-  /v1/oaklands/stores:
+  /oaklands/v1/stores:
     get:
       description: List the available stores.
       parameters:
       - description: ETag to validate cached response.
         in: header
         name: If-None-Match
-        schema:
-          type: string
+        type: string
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                properties:
-                  data:
-                    items:
-                      type: string
-                    type: array
-                type: object
           description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  type: string
+                type: array
+            type: object
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
         "503":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
       tags:
       - Oaklands
-  /v1/oaklands/stores/{store_name}:
+  /oaklands/v1/stores/{store_name}:
     get:
       description: Fetch the items inside of a specific store.
       parameters:
       - description: ETag to validate cached response.
         in: header
         name: If-None-Match
-        schema:
-          type: string
+        type: string
       - description: The name of the store that you want to fetch.<br>You can fetch
-          a list of stores by requesting [`/v1/oaklands/stores`](/#tag/oaklands/GET/v1/oaklands/stores).
+          a list of stores by requesting [`/oaklands/v1/stores`](/#tag/oaklands/GET/oaklands/v1/stores).
         in: path
         name: store_name
         required: true
-        schema:
-          type: string
-      - description: The value to sort by.
+        type: string
+      - default: price
+        description: The value to sort by.
+        enum:
+        - price
+        - name
         in: query
         name: sort_by
-        schema:
-          default: price
-          enum:
-          - price
-          - name
-          type: string
-      - description: The direction to order by.
+        type: string
+      - default: desc
+        description: The direction to order by.
+        enum:
+        - desc
+        - asc
         in: query
         name: order_by
-        schema:
-          default: desc
-          enum:
-          - desc
-          - asc
-          type: string
+        type: string
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                properties:
-                  data:
-                    items:
-                      $ref: '#/components/schemas/Oaklands.V1.StoreItem'
-                    type: array
-                type: object
           description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/Oaklands.V1.StoreItem'
+                type: array
+              restock_at:
+                type: string
+            type: object
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
         "503":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
       tags:
       - Oaklands
-  /v1/oaklands/sync:
+  /oaklands/v1/sync:
     get:
+      deprecated: true
       description: |-
         Fetch information on when data was last synced from the game.
         It should be noted that a majority of data is fetched when checking if the experience was updated,
@@ -714,70 +584,81 @@ paths:
         Internally, updates are checked for every **5 minutes**.
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Oaklands.V1.Sync'
-                type: object
           description: OK
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/Oaklands.V1.Sync'
+            type: object
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
         "503":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
       tags:
       - Oaklands
-  /v1/oaklands/translations:
+  /oaklands/v1/translations:
     get:
       description: List the available translations.
       parameters:
       - description: ETag to validate cached response.
         in: header
         name: If-None-Match
-        schema:
-          type: string
+        type: string
       - description: Return a subset of keys that have a prefix (i.e. using `ItemName`
           would return values for the keys `ItemName` and `ItemName_description`).<br>It
           is suggested to only return the keys you are needing.
         in: query
         name: prefix
-        schema:
-          type: string
+        type: string
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                properties:
-                  data:
-                    additionalProperties:
-                      type: string
-                    type: object
-                type: object
           description: OK
+          schema:
+            properties:
+              data:
+                additionalProperties:
+                  type: string
+                type: object
+            type: object
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
         "503":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/API.ErrorResponse'
           description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
       tags:
       - Oaklands
+  /oaklands/v1/version-info:
+    get:
+      description: |-
+        Fetch version information for the game.
+        It should be noted that data is fetched whenever the published version changes.
+        Internally, updates are checked for every **1 minute**.
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/oaklands_v1.VersionInfo'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+      tags:
+      - Oaklands
+swagger: "2.0"
 tags:
 - description: All of the available Oaklands endpoints.
   name: Oaklands

@@ -1,6 +1,10 @@
 package oaklands_v1
 
-import "time"
+import (
+	"time"
+
+	"github.com/typical-developers/public-experience-api/cmd/public/rest"
+)
 
 // @name	Oaklands.V1.MaterialValues
 type MaterialValues struct {
@@ -143,3 +147,21 @@ type StoreItem struct {
 	// How much the item costs.
 	Price float64 `json:"price"`
 } //	@name	Oaklands.V1.StoreItem
+
+// @name	Oaklands.V1.StoreResponse
+type StoreResponse struct {
+	// The time that the store will run a restock of items.
+	RestockAt *time.Time `json:"restock_at,omitempty"`
+	// The items in the store.
+	rest.Response[[]StoreItem]
+}
+
+// @name	Oaklands.V1.Status
+type VersionInfo struct {
+	// The current published version of the experience.
+	Version string `json:"version"`
+	// The last time the experience had an update published.
+	LastUpdate time.Time `json:"last_update"`
+	// The next time that the experience will be checked for updates.
+	NextCheck time.Time `json:"next_check"`
+}

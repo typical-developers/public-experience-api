@@ -14,6 +14,7 @@ import (
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/oaklands_v1"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/static"
 	"github.com/typical-developers/public-experience-api/internal/config"
+	"github.com/typical-developers/public-experience-api/internal/data"
 	"github.com/typical-developers/public-experience-api/internal/logger"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
 )
@@ -79,6 +80,7 @@ func main() {
 	oaklands_v1.NewOaklandsV1(r, &oaklands_v1.OaklandsV1Opts{
 		OpencloudClient: oc,
 		Usecase:         oaklandsUsecase,
+		Store:           data.NewOaklandsStore(redis),
 	})
 
 	r.NotFound(static.ServeStatic())

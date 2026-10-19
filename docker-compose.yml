@@ -28,7 +28,7 @@ services:
       dockerfile: deployments/docker/workers/Dockerfile
     networks:
       - default
-    env_file: cmd/workers/.env
+    env_file: .env
     depends_on:
       redis:
         condition: service_healthy
@@ -39,7 +39,7 @@ services:
       dockerfile: deployments/docker/public/Dockerfile
     networks:
       - default
-    env_file: cmd/public/.env
+    env_file: .env
     depends_on:
       redis:
         condition: service_healthy

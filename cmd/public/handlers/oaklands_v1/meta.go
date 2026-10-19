@@ -7,18 +7,56 @@ import (
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
 
-//	@Router			/v1/oaklands/sync [GET]
+//	@Router			/oaklands/v1/version-info [GET]
+//	@Description	Fetch version information for the game.
+//	@Description	It should be noted that data is fetched whenever the published version changes.
+//	@Description	Internally, updates are checked for every **1 minute**.
+//
+//	@Tags			Oaklands
+//
+//	@Success		200	{object}	object{data=VersionInfo}
+//	@Failure		500	{object}	rest.ErrorResponse
+//	@Failure		503	{object}	rest.ErrorResponse
+//
+// swagger:ignore
+func (o OaklandsV1Routes) GetVersionInfo(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	info, err := o.store.Version.Get(ctx)
+	if err != nil {
+		rest.WriteRESTError(w, err)
+		return
+	}
+
+	response := rest.Response[VersionInfo]{
+		Data: VersionInfo{
+			Version:    info.Version,
+			LastUpdate: info.LastUpdate,
+			NextCheck:  info.NextCheck,
+		},
+	}
+
+	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=60")
+	if err := httpx.WriteJSON(w, response, http.StatusOK); err != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+}
+
+//	@Router			/oaklands/v1/sync [GET]
 //	@Description	Fetch information on when data was last synced from the game.
 //	@Description	It should be noted that a majority of data is fetched when checking if the experience was updated,
 //	@Description	such as newsletters and changelogs. Some content with resync at certain intervals by itself
 //	@Description	alongside update sync checks.<br><br>
 //	@Description	Internally, updates are checked for every **5 minutes**.
 //
-//	@Tags			Oaklands
+//	@Deprecated
 //
-//	@Success		200	{object}	object{data=Sync}
-//	@Failure		500	{object}	rest.ErrorResponse
-//	@Failure		503	{object}	rest.ErrorResponse
+//	@Tags		Oaklands
+//
+//	@Success	200	{object}	object{data=Sync}
+//	@Failure	500	{object}	rest.ErrorResponse
+//	@Failure	503	{object}	rest.ErrorResponse
 //
 // swagger:ignore
 func (o OaklandsV1Routes) GetSyncTimes(w http.ResponseWriter, r *http.Request) {

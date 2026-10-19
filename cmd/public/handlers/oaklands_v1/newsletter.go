@@ -2,19 +2,27 @@ package oaklands_v1
 
 import (
 	"net/http"
+	"slices"
 	"sort"
-	"time"
+	"strings"
 
 	"github.com/go-chi/chi"
+	"github.com/redis/go-redis/v9"
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
 
-func (o *OaklandsV1Routes) sortNewsletters(values []oaklands.NewsletterEntry, orderBy string) []oaklands.NewsletterEntry {
+func (o *OaklandsV1Routes) sortNewsletters(values []NewsletterEntry, orderBy string) []NewsletterEntry {
 	descending := orderBy == "desc"
 
 	sort.Slice(values, func(i, j int) bool {
+		if values[i].Date.Equal(values[j].Date) {
+			if descending {
+				return values[i].ID > values[j].ID
+			}
+			return values[i].ID < values[j].ID
+		}
 		if descending {
 			return values[i].Date.After(values[j].Date)
 		}
@@ -25,7 +33,7 @@ func (o *OaklandsV1Routes) sortNewsletters(values []oaklands.NewsletterEntry, or
 	return values
 }
 
-//	@Router			/v1/oaklands/newsletters [GET]
+//	@Router			/oaklands/v1/newsletters [GET]
 //	@Description	Fetch a list of newsletters.
 //
 //	@Tags			Oaklands
@@ -43,25 +51,43 @@ func (o *OaklandsV1Routes) ListNewsletters(w http.ResponseWriter, r *http.Reques
 
 	orderBy := httpx.QueryGet(r, "order_by", "desc")
 
-	newsletters, err := o.uc.GetNewsletters(ctx)
+	config, err := o.store.Config.Get(ctx)
 	if err != nil {
 		rest.WriteRESTError(w, err)
 		return
 	}
 
-	newsletters = o.sortNewsletters(newsletters, orderBy)
-	response := rest.Response[[]NewsletterEntry]{
-		Data: make([]NewsletterEntry, len(newsletters)),
+	ids, err := o.store.Newsletter.Keys(ctx)
+	if err != nil {
+		rest.WriteRESTError(w, err)
+		return
+	}
+	if len(ids) == 0 {
+		rest.WriteRESTError(w, redis.Nil)
+		return
 	}
 
-	for i, entry := range newsletters {
-		response.Data[i] = NewsletterEntry{
-			ID:            entry.ID,
+	newsletters, err := o.store.Newsletter.GetMany(ctx, ids...)
+	if err != nil {
+		rest.WriteRESTError(w, err)
+		return
+	}
+
+	response := rest.Response[[]NewsletterEntry]{
+		Data: make([]NewsletterEntry, 0, len(newsletters)),
+	}
+	for id, entry := range newsletters {
+		if slices.Contains(config.HiddenNewsletters, id) {
+			continue
+		}
+		response.Data = append(response.Data, NewsletterEntry{
+			ID:            id,
 			Header:        entry.Header,
 			BannerImageId: entry.BannerImageId,
 			Date:          entry.Date,
-		}
+		})
 	}
+	response.Data = o.sortNewsletters(response.Data, orderBy)
 
 	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -69,7 +95,7 @@ func (o *OaklandsV1Routes) ListNewsletters(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-//	@Router			/v1/oaklands/newsletters/{id} [GET]
+//	@Router			/oaklands/v1/newsletters/{id} [GET]
 //	@Description	Fetch a list of newsletters.
 //
 //	@Tags			Oaklands
@@ -86,24 +112,38 @@ func (o *OaklandsV1Routes) GetNewsletter(w http.ResponseWriter, r *http.Request)
 	ctx := r.Context()
 
 	id := chi.URLParam(r, "id")
-	newsletter, err := o.uc.GetNewsletter(ctx, id)
+	if id == "latest" {
+		config, err := o.store.Config.Get(ctx)
+		if err == nil && config.NewsletterOverride != "" && config.NewsletterOverride != "Default" {
+			id = config.NewsletterOverride
+		}
+	}
+	if strings.EqualFold(id, "latest") {
+		latest, err := o.store.NewsletterLatest.Get(ctx)
+		if err != nil {
+			rest.WriteRESTError(w, err)
+			return
+		}
+		id = latest
+	}
+
+	newsletter, err := o.store.Newsletter.Get(ctx, id)
 	if err != nil {
 		rest.WriteRESTError(w, err)
 		return
 	}
 
-	releaseDate, _ := time.Parse(time.RFC3339, newsletter.DateToISO8601())
 	response := rest.Response[Newsletter]{
 		Data: Newsletter{
 			Header:        newsletter.Header,
 			Subheader:     newsletter.Subheader,
-			Date:          releaseDate,
+			Date:          newsletter.Date,
 			BannerImageId: newsletter.BannerImageId,
-			Sections:      make([]NewsletterSection, len(newsletter.Sections)),
+			Sections:      make([]NewsletterSection, len(newsletter.Section)),
 		},
 	}
 
-	for i, section := range newsletter.Sections {
+	for i, section := range newsletter.Section {
 		sectionContent := make([]any, len(section.Content))
 
 		for j, content := range section.Content {
