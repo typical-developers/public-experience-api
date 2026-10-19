@@ -27,6 +27,30 @@ func NewOaklandsV1(r *chi.Mux, opts *OaklandsV1Opts) {
 		store:     opts.Store,
 	}
 
+	// Temporarily route through the old /v1/oaklands routes as well.
+	// Removing before production deployment is out.
+	r.Route("/v1/oaklands", func(r chi.Router) {
+		r.Get("/version-info", o.GetVersionInfo)
+
+		r.Route("/changelogs", func(r chi.Router) {
+			r.Get("/", o.ListChangelogs)
+			r.Get("/{version}", o.GetChangelog)
+		})
+
+		r.Route("/newsletters", func(r chi.Router) {
+			r.Get("/", o.ListNewsletters)
+			r.Get("/{id}", o.GetNewsletter)
+		})
+
+		r.Route("/stores", func(r chi.Router) {
+			r.Get("/", o.ListStores)
+			r.Get("/{store_name}", o.GetStore)
+		})
+
+		r.Get("/translations", o.GetTranslations)
+	})
+	// ----
+
 	r.Route("/oaklands/v1", func(r chi.Router) {
 		r.Get("/version-info", o.GetVersionInfo)
 
