@@ -18,9 +18,6 @@ type Config struct {
 	// The Opencloud API key necessary for accessing Roblox's Opencloud endpoints.
 	OpencloudKey string `env:"OPENCLOUD_KEY,required"`
 
-	// A place version override to run when executing Luau scripts in Oaklands.
-	OaklandsPlaceVerisonOverride *string `env:"OAKLANDS_PLACE_VERSION_OVERRIDE"`
-
 	// The webhook used for logging errors and panics.
 	LogWebhookURL *string `env:"LOG_WEBHOOK_URL"`
 

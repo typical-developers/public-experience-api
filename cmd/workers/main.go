@@ -40,10 +40,6 @@ func main() {
 		oaklands.SetStaging()
 	}
 
-	if config.C.OaklandsPlaceVerisonOverride != nil {
-		oaklands.SetPlaceVersionOverride(*config.C.OaklandsPlaceVerisonOverride)
-	}
-
 	l := CustomCronLogger{zap.L().Sugar()}
 	c := cron.New(
 		cron.WithLogger(l),
