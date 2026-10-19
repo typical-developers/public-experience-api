@@ -2,10 +2,8 @@ package config
 
 import (
 	"strings"
-	"sync"
 
 	"github.com/caarlos0/env/v10"
-	_ "github.com/joho/godotenv/autoload"
 )
 
 type Config struct {
@@ -35,11 +33,10 @@ type Config struct {
 }
 
 var (
-	once sync.Once
-	C    Config
+	C Config
 )
 
-func setupConfig() {
+func init() {
 	if err := env.Parse(&C); err != nil {
 		panic(err)
 	}
@@ -51,8 +48,4 @@ func setupConfig() {
 			C.LogLevel = "info"
 		}
 	}
-}
-
-func init() {
-	once.Do(setupConfig)
 }

@@ -10,10 +10,10 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/redis/go-redis/v9"
 	"github.com/typical-developers/goblox/opencloud"
-	"github.com/typical-developers/public-experience-api/cmd/public/config"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/health"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/oaklands_v1"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/static"
+	"github.com/typical-developers/public-experience-api/internal/config"
 	"github.com/typical-developers/public-experience-api/internal/logger"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
 )
@@ -83,6 +83,5 @@ func main() {
 
 	r.NotFound(static.ServeStatic())
 
-	port := fmt.Sprintf(":%s", config.C.Port)
-	panic(http.ListenAndServe(port, r))
+	panic(http.ListenAndServe(":8080", r))
 }

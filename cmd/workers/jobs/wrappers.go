@@ -10,7 +10,7 @@ import (
 
 	"github.com/robfig/cron/v3"
 	webhooks "github.com/typical-developers/discord-webhooks-go/v2"
-	"github.com/typical-developers/public-experience-api/cmd/workers/config"
+	"github.com/typical-developers/public-experience-api/internal/config"
 	"go.uber.org/zap"
 )
 
