@@ -10,6 +10,7 @@ import (
 
 	"github.com/redis/go-redis/v9"
 	"github.com/typical-developers/goblox/opencloud"
+	"github.com/typical-developers/public-experience-api/internal/config"
 	"github.com/typical-developers/public-experience-api/internal/data"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
 	"github.com/typical-developers/public-experience-api/internal/scripts"
@@ -110,7 +111,7 @@ func (c *OaklandsCronJobs) getRecentPublishedVersion(ctx context.Context) (*open
 		}
 
 		for _, assetVersion := range versions.AssetVersions {
-			if !assetVersion.Published {
+			if !config.C.Oaklands.AlwaysExecuteInLatest && !assetVersion.Published {
 				continue
 			}
 

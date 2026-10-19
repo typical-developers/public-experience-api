@@ -21,6 +21,10 @@ type Config struct {
 	// The webhook used for logging errors and panics.
 	LogWebhookURL *string `env:"LOG_WEBHOOK_URL"`
 
+	Oaklands struct {
+		AlwaysExecuteInLatest bool `env:"ALWAYS_EXECUTE_IN_LATEST" envDefault:"false"`
+	} `envPrefix:"OAKLANDS_"`
+
 	// The config for the Redis instance used for ephemeral storage.
 	Redis struct {
 		Host     string `env:"HOST" envDefault:"localhost"`

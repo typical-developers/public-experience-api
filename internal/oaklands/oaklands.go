@@ -5,6 +5,7 @@ import (
 	_ "embed"
 
 	"github.com/typical-developers/goblox/opencloud"
+	"github.com/typical-developers/public-experience-api/internal/config"
 	"github.com/typical-developers/public-experience-api/internal/scripts"
 	"go.uber.org/zap"
 )
@@ -97,7 +98,7 @@ func GetContentSync(ctx context.Context, oc *opencloud.Client) (*ContentSyncData
 		PlaceID:            LuauExecutionPlaceID,
 		EnableBinaryOutput: new(true),
 	}
-	if PlaceVersionOverride != nil {
+	if PlaceVersionOverride != nil && !config.C.Oaklands.AlwaysExecuteInLatest {
 		zap.L().Debug("version",
 			zap.String("message", "PlaceVersionOverride is not nil, running script in specified version."),
 			zap.String("version", *PlaceVersionOverride),
@@ -130,7 +131,7 @@ func GetStockMarket(ctx context.Context, oc *opencloud.Client) (*StockMarketData
 		PlaceID:            LuauExecutionPlaceID,
 		EnableBinaryOutput: new(true),
 	}
-	if PlaceVersionOverride != nil {
+	if PlaceVersionOverride != nil && !config.C.Oaklands.AlwaysExecuteInLatest {
 		zap.L().Debug("version",
 			zap.String("message", "PlaceVersionOverride is not nil, running script in specified version."),
 			zap.String("version", *PlaceVersionOverride),
@@ -160,7 +161,7 @@ func GetClassicShop(ctx context.Context, oc *opencloud.Client) ([]string, error)
 		UniverseID: UniverseID,
 		PlaceID:    LuauExecutionPlaceID,
 	}
-	if PlaceVersionOverride != nil {
+	if PlaceVersionOverride != nil && !config.C.Oaklands.AlwaysExecuteInLatest {
 		zap.L().Debug("version",
 			zap.String("message", "PlaceVersionOverride is not nil, running script in specified version."),
 			zap.String("version", *PlaceVersionOverride),
