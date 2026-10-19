@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/typical-developers/goblox/opencloud"
@@ -85,10 +86,16 @@ func (s *Script) poll(ctx context.Context, task *opencloud.LuauExecutionTask) (*
 			case opencloud.LuauExecutionStateCancelled:
 				return task, ErrScriptExecutionCancelled
 			case opencloud.LuauExecutionStateFailed:
-				if task.Error != nil {
-					return task, errors.New(task.Error.Message)
+				if task.Error == nil {
+					return task, ErrScriptExecutionFailed
 				}
-				return task, ErrScriptExecutionFailed
+
+				message := task.Error.Message
+				if strings.Contains(message, ErrModuleErrored.Error()) {
+					return task, fmt.Errorf("%w: %s", ErrModuleErrored, message)
+				}
+
+				return task, errors.New(message)
 			case opencloud.LuauExecutionStateComplete:
 				return task, nil
 			default:
