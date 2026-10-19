@@ -2,6 +2,7 @@ package jobs
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -11,6 +12,7 @@ import (
 	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/internal/data"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
+	"github.com/typical-developers/public-experience-api/internal/scripts"
 	"go.uber.org/zap"
 )
 
@@ -141,19 +143,15 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 	if err != nil && err != redis.Nil {
 		panic(err)
 	}
-	contentCached := version == lastVersion.Version
-	if contentCached {
-		_, translationsErr := c.store.Translations.Get(ctx, "en_us")
-		if translationsErr != nil && translationsErr != redis.Nil {
-			panic(translationsErr)
-		}
-		_, newsletterErr := c.store.NewsletterLatest.Get(ctx)
-		if newsletterErr != nil && newsletterErr != redis.Nil {
-			panic(newsletterErr)
-		}
-		contentCached = translationsErr == nil && newsletterErr == nil
+
+	if dead, err := c.store.DeadVersions.Get(ctx, fmt.Sprintf("%s:%s", oaklands.LuauExecutionPlaceID, version)); err == nil && dead {
+		zap.L().Debug("Latest published version is flagged dead, will not fetch.",
+			zap.String("version", version),
+		)
+		return
 	}
-	if contentCached {
+
+	if version == lastVersion.Version {
 		zap.L().Debug("No new published version, will not refetch.")
 
 		if err := c.store.Version.Set(ctx, data.OaklandsVersion{
@@ -166,6 +164,27 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 		}
 
 		return
+	}
+
+	oaklands.SetPlaceVersionOverride(version)
+	content, err := oaklands.GetContentSync(ctx, c.opencloud)
+	if err != nil {
+		if errors.Is(err, scripts.ErrModuleErrored) {
+			zap.L().Debug("The most recently fetched version is dead.",
+				zap.String("version", version),
+			)
+
+			// set to last alive version
+			if lastVersion.Version != "" {
+				oaklands.SetPlaceVersionOverride(lastVersion.Version)
+			}
+
+			_ = c.store.DeadVersions.Set(ctx, fmt.Sprintf("%s:%s", oaklands.LuauExecutionPlaceID, version), true)
+
+			return
+		}
+
+		panic(err)
 	}
 
 	place, _, err := c.opencloud.UniverseAndPlaces.GetPlace(ctx, oaklands.UniverseID, oaklands.LuauExecutionPlaceID)
@@ -184,12 +203,6 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 		LastCheck:  now,
 		NextCheck:  now.Truncate(time.Minute).Add(time.Minute),
 	}); err != nil {
-		panic(err)
-	}
-	oaklands.SetPlaceVersionOverride(version)
-
-	content, err := oaklands.GetContentSync(ctx, c.opencloud)
-	if err != nil {
 		panic(err)
 	}
 
@@ -285,6 +298,10 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 // RefreshClassicShop will fetch and update the classic shop.
 // This happens every 12 hours.
 func (c *OaklandsCronJobs) RefreshClassicShop(ctx context.Context) {
+	if oaklands.PlaceVersionOverride == nil {
+		return
+	}
+
 	items, err := oaklands.GetClassicShop(context.Background(), c.opencloud)
 	if err != nil {
 		panic(err)

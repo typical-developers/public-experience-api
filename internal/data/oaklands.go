@@ -110,8 +110,9 @@ type OaklandsNewsletter struct {
 }
 
 type OaklandsStore struct {
-	Config  *RedisValue[OaklandsConfig]
-	Version *RedisValue[OaklandsVersion]
+	Config       *RedisValue[OaklandsConfig]
+	Version      *RedisValue[OaklandsVersion]
+	DeadVersions *RedisHash[bool]
 
 	StoreStock *RedisHash[[]string]
 	Items      *RedisHash[OaklandsItem]
@@ -124,8 +125,9 @@ type OaklandsStore struct {
 
 func NewOaklandsStore(c redis.UniversalClient) *OaklandsStore {
 	return &OaklandsStore{
-		Config:  NewRedisValue[OaklandsConfig](c, "oaklands:config"),
-		Version: NewRedisValue[OaklandsVersion](c, "oaklands:version"),
+		Config:       NewRedisValue[OaklandsConfig](c, "oaklands:config"),
+		Version:      NewRedisValue[OaklandsVersion](c, "oaklands:version"),
+		DeadVersions: NewRedisHash[bool](c, "oaklands:dead_versions"),
 
 		StoreStock: NewRedisHash[[]string](c, "oaklands:store_stock"),
 		Items:      NewRedisHash[OaklandsItem](c, "oaklands:items"),
