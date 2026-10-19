@@ -30,6 +30,18 @@ func NewOaklandsV1(r *chi.Mux, opts *OaklandsV1Opts) {
 	// Temporarily route through the old /v1/oaklands routes as well.
 	// Removing before production deployment is out.
 	r.Route("/v1/oaklands", func(r chi.Router) {
+		//
+		r.Get("/sync", o.GetSyncTimes)
+
+		r.Route("/economy", func(r chi.Router) {
+			r.Route("/stock-market", func(r chi.Router) {
+				r.Get("/trees", o.GetStockMarketTrees)
+				r.Get("/rocks", o.GetStockMarketRocks)
+				r.Get("/ores", o.GetStockMarketOres)
+			})
+		})
+		//
+
 		r.Get("/version-info", o.GetVersionInfo)
 
 		r.Route("/changelogs", func(r chi.Router) {
@@ -52,6 +64,18 @@ func NewOaklandsV1(r *chi.Mux, opts *OaklandsV1Opts) {
 	// ----
 
 	r.Route("/oaklands/v1", func(r chi.Router) {
+		//
+		r.Get("/sync", o.GetSyncTimes)
+
+		r.Route("/economy", func(r chi.Router) {
+			r.Route("/stock-market", func(r chi.Router) {
+				r.Get("/trees", o.GetStockMarketTrees)
+				r.Get("/rocks", o.GetStockMarketRocks)
+				r.Get("/ores", o.GetStockMarketOres)
+			})
+		})
+		//
+
 		r.Get("/version-info", o.GetVersionInfo)
 
 		r.Route("/changelogs", func(r chi.Router) {
