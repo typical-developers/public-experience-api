@@ -23,6 +23,8 @@ var (
 	StockMarketScript string
 	//go:embed scripts/ClassicShop.luau
 	ClassicShopScript string
+	// go:embed scripts/DailyMaterialBuffs.luau
+	DailyMaterialBuffs string
 )
 
 var (
@@ -63,10 +65,11 @@ type ContentSyncData struct {
 		Latest string                `json:"Latest"`
 		Pages  map[string]Newsletter `json:"Pages"`
 	} `json:"Newsletters"`
-	StockMarket map[string][]StockMarketMaterial `json:"StockMarket"`
-	ItemDetails map[string]ItemDetails           `json:"ItemDetails"`
-	StoreItems  map[string][]string              `json:"StoreItems"`
-	Minimap     []MinimapLayer                   `json:"Minimap"`
+	StockMarket        map[string][]StockMarketMaterial `json:"StockMarket"`
+	DailyMaterialBuffs map[string][]DailyMaterialBuff   `json:"DailyMaterialBuffs"`
+	ItemDetails        map[string]ItemDetails           `json:"ItemDetails"`
+	StoreItems         map[string][]string              `json:"StoreItems"`
+	Minimap            []MinimapLayer                   `json:"Minimap"`
 }
 
 // GetConfig will get needed config values from the Oaklands experience config.
@@ -178,6 +181,38 @@ func GetClassicShop(ctx context.Context, oc *opencloud.Client) ([]string, error)
 
 	data := []string{}
 	if err := result.DecodeResult(&data); err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
+type DailyMaterialBuffsData map[string][]DailyMaterialBuff
+
+func GetDailyMaterialBuffs(ctx context.Context, oc *opencloud.Client) (*DailyMaterialBuffsData, error) {
+	script := scripts.NewScript(oc, DailyMaterialBuffs)
+
+	opts := scripts.ExecuteOptions{
+		UniverseID:         UniverseID,
+		PlaceID:            LuauExecutionPlaceID,
+		EnableBinaryOutput: new(true),
+	}
+	if PlaceVersionOverride != nil && !config.C.Oaklands.AlwaysExecuteInLatest {
+		zap.L().Debug("version",
+			zap.String("message", "PlaceVersionOverride is not nil, running script in specified version."),
+			zap.String("version", *PlaceVersionOverride),
+		)
+
+		opts.Version = PlaceVersionOverride
+	}
+
+	result, err := script.Execute(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	data := new(DailyMaterialBuffsData)
+	if err := result.DecodeBinaryOutput(data); err != nil {
 		return nil, err
 	}
 

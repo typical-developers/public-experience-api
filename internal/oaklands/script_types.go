@@ -151,6 +151,20 @@ type StockMarketMaterial struct {
 	Values            []StockMarketValue `json:"Values"`
 }
 
+type DailyMateriaBuffValue struct {
+	Type        string  `json:"Type"`
+	BaseValue   float32 `json:"BaseValue"`
+	BuffedValue float32 `json:"BuffedValue"`
+}
+
+type DailyMaterialBuff struct {
+	Name         string                  `json:"Name"`
+	DisplayName  string                  `json:"DisplayName"`
+	CurrencyType string                  `json:"CurrencyType"`
+	Multiplier   float32                 `json:"Multiplier"`
+	Values       []DailyMateriaBuffValue `json:"Values"`
+}
+
 type ItemForm struct {
 	FormType    string `json:"FormType"`
 	ConvertType string `json:"ConvertType"`

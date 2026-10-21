@@ -109,6 +109,20 @@ type OaklandsNewsletter struct {
 	Section       []OaklandsNewsletterSection
 }
 
+type OaklandsDailyMaterialBuffValue struct {
+	Type        string
+	BaseValue   float32
+	BuffedValue float32
+}
+
+type OaklandsDailyMaterialBuffs struct {
+	Name         string
+	DisplayName  string
+	CurrencyType string
+	Multiplier   float32
+	Values       []OaklandsDailyMaterialBuffValue
+}
+
 type OaklandsMinimapPosition struct {
 	Min int64
 	Max int64
@@ -126,8 +140,9 @@ type OaklandsStore struct {
 	Version      *RedisValue[OaklandsVersion]
 	DeadVersions *RedisHash[bool]
 
-	StoreStock *RedisHash[[]string]
-	Items      *RedisHash[OaklandsItem]
+	StoreStock         *RedisHash[[]string]
+	Items              *RedisHash[OaklandsItem]
+	DailyMaterialBuffs *RedisHash[[]OaklandsDailyMaterialBuffs]
 
 	Changelog        *RedisHash[OaklandsChangelog]
 	Newsletter       *RedisHash[OaklandsNewsletter]
@@ -143,12 +158,15 @@ func NewOaklandsStore(c redis.UniversalClient) *OaklandsStore {
 		Version:      NewRedisValue[OaklandsVersion](c, "oaklands:version"),
 		DeadVersions: NewRedisHash[bool](c, "oaklands:dead_versions"),
 
-		StoreStock: NewRedisHash[[]string](c, "oaklands:store_stock"),
-		Items:      NewRedisHash[OaklandsItem](c, "oaklands:items"),
+		StoreStock:         NewRedisHash[[]string](c, "oaklands:store_stock"),
+		Items:              NewRedisHash[OaklandsItem](c, "oaklands:items"),
+		DailyMaterialBuffs: NewRedisHash[[]OaklandsDailyMaterialBuffs](c, "oaklands:daily_material_buffs"),
 
 		Changelog:        NewRedisHash[OaklandsChangelog](c, "oaklands:changelog"),
 		Newsletter:       NewRedisHash[OaklandsNewsletter](c, "oaklands:newsletter"),
 		NewsletterLatest: NewRedisValue[string](c, "oaklands:newsletter_latest"),
 		Translations:     NewRedisHash[map[string]string](c, "oaklands:translations"),
+
+		Minimap: NewRedisValue[[]OaklandsMinimap](c, "oaklands:minimap"),
 	}
 }

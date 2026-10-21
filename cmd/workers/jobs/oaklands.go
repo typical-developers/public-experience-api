@@ -68,6 +68,17 @@ func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
 			},
 			JobFunc: c.RefreshClassicShop,
 		},
+		{
+			Spec: "0 4 * * *",
+			Config: JobConfig{
+				Enabled: true,
+				Retry: &RetryConfig{
+					RetryAttempts: 3,
+					RetryDelay:    time.Duration(5 * time.Second),
+				},
+			},
+			JobFunc: c.RefreshDailyMaterialBuffs,
+		},
 	}
 
 	opts.Handler.AddJobs(jobs...)
@@ -295,6 +306,34 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 		}
 	}
 
+	buffs := make(map[string][]data.OaklandsDailyMaterialBuffs, len(content.DailyMaterialBuffs))
+	for materialType, materials := range content.DailyMaterialBuffs {
+		buffs[materialType] = make([]data.OaklandsDailyMaterialBuffs, len(materials))
+
+		for i, material := range materials {
+			values := make([]data.OaklandsDailyMaterialBuffValue, len(material.Values))
+
+			for i, value := range material.Values {
+				values[i] = data.OaklandsDailyMaterialBuffValue{
+					Type:        value.Type,
+					BaseValue:   value.BaseValue,
+					BuffedValue: value.BuffedValue,
+				}
+			}
+
+			buffs[materialType][i] = data.OaklandsDailyMaterialBuffs{
+				Name:         material.Name,
+				DisplayName:  material.DisplayName,
+				CurrencyType: material.CurrencyType,
+				Multiplier:   material.Multiplier,
+				Values:       values,
+			}
+		}
+	}
+	if err := c.store.DailyMaterialBuffs.SetMany(ctx, buffs); err != nil {
+		panic(err)
+	}
+
 	minimap := []data.OaklandsMinimap{}
 	for _, layer := range content.Minimap {
 		minimap = append(minimap, data.OaklandsMinimap{
@@ -326,6 +365,49 @@ func (c *OaklandsCronJobs) RefreshClassicShop(ctx context.Context) {
 	}
 
 	if err := c.store.StoreStock.Set(ctx, "ClassicStore", items); err != nil {
+		panic(err)
+	}
+}
+
+func (c OaklandsCronJobs) RefreshDailyMaterialBuffs(ctx context.Context) {
+	if oaklands.PlaceVersionOverride == nil {
+		return
+	}
+
+	materialBuffs, err := oaklands.GetDailyMaterialBuffs(context.Background(), c.opencloud)
+	if err != nil {
+		panic(err)
+	}
+	if materialBuffs == nil {
+		return
+	}
+
+	buffs := make(map[string][]data.OaklandsDailyMaterialBuffs, len(*materialBuffs))
+	for materialType, materials := range *materialBuffs {
+		buffs[materialType] = make([]data.OaklandsDailyMaterialBuffs, len(materials))
+
+		for i, material := range materials {
+			values := make([]data.OaklandsDailyMaterialBuffValue, len(material.Values))
+
+			for i, value := range material.Values {
+				values[i] = data.OaklandsDailyMaterialBuffValue{
+					Type:        value.Type,
+					BaseValue:   value.BaseValue,
+					BuffedValue: value.BuffedValue,
+				}
+			}
+
+			buffs[materialType][i] = data.OaklandsDailyMaterialBuffs{
+				Name:         material.Name,
+				DisplayName:  material.DisplayName,
+				CurrencyType: material.CurrencyType,
+				Multiplier:   material.Multiplier,
+				Values:       values,
+			}
+		}
+	}
+
+	if err := c.store.DailyMaterialBuffs.SetMany(ctx, buffs); err != nil {
 		panic(err)
 	}
 }
