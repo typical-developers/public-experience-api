@@ -136,6 +136,44 @@ definitions:
         description: How much the item costs.
         type: number
     type: object
+  oaklands_v1.Minimap:
+    properties:
+      layers:
+        description: The layers of the minimap.
+        items:
+          $ref: '#/definitions/oaklands_v1.MinimapLayer'
+        type: array
+    type: object
+  oaklands_v1.MinimapLayer:
+    properties:
+      X:
+        allOf:
+        - $ref: '#/definitions/oaklands_v1.MinimapPosition'
+        description: The min/max X location in the world.
+      Z:
+        allOf:
+        - $ref: '#/definitions/oaklands_v1.MinimapPosition'
+        description: The min/max Y location in the world.
+      image_ids:
+        description: |-
+          The image IDs of the minimap.
+          This is from left -> right.
+        items:
+          type: string
+        type: array
+      layer_id:
+        description: The ID of the layer.
+        type: string
+    type: object
+  oaklands_v1.MinimapPosition:
+    properties:
+      max:
+        description: The maximum position.
+        type: integer
+      min:
+        description: The minimum position.
+        type: integer
+    type: object
   oaklands_v1.VersionInfo:
     properties:
       last_update:
@@ -256,7 +294,7 @@ paths:
                     $ref: '#/definitions/Oaklands.V1.MaterialBuff'
                   type: array
                 type: object
-              reeset_at:
+              refresh_at:
                 type: string
             type: object
         "500":
@@ -491,9 +529,7 @@ paths:
           schema:
             properties:
               data:
-                additionalProperties:
-                  type: string
-                type: object
+                $ref: '#/definitions/oaklands_v1.Minimap'
             type: object
         "500":
           description: Internal Server Error

@@ -137,7 +137,7 @@
                                         }
                                     }
                                 },
-                                "reeset_at": {
+                                "refresh_at": {
                                     "type": "string"
                                 }
                             }
@@ -486,10 +486,7 @@
                             "type": "object",
                             "properties": {
                                 "data": {
-                                    "type": "object",
-                                    "additionalProperties": {
-                                        "type": "string"
-                                    }
+                                    "$ref": "#/definitions/oaklands_v1.Minimap"
                                 }
                             }
                         }
@@ -704,6 +701,63 @@
                 "price": {
                     "description": "How much the item costs.",
                     "type": "number"
+                }
+            }
+        },
+        "oaklands_v1.Minimap": {
+            "type": "object",
+            "properties": {
+                "layers": {
+                    "description": "The layers of the minimap.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/oaklands_v1.MinimapLayer"
+                    }
+                }
+            }
+        },
+        "oaklands_v1.MinimapLayer": {
+            "type": "object",
+            "properties": {
+                "X": {
+                    "description": "The min/max X location in the world.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/oaklands_v1.MinimapPosition"
+                        }
+                    ]
+                },
+                "Z": {
+                    "description": "The min/max Y location in the world.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/oaklands_v1.MinimapPosition"
+                        }
+                    ]
+                },
+                "image_ids": {
+                    "description": "The image IDs of the minimap.\nThis is from left -\u003e right.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "layer_id": {
+                    "description": "The ID of the layer.",
+                    "type": "string"
+                }
+            }
+        },
+        "oaklands_v1.MinimapPosition": {
+            "type": "object",
+            "properties": {
+                "max": {
+                    "description": "The maximum position.",
+                    "type": "integer"
+                },
+                "min": {
+                    "description": "The minimum position.",
+                    "type": "integer"
                 }
             }
         },

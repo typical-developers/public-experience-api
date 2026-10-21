@@ -155,7 +155,7 @@ func (o *OaklandsV1Routes) GetStockMarketOres(w http.ResponseWriter, r *http.Req
 //
 //	@Tags			Oaklands
 //
-//	@Success		200	{object}	object{reeset_at=time.Time,data=map[string][]MaterialBuff}
+//	@Success		200	{object}	object{refresh_at=time.Time,data=map[string][]MaterialBuff}
 //	@Failure		503	{object}	rest.ErrorResponse
 //	@Failure		500	{object}	rest.ErrorResponse
 //
