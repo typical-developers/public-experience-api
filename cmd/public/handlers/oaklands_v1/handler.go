@@ -73,6 +73,8 @@ func NewOaklandsV1(r *chi.Mux, opts *OaklandsV1Opts) {
 				r.Get("/rocks", o.GetStockMarketRocks)
 				r.Get("/ores", o.GetStockMarketOres)
 			})
+
+			r.Get("/daily-material-buffs", o.GetDailyMaterialBuffs)
 		})
 		//
 

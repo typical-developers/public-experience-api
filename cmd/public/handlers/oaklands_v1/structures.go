@@ -31,6 +31,28 @@ type StockMarket struct {
 	Values []MaterialValues `json:"values"`
 } //	@name	Oaklands.V1.StockMarket
 
+type MaterialBuffValue struct {
+	// The type of material.
+	Type string `json:"type"`
+	// The base value of the material if it were sold un-buffed.
+	BaseValue float32 `json:"base_value"`
+	// The value of the material buffed.
+	BuffedValue float32 `json:"buffed_value"`
+} //	@name	Oaklands.V1.MaterialBuffValue
+
+type MaterialBuff struct {
+	// The ID for the resource.
+	ResourceID string `json:"resource_id"`
+	// The name of the resource.
+	DisplayName string `json:"display_name"`
+	// The currency type that the resource sells for.
+	CurrencyType string `json:"currency_type"`
+	// The multiplier that the resource will sell for.
+	Multiplier float32 `json:"multiplier"`
+	// The value multiplier information for each resource type.
+	Values []MaterialBuffValue `json:"values"`
+} //	@name	Oaklands.V1.MaterialBuff
+
 type ChangelogVersion struct {
 	ID      int32     `json:"id"`
 	Version string    `json:"version"`
@@ -154,6 +176,13 @@ type StoreResponse struct {
 	RestockAt *time.Time `json:"restock_at,omitempty"`
 	// The items in the store.
 	rest.Response[[]StoreItem]
+}
+
+type MaterialBuffResponse struct {
+	// The time that the daily material buffs will refresh.
+	RefreshAt time.Time `json:"refresh_at"`
+	// The items in the store.
+	rest.Response[map[string][]MaterialBuff]
 }
 
 // @name	Oaklands.V1.Status

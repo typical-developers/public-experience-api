@@ -38,6 +38,38 @@ definitions:
       version:
         type: string
     type: object
+  Oaklands.V1.MaterialBuff:
+    properties:
+      currency_type:
+        description: The currency type that the resource sells for.
+        type: string
+      display_name:
+        description: The name of the resource.
+        type: string
+      multiplier:
+        description: The multiplier that the resource will sell for.
+        type: number
+      resource_id:
+        description: The ID for the resource.
+        type: string
+      values:
+        description: The value multiplier information for each resource type.
+        items:
+          $ref: '#/definitions/Oaklands.V1.MaterialBuffValue'
+        type: array
+    type: object
+  Oaklands.V1.MaterialBuffValue:
+    properties:
+      base_value:
+        description: The base value of the material if it were sold un-buffed.
+        type: number
+      buffed_value:
+        description: The value of the material buffed.
+        type: number
+      type:
+        description: The type of material.
+        type: string
+    type: object
   Oaklands.V1.MaterialValues:
     properties:
       base_value:
@@ -268,6 +300,33 @@ paths:
             properties:
               data:
                 $ref: '#/definitions/Oaklands.V1.Changelog'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+      tags:
+      - Oaklands
+  /oaklands/v1/economy/daily-material-buffs:
+    get:
+      description: Get all of the daily material buff values (tree, rocks, ores).
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                additionalProperties:
+                  items:
+                    $ref: '#/definitions/Oaklands.V1.MaterialBuff'
+                  type: array
+                type: object
+              reeset_at:
+                type: string
             type: object
         "500":
           description: Internal Server Error
