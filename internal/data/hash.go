@@ -119,7 +119,7 @@ func (r *RedisHash[T]) Len(ctx context.Context) int64 {
 	return len
 }
 
-func (r *RedisHash[T]) All(ctx context.Context) iter.Seq[T] {
+func (r *RedisHash[T]) Values(ctx context.Context) iter.Seq[T] {
 	return func(yield func(T) bool) {
 		values, err := r.client.HVals(ctx, r.key).Result()
 
@@ -140,7 +140,27 @@ func (r *RedisHash[T]) All(ctx context.Context) iter.Seq[T] {
 	}
 }
 
-func (r *RedisHash[T]) AllSortFunc(ctx context.Context, compare func(a, b T) int) ([]T, error) {
+func (r *RedisHash[T]) Entries(ctx context.Context) iter.Seq2[string, T] {
+	return func(yield func(string, T) bool) {
+		values, err := r.client.HGetAll(ctx, r.key).Result()
+		if err != nil {
+			return
+		}
+
+		for field, raw := range values {
+			var value T
+			if err := json.Unmarshal([]byte(raw), &value); err != nil {
+				return
+			}
+
+			if !yield(field, value) {
+				return
+			}
+		}
+	}
+}
+
+func (r *RedisHash[T]) SortedValues(ctx context.Context, compare func(a, b T) int) ([]T, error) {
 	values, err := r.client.HGetAll(ctx, r.key).Result()
 	if err != nil {
 		return nil, err

@@ -45,7 +45,7 @@ func (o *OaklandsV1Routes) GetChangelog(w http.ResponseWriter, r *http.Request) 
 			}
 		}
 
-		changelogs, fetchErr := o.store.Changelog.AllSortFunc(ctx, func(a, b data.OaklandsChangelog) int {
+		changelogs, fetchErr := o.store.Changelog.SortedValues(ctx, func(a, b data.OaklandsChangelog) int {
 			if a.ID == b.ID {
 				return strings.Compare(b.Version, a.Version)
 			}
@@ -110,7 +110,7 @@ func (o *OaklandsV1Routes) ListChangelogs(w http.ResponseWriter, r *http.Request
 
 	orderBy := httpx.QueryGet(r, "order_by", "desc")
 
-	changelogs, err := o.store.Changelog.AllSortFunc(ctx, func(a, b data.OaklandsChangelog) int {
+	changelogs, err := o.store.Changelog.SortedValues(ctx, func(a, b data.OaklandsChangelog) int {
 		comparison := a.Date.Compare(b.Date)
 		if comparison == 0 {
 			comparison = strings.Compare(a.Version, b.Version)
