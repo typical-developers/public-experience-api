@@ -70,18 +70,6 @@ definitions:
         description: The type of material.
         type: string
     type: object
-  Oaklands.V1.MaterialValues:
-    properties:
-      base_value:
-        description: The base value for the material.
-        type: number
-      current_value:
-        description: The current value of the material.
-        type: number
-      type:
-        description: The type of material.
-        type: string
-    type: object
   Oaklands.V1.Newsletter:
     properties:
       banner_image_id:
@@ -127,29 +115,6 @@ definitions:
         description: The header of the section.
         type: string
     type: object
-  Oaklands.V1.StockMarket:
-    properties:
-      currency_type:
-        description: The currency of the material.
-        type: string
-      current_multiplier:
-        description: The current multiplier.
-        type: number
-      display_name:
-        description: The display name of the material.
-        type: string
-      last_multiplier:
-        description: The multipler from the last time the stock refreshed.
-        type: number
-      name:
-        description: The identifier for the material.
-        type: string
-      values:
-        description: The values of the different types for the materials
-        items:
-          $ref: '#/definitions/Oaklands.V1.MaterialValues'
-        type: array
-    type: object
   Oaklands.V1.StoreItem:
     properties:
       currency:
@@ -170,40 +135,6 @@ definitions:
       price:
         description: How much the item costs.
         type: number
-    type: object
-  Oaklands.V1.Sync:
-    properties:
-      classic_store:
-        allOf:
-        - $ref: '#/definitions/Oaklands.V1.SyncdInfoWithReset'
-        description: Sync information for the classic store.
-      meta:
-        allOf:
-        - $ref: '#/definitions/Oaklands.V1.SyncMeta'
-        description: Information from the experience that is used for sync checks.
-      stock_market:
-        allOf:
-        - $ref: '#/definitions/Oaklands.V1.SyncdInfoWithReset'
-        description: Sync information for the stock market.
-    type: object
-  Oaklands.V1.SyncMeta:
-    properties:
-      last_update:
-        description: The last time that data from Oaklands that can be updated from
-          experience changes was synced and updated.
-        type: string
-      next_check:
-        description: The next time Oaklands will be checked for an update.
-        type: string
-    type: object
-  Oaklands.V1.SyncdInfoWithReset:
-    properties:
-      last_sync:
-        description: The last time that the resource was updated.
-        type: string
-      next_sync:
-        description: The next time that the resource will be updated
-        type: string
     type: object
   oaklands_v1.VersionInfo:
     properties:
@@ -327,150 +258,6 @@ paths:
                 type: object
               reeset_at:
                 type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/API.ErrorResponse'
-        "503":
-          description: Service Unavailable
-          schema:
-            $ref: '#/definitions/API.ErrorResponse'
-      tags:
-      - Oaklands
-  /oaklands/v1/economy/stock-market/ores:
-    get:
-      deprecated: true
-      description: Fetch the current ore stock market.
-      parameters:
-      - description: ETag to validate cached response.
-        in: header
-        name: If-None-Match
-        type: string
-      - default: current_multiplier
-        description: The field to sort by.
-        enum:
-        - name
-        - current_multiplier
-        - last_multiplier
-        - values.current_value
-        - values.base_value
-        in: query
-        name: sort_by
-        type: string
-      - default: desc
-        description: The direction to order by.
-        enum:
-        - desc
-        - asc
-        in: query
-        name: order_by
-        type: string
-      responses:
-        "200":
-          description: OK
-          schema:
-            properties:
-              data:
-                items:
-                  $ref: '#/definitions/Oaklands.V1.StockMarket'
-                type: array
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/API.ErrorResponse'
-        "503":
-          description: Service Unavailable
-          schema:
-            $ref: '#/definitions/API.ErrorResponse'
-      tags:
-      - Oaklands
-  /oaklands/v1/economy/stock-market/rocks:
-    get:
-      deprecated: true
-      description: Fetch the current rock stock market.
-      parameters:
-      - description: ETag to validate cached response.
-        in: header
-        name: If-None-Match
-        type: string
-      - default: current_multiplier
-        description: The field to sort by.
-        enum:
-        - name
-        - current_multiplier
-        - last_multiplier
-        - values.current_value
-        - values.base_value
-        in: query
-        name: sort_by
-        type: string
-      - default: desc
-        description: The direction to order by.
-        enum:
-        - desc
-        - asc
-        in: query
-        name: order_by
-        type: string
-      responses:
-        "200":
-          description: OK
-          schema:
-            properties:
-              data:
-                items:
-                  $ref: '#/definitions/Oaklands.V1.StockMarket'
-                type: array
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/API.ErrorResponse'
-        "503":
-          description: Service Unavailable
-          schema:
-            $ref: '#/definitions/API.ErrorResponse'
-      tags:
-      - Oaklands
-  /oaklands/v1/economy/stock-market/trees:
-    get:
-      deprecated: true
-      description: Fetch the current tree stock market.
-      parameters:
-      - description: ETag to validate cached response.
-        in: header
-        name: If-None-Match
-        type: string
-      - default: current_multiplier
-        description: The field to sort by.
-        enum:
-        - name
-        - current_multiplier
-        - last_multiplier
-        - values.current_value
-        - values.base_value
-        in: query
-        name: sort_by
-        type: string
-      - default: desc
-        description: The direction to order by.
-        enum:
-        - desc
-        - asc
-        in: query
-        name: order_by
-        type: string
-      responses:
-        "200":
-          description: OK
-          schema:
-            properties:
-              data:
-                items:
-                  $ref: '#/definitions/Oaklands.V1.StockMarket'
-                type: array
             type: object
         "500":
           description: Internal Server Error
@@ -621,33 +408,6 @@ paths:
                 type: array
               restock_at:
                 type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/API.ErrorResponse'
-        "503":
-          description: Service Unavailable
-          schema:
-            $ref: '#/definitions/API.ErrorResponse'
-      tags:
-      - Oaklands
-  /oaklands/v1/sync:
-    get:
-      deprecated: true
-      description: |-
-        Fetch information on when data was last synced from the game.
-        It should be noted that a majority of data is fetched when checking if the experience was updated,
-        such as newsletters and changelogs. Some content with resync at certain intervals by itself
-        alongside update sync checks.<br><br>
-        Internally, updates are checked for every **5 minutes**.
-      responses:
-        "200":
-          description: OK
-          schema:
-            properties:
-              data:
-                $ref: '#/definitions/Oaklands.V1.Sync'
             type: object
         "500":
           description: Internal Server Error

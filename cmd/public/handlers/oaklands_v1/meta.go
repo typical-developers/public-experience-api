@@ -43,22 +43,6 @@ func (o OaklandsV1Routes) GetVersionInfo(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-//	@Router			/oaklands/v1/sync [GET]
-//	@Description	Fetch information on when data was last synced from the game.
-//	@Description	It should be noted that a majority of data is fetched when checking if the experience was updated,
-//	@Description	such as newsletters and changelogs. Some content with resync at certain intervals by itself
-//	@Description	alongside update sync checks.<br><br>
-//	@Description	Internally, updates are checked for every **5 minutes**.
-//
-//	@Deprecated
-//
-//	@Tags		Oaklands
-//
-//	@Success	200	{object}	object{data=Sync}
-//	@Failure	500	{object}	rest.ErrorResponse
-//	@Failure	503	{object}	rest.ErrorResponse
-//
-// swagger:ignore
 func (o OaklandsV1Routes) GetSyncTimes(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
