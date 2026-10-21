@@ -194,3 +194,30 @@ type VersionInfo struct {
 	// The next time that the experience will be checked for updates.
 	NextCheck time.Time `json:"next_check"`
 }
+
+// @name	Oaklands.V1.MinimapPosition
+type MinimapPosition struct {
+	// The minimum position.
+	Min int64 `json:"min"`
+	// The maximum position.
+	Max int64 `json:"max"`
+}
+
+// @name	Oaklands.V1.MinimapLayer
+type MinimapLayer struct {
+	// The ID of the layer.
+	LayerID string `json:"layer_id"`
+	// The min/max X location in the world.
+	X MinimapPosition `json:"X"`
+	// The min/max Y location in the world.
+	Z MinimapPosition `json:"Z"`
+	// The image IDs of the minimap.
+	// This is from left -> right.
+	ImageIDs []string `json:"image_ids"`
+}
+
+// @name	Oaklands.V1.Minimap
+type Minimap struct {
+	// The layers of the minimap.
+	Layers []MinimapLayer `json:"layers"`
+}

@@ -477,6 +477,34 @@ paths:
             $ref: '#/definitions/API.ErrorResponse'
       tags:
       - Oaklands
+  /oaklands/v1/world/minimap:
+    get:
+      description: Get information for the world's minimap.
+      parameters:
+      - description: ETag to validate cached response.
+        in: header
+        name: If-None-Match
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                additionalProperties:
+                  type: string
+                type: object
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+      tags:
+      - Oaklands
 swagger: "2.0"
 tags:
 - description: All of the available Oaklands endpoints.
