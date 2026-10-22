@@ -23,7 +23,7 @@ var (
 	StockMarketScript string
 	//go:embed scripts/ClassicShop.luau
 	ClassicShopScript string
-	// go:embed scripts/DailyMaterialBuffs.luau
+	//go:embed scripts/DailyMaterialBuffs.luau
 	DailyMaterialBuffs string
 )
 
