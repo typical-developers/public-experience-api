@@ -164,6 +164,14 @@
                 "tags": [
                     "Oaklands"
                 ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ETag to validate cached response.",
+                        "name": "If-None-Match",
+                        "in": "header"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -209,7 +217,6 @@
                     },
                     {
                         "type": "string",
-                        "default": "latest",
                         "description": "The id of the newsletter. For quick access to the latest newsletter, use 'latest' as the value.",
                         "name": "id",
                         "in": "path",

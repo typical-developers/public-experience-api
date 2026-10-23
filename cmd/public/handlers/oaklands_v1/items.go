@@ -17,9 +17,11 @@ import (
 //
 //	@Tags			Oaklands
 //
-//	@Success		200	{object}	object{data=[]string}
-//	@Failure		500	{object}	rest.ErrorResponse
-//	@Failure		503	{object}	rest.ErrorResponse
+//	@Param			If-None-Match	header		string	false	"ETag to validate cached response."
+//
+//	@Success		200				{object}	object{data=[]string}
+//	@Failure		500				{object}	rest.ErrorResponse
+//	@Failure		503				{object}	rest.ErrorResponse
 //
 // swagger:ignore
 func (o OaklandsV1Routes) ListItems(w http.ResponseWriter, r *http.Request) {
@@ -62,7 +64,7 @@ func (o OaklandsV1Routes) ListItems(w http.ResponseWriter, r *http.Request) {
 //	@Tags			Oaklands
 //
 //	@Param			If-None-Match	header		string	false	"ETag to validate cached response."
-//	@Param			id				path		string	true	"The id of the newsletter. For quick access to the latest newsletter, use 'latest' as the value."	default(latest)
+//	@Param			id				path		string	true	"The id of the newsletter. For quick access to the latest newsletter, use 'latest' as the value."
 //
 //	@Success		200				{object}	object{data=Item}
 //	@Failure		500				{object}	rest.ErrorResponse

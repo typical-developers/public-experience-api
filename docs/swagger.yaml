@@ -367,6 +367,11 @@ paths:
   /oaklands/v1/items:
     get:
       description: Get a list of available items.
+      parameters:
+      - description: ETag to validate cached response.
+        in: header
+        name: If-None-Match
+        type: string
       responses:
         "200":
           description: OK
@@ -395,8 +400,7 @@ paths:
         in: header
         name: If-None-Match
         type: string
-      - default: latest
-        description: The id of the newsletter. For quick access to the latest newsletter,
+      - description: The id of the newsletter. For quick access to the latest newsletter,
           use 'latest' as the value.
         in: path
         name: id
