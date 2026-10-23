@@ -227,6 +227,7 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 	}
 
 	items := map[string]data.OaklandsItem{}
+	itemUnlockTimes := map[string]time.Time{}
 	for id, item := range content.ItemDetails {
 		forms := []data.OaklandsItemForm{}
 
@@ -236,6 +237,19 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 				ConvertType: form.ConvertType,
 				Data:        form.Data,
 			})
+
+			// Sets times for any ConvertObject items so it can be
+			// used to decide if the item is viewable yet.
+			info, ok := form.Data.(oaklands.ItemFormGiftData)
+			if ok && info.ConvertID != nil && *info.ConvertID != "" {
+				targetID := *info.ConvertID
+				unlockAt := time.Unix(info.UnboxTime, 0)
+
+				current, exists := itemUnlockTimes[targetID]
+				if !exists || unlockAt.Before(current) {
+					itemUnlockTimes[targetID] = unlockAt
+				}
+			}
 		}
 
 		items[id] = data.OaklandsItem{
@@ -244,6 +258,9 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 			Description: item.Description,
 			Forms:       forms,
 		}
+	}
+	if err := c.store.ItemUnlockTimes.SetMany(ctx, itemUnlockTimes); err != nil {
+		panic(err)
 	}
 	if err := c.store.Items.SetMany(ctx, items); err != nil {
 		panic(err)

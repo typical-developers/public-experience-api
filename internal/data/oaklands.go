@@ -25,16 +25,30 @@ type OaklandsItemFormStore struct {
 	Price    float64
 }
 
+type OaklandsItemFormGift struct {
+	UnboxTime  int64
+	UnboxTypes []string
+	ConvertID  *string
+}
+
+func (f *OaklandsItemFormGift) IsOpened() bool {
+	if time.Now().After(time.Unix(f.UnboxTime, 0)) {
+		return true
+	}
+
+	return false
+}
+
 type OaklandsItemForm struct {
 	FormType    string
-	ConvertType string
+	ConvertType *string
 	Data        any
 }
 
 func (f *OaklandsItemForm) UnmarshalJSON(raw []byte) error {
 	var form struct {
 		FormType    string
-		ConvertType string
+		ConvertType *string
 		Data        json.RawMessage
 	}
 
@@ -51,6 +65,12 @@ func (f *OaklandsItemForm) UnmarshalJSON(raw []byte) error {
 			return err
 		}
 		decoded = store
+	case "gift":
+		var gift OaklandsItemFormGift
+		if err := json.Unmarshal(form.Data, &gift); err != nil {
+			return err
+		}
+		decoded = gift
 	default:
 		if len(form.Data) > 0 {
 			if err := json.Unmarshal(form.Data, &decoded); err != nil {
@@ -140,8 +160,10 @@ type OaklandsStore struct {
 	Version      *RedisValue[OaklandsVersion]
 	DeadVersions *RedisHash[bool]
 
-	StoreStock         *RedisHash[[]string]
-	Items              *RedisHash[OaklandsItem]
+	StoreStock      *RedisHash[[]string]
+	Items           *RedisHash[OaklandsItem]
+	ItemUnlockTimes *RedisHash[time.Time]
+
 	DailyMaterialBuffs *RedisHash[[]OaklandsDailyMaterialBuffs]
 
 	Changelog        *RedisHash[OaklandsChangelog]
@@ -158,8 +180,10 @@ func NewOaklandsStore(c redis.UniversalClient) *OaklandsStore {
 		Version:      NewRedisValue[OaklandsVersion](c, "oaklands:version"),
 		DeadVersions: NewRedisHash[bool](c, "oaklands:dead_versions"),
 
-		StoreStock:         NewRedisHash[[]string](c, "oaklands:store_stock"),
-		Items:              NewRedisHash[OaklandsItem](c, "oaklands:items"),
+		StoreStock:      NewRedisHash[[]string](c, "oaklands:store_stock"),
+		Items:           NewRedisHash[OaklandsItem](c, "oaklands:items"),
+		ItemUnlockTimes: NewRedisHash[time.Time](c, "oaklands:items_unlock_times"),
+
 		DailyMaterialBuffs: NewRedisHash[[]OaklandsDailyMaterialBuffs](c, "oaklands:daily_material_buffs"),
 
 		Changelog:        NewRedisHash[OaklandsChangelog](c, "oaklands:changelog"),

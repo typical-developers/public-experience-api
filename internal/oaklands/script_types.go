@@ -166,9 +166,9 @@ type DailyMaterialBuff struct {
 }
 
 type ItemForm struct {
-	FormType    string `json:"FormType"`
-	ConvertType string `json:"ConvertType"`
-	Data        any    `json:"Data"`
+	FormType    string  `json:"FormType"`
+	ConvertType *string `json:"ConvertType,omitempty"`
+	Data        any     `json:"Data"`
 }
 
 type ItemFormStoreData struct {
@@ -176,10 +176,16 @@ type ItemFormStoreData struct {
 	Price    float64 `json:"Price"`
 }
 
+type ItemFormGiftData struct {
+	UnboxTime  int64    `json:"UnboxTime"`
+	UnboxTypes []string `json:"UnboxTypes"`
+	ConvertID  *string  `json:"ConvertID"`
+}
+
 func (f *ItemForm) UnmarshalJSON(data []byte) error {
 	var raw struct {
 		FormType    string          `json:"FormType"`
-		ConvertType string          `json:"ConvertType"`
+		ConvertType *string         `json:"ConvertType"`
 		Data        json.RawMessage `json:"Data"`
 	}
 
@@ -197,6 +203,12 @@ func (f *ItemForm) UnmarshalJSON(data []byte) error {
 			return err
 		}
 		f.Data = storeData
+	case "gift":
+		var giftData ItemFormGiftData
+		if err := json.Unmarshal(raw.Data, &giftData); err != nil {
+			return err
+		}
+		f.Data = giftData
 	default:
 		var data map[string]any
 		if len(raw.Data) > 0 && string(raw.Data) != "null" {

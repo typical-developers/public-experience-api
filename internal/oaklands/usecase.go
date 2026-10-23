@@ -117,7 +117,7 @@ func (u *OaklandsUsecaseImpl) GetStoreItems(ctx context.Context, store string) (
 			}
 
 			storeInfo := form.Data.(ItemFormStoreData)
-			details.Type = form.ConvertType
+			details.Type = *form.ConvertType
 			details.Currency = storeInfo.Currency
 			details.Price = storeInfo.Price
 
