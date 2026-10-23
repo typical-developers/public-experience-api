@@ -50,7 +50,7 @@ func (o OaklandsV1Routes) ListItems(w http.ResponseWriter, r *http.Request) {
 	response := rest.Response[[]string]{Data: items}
 
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=60")
-	if err := httpx.WriteJSON(w, response, http.StatusOK); err != nil {
+	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
@@ -61,9 +61,12 @@ func (o OaklandsV1Routes) ListItems(w http.ResponseWriter, r *http.Request) {
 //
 //	@Tags			Oaklands
 //
-//	@Success		200	{object}	object{data=Item}
-//	@Failure		500	{object}	rest.ErrorResponse
-//	@Failure		503	{object}	rest.ErrorResponse
+//	@Param			If-None-Match	header		string	false	"ETag to validate cached response."
+//	@Param			id				path		string	true	"The id of the newsletter. For quick access to the latest newsletter, use 'latest' as the value."	default(latest)
+//
+//	@Success		200				{object}	object{data=Item}
+//	@Failure		500				{object}	rest.ErrorResponse
+//	@Failure		503				{object}	rest.ErrorResponse
 //
 // swagger:ignore
 func (o OaklandsV1Routes) GetItem(w http.ResponseWriter, r *http.Request) {
@@ -135,7 +138,7 @@ func (o OaklandsV1Routes) GetItem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=60")
-	if err := httpx.WriteJSON(w, response, http.StatusOK); err != nil {
+	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
