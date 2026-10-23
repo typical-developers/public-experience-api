@@ -156,8 +156,8 @@ type Sync struct {
 } //	@name	Oaklands.V1.Sync
 
 type StoreItem struct {
-	// The name (identifier) of the item.
-	Name string `json:"name"`
+	// The id  of the item.
+	ID string `json:"id"`
 	// The display name of the item.
 	DisplayName string `json:"display_name"`
 	// The image of the item.

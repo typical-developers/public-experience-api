@@ -782,12 +782,12 @@
                     "description": "The display name of the item.",
                     "type": "string"
                 },
-                "image": {
-                    "description": "The image of the item.",
+                "id": {
+                    "description": "The id  of the item.",
                     "type": "string"
                 },
-                "name": {
-                    "description": "The name (identifier) of the item.",
+                "image": {
+                    "description": "The image of the item.",
                     "type": "string"
                 },
                 "price": {

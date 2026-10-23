@@ -126,11 +126,11 @@ definitions:
       display_name:
         description: The display name of the item.
         type: string
+      id:
+        description: The id  of the item.
+        type: string
       image:
         description: The image of the item.
-        type: string
-      name:
-        description: The name (identifier) of the item.
         type: string
       price:
         description: How much the item costs.

@@ -38,9 +38,9 @@ func (o *OaklandsV1Routes) sortStoreItems(items []StoreItem, sortBy, orderBy str
 	sort.SliceStable(items, func(i, j int) bool {
 		if sortBy == "name" || items[i].Price == items[j].Price {
 			if descending {
-				return items[i].Name > items[j].Name
+				return items[i].ID > items[j].ID
 			}
-			return items[i].Name < items[j].Name
+			return items[i].ID < items[j].ID
 		}
 
 		if descending {
@@ -101,7 +101,7 @@ func (o *OaklandsV1Routes) GetStore(w http.ResponseWriter, r *http.Request) {
 		}
 
 		details := StoreItem{
-			Name:        item.Name,
+			ID:          item.Name,
 			DisplayName: item.DisplayName,
 			Description: item.Description,
 		}
