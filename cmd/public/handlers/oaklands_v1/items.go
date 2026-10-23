@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/redis/go-redis/v9"
-	"github.com/typical-developers/public-experience-api/cmd/public/handlers/static"
+	"github.com/typical-developers/public-experience-api/cmd/public/handlers/assets"
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/data"
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
@@ -87,56 +87,82 @@ func (o OaklandsV1Routes) GetItem(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+	hasUnopenedGift := false
+	imageForms := []string{}
+	for _, form := range item.Forms {
+		if gift, ok := form.Data.(data.OaklandsItemFormGift); ok {
+			imageForms = append(imageForms, "gift")
+			if !gift.IsOpened() {
+				hasUnopenedGift = true
+			}
+		}
+	}
+	imageForms = append(imageForms, "item", "box", "store")
+	for _, form := range item.Forms {
+		imageForms = append(imageForms, form.FormType)
+	}
+	var image *string
+	for _, form := range imageForms {
+		if hasUnopenedGift && form != "store" && form != "box" && form != "gift" {
+			continue
+		}
+		image = assets.OaklandsItemAssetExists(o.s3, item.Name, form)
+		if image != nil {
+			break
+		}
+	}
 
 	response := rest.Response[Item]{Data: Item{
 		ID:          item.Name,
 		DisplayName: item.DisplayName,
 		Description: item.Description,
-
-		Forms: make([]ItemForm, len(item.Forms)),
+		Image:       image,
+		Forms:       make([]ItemForm, 0, len(item.Forms)),
 	}}
 
-	for i, form := range item.Forms {
-		if form.ConvertType != nil {
-			response.Data.Image = static.OaklandsAssetExists(*form.ConvertType, item.Name)
+	for _, form := range item.Forms {
+		if hasUnopenedGift && form.FormType != "store" && form.FormType != "box" && form.FormType != "gift" {
+			continue
+		}
+		result := ItemForm{
+			Type:        form.FormType,
+			Image:       assets.OaklandsItemAssetExists(o.s3, item.Name, form.FormType),
+			ConvertType: form.ConvertType,
 		}
 
 		switch info := form.Data.(type) {
 		case data.OaklandsItemFormStore:
 			response.Data.Currency = &info.Currency
 			response.Data.Price = &info.Price
-
-			response.Data.Forms[i] = ItemForm{
-				Type:        form.FormType,
-				ConvertType: form.ConvertType,
-			}
 		case data.OaklandsItemFormGift:
 			response.Data.UnboxTime = new(time.Unix(info.UnboxTime, 0))
-
-			response.Data.Forms[i] = ItemForm{
-				Type:         form.FormType,
-				ConvertType:  form.ConvertType,
-				HasConvertID: info.ConvertID != nil,
-				UnboxTypes:   info.UnboxTypes,
+			if !info.IsOpened() {
+				response.Data.Forms = append(response.Data.Forms, result)
+				continue
 			}
 
-			if info.IsOpened() {
-				response.Data.Forms[i].ConvertID = info.ConvertID
+			resultID := item.Name
+			if info.ConvertID != nil && *info.ConvertID != "" {
+				resultID = *info.ConvertID
+				result.ConvertID = info.ConvertID
 			}
+
+			for _, unboxType := range info.UnboxTypes {
+				result.UnboxTypes = append(result.UnboxTypes, ItemFormUnboxType{
+					Type:  unboxType,
+					Image: assets.OaklandsItemAssetExists(o.s3, resultID, unboxType),
+				})
+			}
+
+			response.Data.Forms = append(response.Data.Forms, result)
+			continue
 		case data.OaklandsItemFormItem:
-			response.Data.Forms[i] = ItemForm{
-				Type: form.FormType,
-			}
-
 			if info.Stats != nil {
 				response.Data.Stats = &info.Stats
 			}
-		default:
-			response.Data.Forms[i] = ItemForm{
-				Type:        form.FormType,
-				ConvertType: form.ConvertType,
-			}
 		}
+
+		response.Data.Forms = append(response.Data.Forms, result)
 	}
 
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=60")

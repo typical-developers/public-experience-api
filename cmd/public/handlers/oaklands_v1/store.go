@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi"
-	"github.com/typical-developers/public-experience-api/cmd/public/handlers/static"
+	"github.com/typical-developers/public-experience-api/cmd/public/handlers/assets"
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/data"
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
@@ -81,6 +81,13 @@ func (o *OaklandsV1Routes) GetStore(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	unlockTimes, err := o.store.ItemUnlockTimes.GetMany(ctx, stock...)
+	if err != nil {
+		rest.WriteRESTError(w, err)
+		return
+	}
+	now := time.Now()
+
 	items, err := o.store.Items.GetMany(ctx, stock...)
 	if err != nil {
 		rest.WriteRESTError(w, err)
@@ -88,13 +95,16 @@ func (o *OaklandsV1Routes) GetStore(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := StoreResponse{
-		RestockAt: o.storeRestockTime(storeName, time.Now()),
+		RestockAt: o.storeRestockTime(storeName, now),
 		Response: rest.Response[[]StoreItem]{
 			Data: make([]StoreItem, 0, len(items)),
 		},
 	}
 
 	for _, name := range stock {
+		if unlockAt, ok := unlockTimes[name]; ok && now.Before(unlockAt) {
+			continue
+		}
 		item, ok := items[name]
 		if !ok {
 			continue
@@ -111,9 +121,7 @@ func (o *OaklandsV1Routes) GetStore(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 
-			if form.ConvertType != nil {
-				details.Image = static.OaklandsAssetExists(*form.ConvertType, item.Name)
-			}
+			details.Image = assets.OaklandsItemAssetExists(o.s3, item.Name, form.FormType)
 			details.Currency = storeInfo.Currency
 			details.Price = storeInfo.Price
 			break

@@ -25,6 +25,15 @@ type Config struct {
 		AlwaysExecuteInLatest bool `env:"ALWAYS_EXECUTE_IN_LATEST" envDefault:"false"`
 	} `envPrefix:"OAKLANDS_"`
 
+	// The config for the S3-compatible bucket.
+	S3 struct {
+		Endpoint        string `env:"ENDPOINT,required"`
+		Region          string `env:"REGION"`
+		Bucket          string `env:"BUCKET,required"`
+		AccessKey       string `env:"ACCESS_KEY,required"`
+		SecretAccessKey string `env:"SECRET_ACCESS_KEY,required"`
+	} `envPrefix:"S3_"`
+
 	// The config for the Redis instance used for ephemeral storage.
 	Redis struct {
 		Host     string `env:"HOST" envDefault:"localhost"`

@@ -1,6 +1,7 @@
 package oaklands_v1
 
 import (
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/go-chi/chi"
 	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/internal/data"
@@ -11,12 +12,14 @@ type OaklandsV1Opts struct {
 	OpencloudClient *opencloud.Client
 	Usecase         oaklands.OaklandsUsecase
 	Store           *data.OaklandsStore
+	S3              *s3.Client
 }
 
 type OaklandsV1Routes struct {
 	opencloud *opencloud.Client
 	uc        oaklands.OaklandsUsecase
 	store     *data.OaklandsStore
+	s3        *s3.Client
 }
 
 // NewOaklandsV1 will create new v1 routes for Oaklands related endpoints.
@@ -25,6 +28,7 @@ func NewOaklandsV1(r *chi.Mux, opts *OaklandsV1Opts) {
 		opencloud: opts.OpencloudClient,
 		uc:        opts.Usecase,
 		store:     opts.Store,
+		s3:        opts.S3,
 	}
 
 	// Temporarily route through the old /v1/oaklands routes as well.

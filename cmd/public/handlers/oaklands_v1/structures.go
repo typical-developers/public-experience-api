@@ -178,20 +178,28 @@ type StoreResponse struct {
 	rest.Response[[]StoreItem]
 }
 
+// @name	Oaklands.V1.ItemFormUnboxType
+type ItemFormUnboxType struct {
+	// The custom type that the item can unbox as.
+	Type string `json:"type"`
+	// The image of the unboxed item type.
+	Image *string `json:"image"`
+}
+
 // @name	Oaklands.V1.ItemForm
 type ItemForm struct {
 	// The type of form of the item.
 	Type string `json:"type"`
+	// The image of this form.
+	Image *string `json:"image"`
 	// The id of the item that the object converts to.
 	// CovertID will be omitted on items that are not yet viewable,
 	// e.g. gifts that have not been opened yet.
 	ConvertID *string `json:"convert_id,omitempty"`
-	// Wehther or not the item has a convert id.
-	HasConvertID bool `json:"has_convert_id"`
 	// The type that the itme will convert to when unboxed.
 	ConvertType *string `json:"convert_type,omitempty"`
 	// The different, unique unbox types.
-	UnboxTypes []string `json:"unbox_types,omitempty"`
+	UnboxTypes []ItemFormUnboxType `json:"unbox_types,omitempty"`
 }
 
 // @name	Oaklands.V1.Item

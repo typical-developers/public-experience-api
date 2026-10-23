@@ -1,15 +1,20 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strings"
 
+	awsconfig "github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 	"github.com/redis/go-redis/v9"
 	"github.com/typical-developers/goblox/opencloud"
+	"github.com/typical-developers/public-experience-api/cmd/public/handlers/assets"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/health"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/oaklands_v1"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/static"
@@ -57,6 +62,25 @@ func main() {
 		DB:       config.C.Redis.DB,
 	})
 
+	s3Config, err := awsconfig.LoadDefaultConfig(
+		context.TODO(),
+		awsconfig.WithRegion("us-east-1"),
+		awsconfig.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
+			config.C.S3.AccessKey,
+			config.C.S3.SecretAccessKey,
+			"",
+		)),
+	)
+	if err != nil {
+		panic(err)
+	}
+	s3Client := s3.NewFromConfig(
+		s3Config,
+		func(o *s3.Options) {
+			o.BaseEndpoint = &config.C.S3.Endpoint
+			o.UsePathStyle = true
+		})
+
 	r := chi.NewMux()
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Logger)
@@ -72,14 +96,18 @@ func main() {
 	oaklandsRepository := oaklands.NewOaklandsRepository(&oaklands.OaklandsRepositoryOpts{RedisClient: redis})
 	oaklandsUsecase := oaklands.NewOaklandsUsecase(oaklandsRepository)
 
+	store := data.NewOaklandsStore(redis)
+
 	health.NewHealth(r)
 	oaklands_v1.NewOaklandsV1(r, &oaklands_v1.OaklandsV1Opts{
 		OpencloudClient: oc,
 		Usecase:         oaklandsUsecase,
-		Store:           data.NewOaklandsStore(redis),
+		Store:           store,
+		S3:              s3Client,
 	})
 
-	r.NotFound(static.ServeStatic())
+	r.Get("/assets/items/{id}/{filename}", assets.ServeAssets(s3Client, store))
+	r.NotFound(static.ServeStatic(store))
 
 	panic(http.ListenAndServe(":8080", r))
 }
