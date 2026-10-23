@@ -176,6 +176,10 @@ type ItemFormStoreData struct {
 	Price    float64 `json:"Price"`
 }
 
+type ItemFormItemData struct {
+	Stats map[string]any `json:"Stats"`
+}
+
 type ItemFormGiftData struct {
 	UnboxTime  int64    `json:"UnboxTime"`
 	UnboxTypes []string `json:"UnboxTypes"`
@@ -209,6 +213,12 @@ func (f *ItemForm) UnmarshalJSON(data []byte) error {
 			return err
 		}
 		f.Data = giftData
+	case "item":
+		var itemData ItemFormItemData
+		if err := json.Unmarshal(raw.Data, &itemData); err != nil {
+			return err
+		}
+		f.Data = itemData
 	default:
 		var data map[string]any
 		if len(raw.Data) > 0 && string(raw.Data) != "null" {

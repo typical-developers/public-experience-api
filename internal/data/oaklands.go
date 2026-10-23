@@ -25,6 +25,10 @@ type OaklandsItemFormStore struct {
 	Price    float64
 }
 
+type OaklandsItemFormItem struct {
+	Stats map[string]any
+}
+
 type OaklandsItemFormGift struct {
 	UnboxTime  int64
 	UnboxTypes []string
@@ -71,6 +75,12 @@ func (f *OaklandsItemForm) UnmarshalJSON(raw []byte) error {
 			return err
 		}
 		decoded = gift
+	case "item":
+		var item OaklandsItemFormItem
+		if err := json.Unmarshal(form.Data, &item); err != nil {
+			return err
+		}
+		decoded = item
 	default:
 		if len(form.Data) > 0 {
 			if err := json.Unmarshal(form.Data, &decoded); err != nil {
