@@ -181,17 +181,26 @@ definitions:
       convert_type:
         description: The type that the itme will convert to when unboxed.
         type: string
-      has_convert_id:
-        description: Wehther or not the item has a convert id.
-        type: boolean
+      image:
+        description: The image of this form.
+        type: string
       type:
         description: The type of form of the item.
         type: string
       unbox_types:
         description: The different, unique unbox types.
         items:
-          type: string
+          $ref: '#/definitions/oaklands_v1.ItemFormUnboxType'
         type: array
+    type: object
+  oaklands_v1.ItemFormUnboxType:
+    properties:
+      image:
+        description: The image of the unboxed item type.
+        type: string
+      type:
+        description: The custom type that the item can unbox as.
+        type: string
     type: object
   oaklands_v1.Minimap:
     properties:

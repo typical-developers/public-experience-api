@@ -852,9 +852,9 @@
                     "description": "The type that the itme will convert to when unboxed.",
                     "type": "string"
                 },
-                "has_convert_id": {
-                    "description": "Wehther or not the item has a convert id.",
-                    "type": "boolean"
+                "image": {
+                    "description": "The image of this form.",
+                    "type": "string"
                 },
                 "type": {
                     "description": "The type of form of the item.",
@@ -864,8 +864,21 @@
                     "description": "The different, unique unbox types.",
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "$ref": "#/definitions/oaklands_v1.ItemFormUnboxType"
                     }
+                }
+            }
+        },
+        "oaklands_v1.ItemFormUnboxType": {
+            "type": "object",
+            "properties": {
+                "image": {
+                    "description": "The image of the unboxed item type.",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "The custom type that the item can unbox as.",
+                    "type": "string"
                 }
             }
         },
