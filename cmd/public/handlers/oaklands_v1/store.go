@@ -111,7 +111,9 @@ func (o *OaklandsV1Routes) GetStore(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 
-			details.Image = static.OaklandsAssetExists(form.ConvertType, item.Name)
+			if form.ConvertType != nil {
+				details.Image = static.OaklandsAssetExists(*form.ConvertType, item.Name)
+			}
 			details.Currency = storeInfo.Currency
 			details.Price = storeInfo.Price
 			break

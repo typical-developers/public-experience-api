@@ -178,6 +178,48 @@ type StoreResponse struct {
 	rest.Response[[]StoreItem]
 }
 
+// @name	Oaklands.V1.ItemForm
+type ItemForm struct {
+	// The type of form of the item.
+	Type string `json:"type"`
+	// The id of the item that the object converts to.
+	// CovertID will be omitted on items that are not yet viewable,
+	// e.g. gifts that have not been opened yet.
+	ConvertID *string `json:"convert_id,omitempty"`
+	// Wehther or not the item has a convert id.
+	HasConvertID bool `json:"has_convert_id"`
+	// The type that the itme will convert to when unboxed.
+	ConvertType *string `json:"convert_type,omitempty"`
+	// The different, unique unbox types.
+	UnboxTypes []string `json:"unbox_types,omitempty"`
+}
+
+// @name	Oaklands.V1.Item
+type Item struct {
+	// The ID of the item
+	ID string `json:"id"`
+	// The name of the item.
+	DisplayName string `json:"display_name"`
+	// An image preview of the item.
+	Image *string `json:"image"`
+	// The description of the item.
+	Description string `json:"description"`
+
+	// The price for the item if it's sold in a store.
+	Price *float64 `json:"price,omitempty"`
+	// The type of currency that the item sells for if it's sold in a store.
+	Currency *string `json:"currency,omitempty"`
+
+	// The time (e.g. for Gifts) that the item can be opened.
+	UnboxTime *time.Time `json:"unbox_time,omitempty"`
+
+	// The stats for an item, if it has any.
+	Stats *map[string]any `json:"stats,omitempty"`
+
+	// The forms that the item has / converts to.
+	Forms []ItemForm `json:"forms"`
+}
+
 type MaterialBuffResponse struct {
 	// The time that the daily material buffs will refresh.
 	RefreshAt time.Time `json:"refresh_at"`

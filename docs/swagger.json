@@ -158,6 +158,75 @@
                 }
             }
         },
+        "/oaklands/v1/items": {
+            "get": {
+                "description": "Get a list of available items.",
+                "tags": [
+                    "Oaklands"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/oaklands/v1/items/{id}": {
+            "get": {
+                "description": "Get information for an item.",
+                "tags": [
+                    "Oaklands"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "$ref": "#/definitions/oaklands_v1.Item"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/oaklands/v1/newsletters": {
             "get": {
                 "description": "Fetch a list of newsletters.",
@@ -701,6 +770,79 @@
                 "price": {
                     "description": "How much the item costs.",
                     "type": "number"
+                }
+            }
+        },
+        "oaklands_v1.Item": {
+            "type": "object",
+            "properties": {
+                "currency": {
+                    "description": "The type of currency that the item sells for if it's sold in a store.",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "The description of the item.",
+                    "type": "string"
+                },
+                "display_name": {
+                    "description": "The name of the item.",
+                    "type": "string"
+                },
+                "forms": {
+                    "description": "The forms that the item has / converts to.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/oaklands_v1.ItemForm"
+                    }
+                },
+                "id": {
+                    "description": "The ID of the item",
+                    "type": "string"
+                },
+                "image": {
+                    "description": "An image preview of the item.",
+                    "type": "string"
+                },
+                "price": {
+                    "description": "The price for the item if it's sold in a store.",
+                    "type": "number"
+                },
+                "stats": {
+                    "description": "The stats for an item, if it has any.",
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "unbox_time": {
+                    "description": "The time (e.g. for Gifts) that the item can be opened.",
+                    "type": "string"
+                }
+            }
+        },
+        "oaklands_v1.ItemForm": {
+            "type": "object",
+            "properties": {
+                "convert_id": {
+                    "description": "The id of the item that the object converts to.\nCovertID will be omitted on items that are not yet viewable,\ne.g. gifts that have not been opened yet.",
+                    "type": "string"
+                },
+                "convert_type": {
+                    "description": "The type that the itme will convert to when unboxed.",
+                    "type": "string"
+                },
+                "has_convert_id": {
+                    "description": "Wehther or not the item has a convert id.",
+                    "type": "boolean"
+                },
+                "type": {
+                    "description": "The type of form of the item.",
+                    "type": "string"
+                },
+                "unbox_types": {
+                    "description": "The different, unique unbox types.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },

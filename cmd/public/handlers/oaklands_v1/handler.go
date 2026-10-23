@@ -78,11 +78,11 @@ func NewOaklandsV1(r *chi.Mux, opts *OaklandsV1Opts) {
 		})
 		//
 
+		r.Get("/version-info", o.GetVersionInfo)
+
 		r.Route("/world", func(r chi.Router) {
 			r.Get("/minimap", o.GetMinimap)
 		})
-
-		r.Get("/version-info", o.GetVersionInfo)
 
 		r.Route("/changelogs", func(r chi.Router) {
 			r.Get("/", o.ListChangelogs)
@@ -92,6 +92,11 @@ func NewOaklandsV1(r *chi.Mux, opts *OaklandsV1Opts) {
 		r.Route("/newsletters", func(r chi.Router) {
 			r.Get("/", o.ListNewsletters)
 			r.Get("/{id}", o.GetNewsletter)
+		})
+
+		r.Route("/items", func(r chi.Router) {
+			r.Get("/", o.ListItems)
+			r.Get("/{id}", o.GetItem)
 		})
 
 		r.Route("/stores", func(r chi.Router) {

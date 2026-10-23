@@ -136,6 +136,63 @@ definitions:
         description: How much the item costs.
         type: number
     type: object
+  oaklands_v1.Item:
+    properties:
+      currency:
+        description: The type of currency that the item sells for if it's sold in
+          a store.
+        type: string
+      description:
+        description: The description of the item.
+        type: string
+      display_name:
+        description: The name of the item.
+        type: string
+      forms:
+        description: The forms that the item has / converts to.
+        items:
+          $ref: '#/definitions/oaklands_v1.ItemForm'
+        type: array
+      id:
+        description: The ID of the item
+        type: string
+      image:
+        description: An image preview of the item.
+        type: string
+      price:
+        description: The price for the item if it's sold in a store.
+        type: number
+      stats:
+        additionalProperties: {}
+        description: The stats for an item, if it has any.
+        type: object
+      unbox_time:
+        description: The time (e.g. for Gifts) that the item can be opened.
+        type: string
+    type: object
+  oaklands_v1.ItemForm:
+    properties:
+      convert_id:
+        description: |-
+          The id of the item that the object converts to.
+          CovertID will be omitted on items that are not yet viewable,
+          e.g. gifts that have not been opened yet.
+        type: string
+      convert_type:
+        description: The type that the itme will convert to when unboxed.
+        type: string
+      has_convert_id:
+        description: Wehther or not the item has a convert id.
+        type: boolean
+      type:
+        description: The type of form of the item.
+        type: string
+      unbox_types:
+        description: The different, unique unbox types.
+        items:
+          type: string
+        type: array
+    type: object
   oaklands_v1.Minimap:
     properties:
       layers:
@@ -296,6 +353,50 @@ paths:
                 type: object
               refresh_at:
                 type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+      tags:
+      - Oaklands
+  /oaklands/v1/items:
+    get:
+      description: Get a list of available items.
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  type: string
+                type: array
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+      tags:
+      - Oaklands
+  /oaklands/v1/items/{id}:
+    get:
+      description: Get information for an item.
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/oaklands_v1.Item'
             type: object
         "500":
           description: Internal Server Error
