@@ -199,7 +199,7 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 		panic(err)
 	}
 
-	place, _, err := c.opencloud.UniverseAndPlaces.GetPlace(ctx, oaklands.UniverseID, oaklands.LuauExecutionPlaceID)
+	place, _, err := c.opencloud.Places.GetPlace(ctx, oaklands.UniverseID, oaklands.LuauExecutionPlaceID)
 	if err != nil {
 		panic(err)
 	}

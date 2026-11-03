@@ -8,6 +8,7 @@ import (
 
 	"github.com/redis/go-redis/v9"
 	"github.com/robfig/cron/v3"
+	"github.com/typical-developers/goblox/auth"
 	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/cmd/workers/jobs"
 	"github.com/typical-developers/public-experience-api/internal/config"
@@ -56,7 +57,7 @@ func main() {
 		DB:       config.C.Redis.DB,
 	})
 
-	oc := opencloud.NewClient().WithAPIKey(config.C.OpencloudKey)
+	oc := opencloud.NewClient().WithCredential(auth.IntrospectedAPIKey(config.C.OpencloudKey, 10*time.Minute))
 
 	jobHandler := jobs.NewHandler(jobs.HandlerOpts{
 		Cron:   c,

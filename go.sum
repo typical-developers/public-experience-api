@@ -69,8 +69,10 @@ github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu
 github.com/stretchr/testify v1.11.1/go.mod h1:wZwfW3scLgRK+23gO65QZefKpKQRnfz6sD981Nm4B6U=
 github.com/typical-developers/discord-webhooks-go/v2 v2.0.2 h1:gBcBG3qzH1zYSTud7D52eGJrHNbFok24Y3VGsmRnL9Q=
 github.com/typical-developers/discord-webhooks-go/v2 v2.0.2/go.mod h1:XWjaUwN2zI+ZnVB5kyqynRnDN9Ye0rFZdpClz10oo/Y=
-github.com/typical-developers/goblox v0.0.0-20260328195209-c5f28e5c5e56 h1:Izsq9CalvYrmIFP+FQH9moWq56OdUFQMa4BwSdRMHLs=
-github.com/typical-developers/goblox v0.0.0-20260328195209-c5f28e5c5e56/go.mod h1:ksnbAdAHt9ldtzMWheeOettTV5pXzxxPWrmiBWLVyYo=
+github.com/typical-developers/goblox v0.0.0-20261102213716-386b566d55d8 h1:E2comuXuH/V8VS6d9ntr9ykr5/H6J6esfJWhDATMAys=
+github.com/typical-developers/goblox v0.0.0-20261102213716-386b566d55d8/go.mod h1:KlXq1Xl8KOTVJasMUbpIwPmUkAeUDNo8zDJGcYMhHoE=
+github.com/typical-developers/goblox v0.0.0-20261103031906-a3c0e5ce75ee h1:rdAnE1I0vV2ptyS1TEnpvZLQtwxKQPFXXab59KI26Og=
+github.com/typical-developers/goblox v0.0.0-20261103031906-a3c0e5ce75ee/go.mod h1:KlXq1Xl8KOTVJasMUbpIwPmUkAeUDNo8zDJGcYMhHoE=
 github.com/urfave/cli/v3 v3.7.0 h1:AGSnbUyjtLiM+WJUb4dzXKldl/gL+F8OwmRDtVr6g2U=
 github.com/urfave/cli/v3 v3.7.0/go.mod h1:ysVLtOEmg2tOy6PknnYVhDoouyC/6N42TMeoMzskhso=
 github.com/zeebo/xxh3 v1.0.2 h1:xZmwmqxHZA8AI603jOQ0tMqmBr9lPeFwGg6d+xy9DC0=

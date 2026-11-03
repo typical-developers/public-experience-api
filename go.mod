@@ -14,7 +14,7 @@ require (
 	github.com/redis/go-redis/v9 v9.18.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/typical-developers/discord-webhooks-go/v2 v2.0.2
-	github.com/typical-developers/goblox v0.0.0-20260328195209-c5f28e5c5e56
+	github.com/typical-developers/goblox v0.0.0-20261103031906-a3c0e5ce75ee
 	github.com/urfave/cli/v3 v3.7.0
 	go.uber.org/zap v1.27.1
 	golang.org/x/sync v0.13.0
@@ -44,5 +44,3 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/sys v0.35.0 // indirect
 )
-
-// replace github.com/typical-developers/goblox => ../goblox
