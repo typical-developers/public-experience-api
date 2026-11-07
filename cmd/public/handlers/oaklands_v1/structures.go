@@ -48,13 +48,12 @@ type (
 // Stores
 type StoreItem = typicalapi.OaklandsStoreItem
 
-// @name	Oaklands.V1.StoreResponse
 type StoreResponse struct {
 	// The time that the store will run a restock of items.
 	RestockAt *time.Time `json:"restock_at,omitempty"`
 	// The items in the store.
 	rest.Response[[]StoreItem]
-}
+} //	@name	Oaklands.V1.StoreResponse
 
 // Items
 type (

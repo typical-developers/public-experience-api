@@ -14,7 +14,7 @@ import (
 //
 //	@Tags			Oaklands
 //
-//	@Success		200	{object}	object{data=VersionInfo}
+//	@Success		200	{object}	object{data=typicalapi.OaklandsVersionInfo}
 //	@Failure		500	{object}	rest.ErrorResponse
 //	@Failure		503	{object}	rest.ErrorResponse
 //

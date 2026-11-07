@@ -63,7 +63,7 @@ func (o *OaklandsV1Routes) sortStoreItems(items []StoreItem, sortBy, orderBy str
 //	@Param			sort_by			query		string	false	"The value to sort by."			default(price)	enums(price, name)
 //	@Param			order_by		query		string	false	"The direction to order by."	default(desc)	enums(desc, asc)
 //
-//	@Success		200				{object}	object{restock_at=time.Time,data=[]StoreItem}
+//	@Success		200				{object}	object{restock_at=time.Time,data=[]typicalapi.OaklandsStoreItem}
 //	@Failure		500				{object}	rest.ErrorResponse
 //	@Failure		503				{object}	rest.ErrorResponse
 //

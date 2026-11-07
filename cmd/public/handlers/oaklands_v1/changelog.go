@@ -22,7 +22,7 @@ import (
 //	@Param			version			path		string	true	"The version of changelog. For quick access to the latest changelog, use 'latest' as the value."	default(latest)
 //	@Param			useId			query		string	false	"Use the changelog's id instead. You do not have to provide a value to this, you can just add it as `?useId`."
 //
-//	@Success		200				{object}	object{data=Changelog}
+//	@Success		200				{object}	object{data=typicalapi.OaklandsChangelog}
 //	@Failure		500				{object}	rest.ErrorResponse
 //	@Failure		503				{object}	rest.ErrorResponse
 //
@@ -100,7 +100,7 @@ func (o *OaklandsV1Routes) GetChangelog(w http.ResponseWriter, r *http.Request) 
 //	@Param			If-None-Match	header		string	false	"ETag to validate cached response."
 //	@Param			order_by		query		string	false	"The direction to order by. This will use the changelog's date to order."	default(desc)	enums(desc, asc)
 //
-//	@Success		200				{object}	object{data=[]ChangelogVersion}
+//	@Success		200				{object}	object{data=[]typicalapi.OaklandsChangelogVersion}
 //	@Failure		500				{object}	rest.ErrorResponse
 //	@Failure		503				{object}	rest.ErrorResponse
 //

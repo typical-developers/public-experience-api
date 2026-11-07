@@ -66,7 +66,7 @@ func (o OaklandsV1Routes) ListItems(w http.ResponseWriter, r *http.Request) {
 //	@Param			If-None-Match	header		string	false	"ETag to validate cached response."
 //	@Param			id				path		string	true	"The id of the newsletter. For quick access to the latest newsletter, use 'latest' as the value."
 //
-//	@Success		200				{object}	object{data=Item}
+//	@Success		200				{object}	object{data=typicalapi.OaklandsItem}
 //	@Failure		500				{object}	rest.ErrorResponse
 //	@Failure		503				{object}	rest.ErrorResponse
 //

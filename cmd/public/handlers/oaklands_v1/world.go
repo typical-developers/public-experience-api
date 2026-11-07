@@ -14,7 +14,7 @@ import (
 //
 //	@Param			If-None-Match	header		string	false	"ETag to validate cached response."
 //
-//	@Success		200				{object}	object{data=Minimap}
+//	@Success		200				{object}	object{data=typicalapi.OaklandsMinimap}
 //	@Failure		500				{object}	rest.ErrorResponse
 //	@Failure		503				{object}	rest.ErrorResponse
 //

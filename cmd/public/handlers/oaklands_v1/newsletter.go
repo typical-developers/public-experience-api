@@ -41,7 +41,7 @@ func (o *OaklandsV1Routes) sortNewsletters(values []NewsletterEntry, orderBy str
 //	@Param			If-None-Match	header		string	false	"ETag to validate cached response."
 //	@Param			order_by		query		string	false	"The direction to order by. This will use the changelog's date to order."	default(desc)	enums(desc, asc)
 //
-//	@Success		200				{object}	object{data=[]NewsletterEntry}
+//	@Success		200				{object}	object{data=[]typicalapi.OaklandsNewsletterEntry}
 //	@Failure		500				{object}	rest.ErrorResponse
 //	@Failure		503				{object}	rest.ErrorResponse
 //
@@ -103,7 +103,7 @@ func (o *OaklandsV1Routes) ListNewsletters(w http.ResponseWriter, r *http.Reques
 //	@Param			If-None-Match	header		string	false	"ETag to validate cached response."
 //	@Param			id				path		string	true	"The id of the newsletter. For quick access to the latest newsletter, use 'latest' as the value."	default(latest)
 //
-//	@Success		200				{object}	object{data=Newsletter}
+//	@Success		200				{object}	object{data=typicalapi.OaklandsNewsletter}
 //	@Failure		500				{object}	rest.ErrorResponse
 //	@Failure		503				{object}	rest.ErrorResponse
 //

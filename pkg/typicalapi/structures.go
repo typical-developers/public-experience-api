@@ -21,7 +21,6 @@ type OaklandsMaterialBuffResponse struct {
 	ResponseData[map[string][]OaklandsMaterialBuff]
 }
 
-// @name	Oaklands.V1.MaterialValues
 type OaklandsMaterialValues struct {
 	// The type of material.
 	Type string `json:"type"`
@@ -115,7 +114,7 @@ type OaklandsNewsletterSection struct {
 	// The header of the section.
 	Header string `json:"header"`
 	// The type of content in the section.
-	Content []any `json:"content" oneOf:"NewsletterParagraph,NewsletterImage,NewsletterImageCarousel,NewsletterVideo"`
+	Content []any `json:"content" oneOf:"OaklandsNewsletterParagraph,OaklandsNewsletterImage,OaklandsNewsletterImageCarousel,OaklandsNewsletterVideo"`
 } //	@name	Oaklands.V1.NewsletterSection
 
 type OaklandsNewsletter struct {
@@ -185,15 +184,13 @@ type OaklandsStoreItem struct {
 	Price float64 `json:"price"`
 } //	@name	Oaklands.V1.StoreItem
 
-// @name	Oaklands.V1.ItemFormUnboxType
 type OaklandsItemFormUnboxType struct {
 	// The custom type that the item can unbox as.
 	Type string `json:"type"`
 	// The image of the unboxed item type.
 	Image *string `json:"image"`
-}
+} //	@name	Oaklands.V1.ItemFormUnboxType
 
-// @name	Oaklands.V1.ItemForm
 type OaklandsItemForm struct {
 	// The type of form of the item.
 	Type string `json:"type"`
@@ -207,9 +204,8 @@ type OaklandsItemForm struct {
 	ConvertType *string `json:"convert_type,omitempty"`
 	// The different, unique unbox types.
 	UnboxTypes []OaklandsItemFormUnboxType `json:"unbox_types,omitempty"`
-}
+} //	@name	Oaklands.V1.ItemForm
 
-// @name	Oaklands.V1.Item
 type OaklandsItem struct {
 	// The ID of the item
 	ID string `json:"id"`
@@ -233,9 +229,8 @@ type OaklandsItem struct {
 
 	// The forms that the item has / converts to.
 	Forms []OaklandsItemForm `json:"forms"`
-}
+} //	@name	Oaklands.V1.Item
 
-// @name	Oaklands.V1.Status
 type OaklandsVersionInfo struct {
 	// The current published version of the experience.
 	Version string `json:"version"`
@@ -243,17 +238,15 @@ type OaklandsVersionInfo struct {
 	LastUpdate time.Time `json:"last_update"`
 	// The next time that the experience will be checked for updates.
 	NextCheck time.Time `json:"next_check"`
-}
+} //	@name	Oaklands.V1.VersionInfo
 
-// @name	Oaklands.V1.MinimapPosition
 type OaklandsMinimapPosition struct {
 	// The minimum position.
 	Min int64 `json:"min"`
 	// The maximum position.
 	Max int64 `json:"max"`
-}
+} //	@name	Oaklands.V1.MinimapPosition
 
-// @name	Oaklands.V1.MinimapLayer
 type OaklandsMinimapLayer struct {
 	// The ID of the layer.
 	LayerID string `json:"layer_id"`
@@ -264,10 +257,9 @@ type OaklandsMinimapLayer struct {
 	// The image IDs of the minimap.
 	// This is from left -> right.
 	ImageIDs []string `json:"image_ids"`
-}
+} //	@name	Oaklands.V1.MinimapLayer
 
-// @name	Oaklands.V1.Minimap
 type OaklandsMinimap struct {
 	// The layers of the minimap.
 	Layers []OaklandsMinimapLayer `json:"layers"`
-}
+} //	@name	Oaklands.V1.Minimap
