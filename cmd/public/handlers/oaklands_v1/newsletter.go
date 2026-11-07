@@ -150,23 +150,23 @@ func (o *OaklandsV1Routes) GetNewsletter(w http.ResponseWriter, r *http.Request)
 			switch v := content.(type) {
 			case oaklands.NewsletterParagraph:
 				sectionContent[j] = NewsletterParagraph{
-					NewsLetterContent: NewsLetterContent{Type: "paragraph"},
-					Text:              v.Text,
+					OaklandsNewsletterContent: NewsLetterContent{Type: "paragraph"},
+					Text:                      v.Text,
 				}
 			case oaklands.NewsletterImage:
 				sectionContent[j] = NewsletterImage{
-					NewsLetterContent: NewsLetterContent{Type: "image"},
-					ImageId:           v.ImageId,
+					OaklandsNewsletterContent: NewsLetterContent{Type: "image"},
+					ImageId:                   v.ImageId,
 				}
 			case oaklands.NewsletterImageCarousel:
 				sectionContent[j] = NewsletterImageCarousel{
-					NewsLetterContent: NewsLetterContent{Type: "image_carousel"},
-					ImageIds:          v.ImageIds,
+					OaklandsNewsletterContent: NewsLetterContent{Type: "image_carousel"},
+					ImageIds:                  v.ImageIds,
 				}
 			case oaklands.NewsletterVideo:
 				sectionContent[j] = NewsletterVideo{
-					NewsLetterContent: NewsLetterContent{Type: "video"},
-					VideoId:           v.VideoId,
+					OaklandsNewsletterContent: NewsLetterContent{Type: "video"},
+					VideoId:                   v.VideoId,
 				}
 			case oaklands.NewsletterBaseContent:
 				sectionContent[j] = NewsLetterContent{Type: string(v.Type)}

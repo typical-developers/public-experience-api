@@ -74,7 +74,7 @@ func (o *OaklandsV1Routes) GetChangelog(w http.ResponseWriter, r *http.Request) 
 
 	response := rest.Response[Changelog]{
 		Data: Changelog{
-			ChangelogVersion: ChangelogVersion{
+			OaklandsChangelogVersion: ChangelogVersion{
 				ID:      changelog.ID,
 				Version: changelog.Version,
 				Date:    changelog.Date,

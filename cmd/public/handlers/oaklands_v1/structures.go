@@ -4,171 +4,49 @@ import (
 	"time"
 
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
+	"github.com/typical-developers/public-experience-api/pkg/typicalapi"
 )
 
-// @name	Oaklands.V1.MaterialValues
-type MaterialValues struct {
-	// The type of material.
-	Type string `json:"type"`
-	// The base value for the material.
-	BaseValue float32 `json:"base_value"`
-	// The current value of the material.
-	CurrentValue float32 `json:"current_value"`
-} //	@name	Oaklands.V1.MaterialValues
+// The response structures are defined in pkg/typicalapi so that the client
+// can use them without importing the server. They are aliased here so the
+// handlers can keep using the short names.
 
-type StockMarket struct {
-	// The identifier for the material.
-	Name string `json:"name"`
-	// The display name of the material.
-	DisplayName string `json:"display_name"`
-	// The currency of the material.
-	CurrencyType string `json:"currency_type"`
-	// The current multiplier.
-	CurrentMultiplier float32 `json:"current_multiplier"`
-	// The multipler from the last time the stock refreshed.
-	LastMultiplier float32 `json:"last_multiplier"`
-	// The values of the different types for the materials
-	Values []MaterialValues `json:"values"`
-} //	@name	Oaklands.V1.StockMarket
+// Economy
+type (
+	MaterialValues    = typicalapi.OaklandsMaterialValues
+	StockMarket       = typicalapi.OaklandsStockMarket
+	MaterialBuffValue = typicalapi.OaklandsMaterialBuffValue
+	MaterialBuff      = typicalapi.OaklandsMaterialBuff
+)
 
-type MaterialBuffValue struct {
-	// The type of material.
-	Type string `json:"type"`
-	// The base value of the material if it were sold un-buffed.
-	BaseValue float32 `json:"base_value"`
-	// The value of the material buffed.
-	BuffedValue float32 `json:"buffed_value"`
-} //	@name	Oaklands.V1.MaterialBuffValue
+// Changelogs
+type (
+	ChangelogVersion = typicalapi.OaklandsChangelogVersion
+	Changelog        = typicalapi.OaklandsChangelog
+)
 
-type MaterialBuff struct {
-	// The ID for the resource.
-	ResourceID string `json:"resource_id"`
-	// The name of the resource.
-	DisplayName string `json:"display_name"`
-	// The currency type that the resource sells for.
-	CurrencyType string `json:"currency_type"`
-	// The multiplier that the resource will sell for.
-	Multiplier float32 `json:"multiplier"`
-	// The value multiplier information for each resource type.
-	Values []MaterialBuffValue `json:"values"`
-} //	@name	Oaklands.V1.MaterialBuff
+// Newsletters
+type (
+	NewsLetterContent       = typicalapi.OaklandsNewsletterContent
+	NewsletterParagraph     = typicalapi.OaklandsNewsletterParagraph
+	NewsletterImage         = typicalapi.OaklandsNewsletterImage
+	NewsletterImageCarousel = typicalapi.OaklandsNewsletterImageCarousel
+	NewsletterVideo         = typicalapi.OaklandsNewsletterVideo
+	NewsletterSection       = typicalapi.OaklandsNewsletterSection
+	Newsletter              = typicalapi.OaklandsNewsletter
+	NewsletterEntry         = typicalapi.OaklandsNewsletterEntry
+)
 
-type ChangelogVersion struct {
-	ID      int32     `json:"id"`
-	Version string    `json:"version"`
-	Date    time.Time `json:"date"`
-} //	@name	Oaklands.V1.ChangelogVersion
+// Sync
+type (
+	SyncInfo           = typicalapi.OaklandsSyncInfo
+	SyncdInfoWithReset = typicalapi.OaklandsSyncInfoWithReset
+	SyncMeta           = typicalapi.OaklandsSyncMeta
+	Sync               = typicalapi.OaklandsSync
+)
 
-type Changelog struct {
-	ChangelogVersion
-
-	Changed []string `json:"changed"`
-	Added   []string `json:"added"`
-	Fixed   []string `json:"fixed"`
-} //	@name	Oaklands.V1.Changelog
-
-type NewsLetterContent struct {
-	// The content type.
-	Type string `json:"type" enums:"paragraph,image,image_carousel,video"`
-} //	@name	Oaklands.V1.NewsLetterContent
-
-type NewsletterParagraph struct {
-	NewsLetterContent
-	// The text contents.
-	Text string `json:"text"`
-} //	@name	Oaklands.V1.NewsletterParagraph
-
-type NewsletterImage struct {
-	NewsLetterContent
-	// The Roblox ID for the image in the section.
-	ImageId string `json:"image_id"`
-} //	@name	Oaklands.V1.NewsletterImage
-
-type NewsletterImageCarousel struct {
-	NewsLetterContent
-	// The Roblox IDs for the images in the section.
-	ImageIds []string `json:"image_ids"`
-} //	@name	Oaklands.V1.NewsletterImageCarousel
-
-type NewsletterVideo struct {
-	NewsLetterContent
-	// The Roblox ID for the video in the section.
-	VideoId string `json:"video_id"`
-} //	@name	Oaklands.V1.NewsletterVideo
-
-type NewsletterSection struct {
-	// The header of the section.
-	Header string `json:"header"`
-	// The type of content in the section.
-	Content []any `json:"content" oneOf:"NewsletterParagraph,NewsletterImage,NewsletterImageCarousel,NewsletterVideo"`
-} //	@name	Oaklands.V1.NewsletterSection
-
-type Newsletter struct {
-	// The primary header of the newsletter.
-	Header string `json:"header"`
-	// The secondary header of the newsletter.
-	Subheader string `json:"subheader"`
-	// The date that the newsletter was released.
-	Date time.Time `json:"date"`
-	// The Roblox ID for the banner of the newsletter.
-	BannerImageId string `json:"banner_image_id"`
-	// Sections of the newsletter.
-	Sections []NewsletterSection `json:"sections"`
-} //	@name	Oaklands.V1.Newsletter
-
-type NewsletterEntry struct {
-	// The ID for the newsletter.
-	ID string `json:"id"`
-	// The primary header of the newsletter.
-	Header string `json:"header"`
-	// The Roblox ID for the banner of the newsletter.
-	BannerImageId string `json:"banner_image_id"`
-	// The date that the newsletter was released.
-	Date time.Time `json:"date"`
-} //	@name	Oaklands.V1.NewsletterEntry
-
-type SyncInfo struct {
-	//	The last time that the resource was updated.
-	LastSync time.Time `json:"last_sync"`
-} //	@name	Oaklands.V1.SyncInfo
-
-type SyncdInfoWithReset struct {
-	//	The last time that the resource was updated.
-	LastSync time.Time `json:"last_sync"`
-	// The next time that the resource will be updated
-	NextSync time.Time `json:"next_sync"`
-} //	@name	Oaklands.V1.SyncdInfoWithReset
-
-type SyncMeta struct {
-	// The last time that data from Oaklands that can be updated from experience changes was synced and updated.
-	LastUpdate time.Time `json:"last_update"`
-	// The next time Oaklands will be checked for an update.
-	NextCheck time.Time `json:"next_check"`
-} //	@name	Oaklands.V1.SyncMeta
-
-type Sync struct {
-	// Information from the experience that is used for sync checks.
-	Meta SyncMeta `json:"meta"`
-	// Sync information for the stock market.
-	StockMarket SyncdInfoWithReset `json:"stock_market"`
-	// Sync information for the classic store.
-	ClassicStore SyncdInfoWithReset `json:"classic_store"`
-} //	@name	Oaklands.V1.Sync
-
-type StoreItem struct {
-	// The id  of the item.
-	ID string `json:"id"`
-	// The display name of the item.
-	DisplayName string `json:"display_name"`
-	// The image of the item.
-	Image *string `json:"image"`
-	// The description of the item.
-	Description string `json:"description"`
-	// The currency that is used to purchase the item.
-	Currency string `json:"currency"`
-	// How much the item costs.
-	Price float64 `json:"price"`
-} //	@name	Oaklands.V1.StoreItem
+// Stores
+type StoreItem = typicalapi.OaklandsStoreItem
 
 // @name	Oaklands.V1.StoreResponse
 type StoreResponse struct {
@@ -178,56 +56,14 @@ type StoreResponse struct {
 	rest.Response[[]StoreItem]
 }
 
-// @name	Oaklands.V1.ItemFormUnboxType
-type ItemFormUnboxType struct {
-	// The custom type that the item can unbox as.
-	Type string `json:"type"`
-	// The image of the unboxed item type.
-	Image *string `json:"image"`
-}
+// Items
+type (
+	ItemFormUnboxType = typicalapi.OaklandsItemFormUnboxType
+	ItemForm          = typicalapi.OaklandsItemForm
+	Item              = typicalapi.OaklandsItem
+)
 
-// @name	Oaklands.V1.ItemForm
-type ItemForm struct {
-	// The type of form of the item.
-	Type string `json:"type"`
-	// The image of this form.
-	Image *string `json:"image"`
-	// The id of the item that the object converts to.
-	// CovertID will be omitted on items that are not yet viewable,
-	// e.g. gifts that have not been opened yet.
-	ConvertID *string `json:"convert_id,omitempty"`
-	// The type that the itme will convert to when unboxed.
-	ConvertType *string `json:"convert_type,omitempty"`
-	// The different, unique unbox types.
-	UnboxTypes []ItemFormUnboxType `json:"unbox_types,omitempty"`
-}
-
-// @name	Oaklands.V1.Item
-type Item struct {
-	// The ID of the item
-	ID string `json:"id"`
-	// The name of the item.
-	DisplayName string `json:"display_name"`
-	// An image preview of the item.
-	Image *string `json:"image"`
-	// The description of the item.
-	Description string `json:"description"`
-
-	// The price for the item if it's sold in a store.
-	Price *float64 `json:"price,omitempty"`
-	// The type of currency that the item sells for if it's sold in a store.
-	Currency *string `json:"currency,omitempty"`
-
-	// The time (e.g. for Gifts) that the item can be opened.
-	UnboxTime *time.Time `json:"unbox_time,omitempty"`
-
-	// The stats for an item, if it has any.
-	Stats *map[string]any `json:"stats,omitempty"`
-
-	// The forms that the item has / converts to.
-	Forms []ItemForm `json:"forms"`
-}
-
+// Economy responses
 type MaterialBuffResponse struct {
 	// The time that the daily material buffs will refresh.
 	RefreshAt time.Time `json:"refresh_at"`
@@ -235,39 +71,12 @@ type MaterialBuffResponse struct {
 	rest.Response[map[string][]MaterialBuff]
 }
 
-// @name	Oaklands.V1.Status
-type VersionInfo struct {
-	// The current published version of the experience.
-	Version string `json:"version"`
-	// The last time the experience had an update published.
-	LastUpdate time.Time `json:"last_update"`
-	// The next time that the experience will be checked for updates.
-	NextCheck time.Time `json:"next_check"`
-}
+// Version
+type VersionInfo = typicalapi.OaklandsVersionInfo
 
-// @name	Oaklands.V1.MinimapPosition
-type MinimapPosition struct {
-	// The minimum position.
-	Min int64 `json:"min"`
-	// The maximum position.
-	Max int64 `json:"max"`
-}
-
-// @name	Oaklands.V1.MinimapLayer
-type MinimapLayer struct {
-	// The ID of the layer.
-	LayerID string `json:"layer_id"`
-	// The min/max X location in the world.
-	X MinimapPosition `json:"X"`
-	// The min/max Y location in the world.
-	Z MinimapPosition `json:"Z"`
-	// The image IDs of the minimap.
-	// This is from left -> right.
-	ImageIDs []string `json:"image_ids"`
-}
-
-// @name	Oaklands.V1.Minimap
-type Minimap struct {
-	// The layers of the minimap.
-	Layers []MinimapLayer `json:"layers"`
-}
+// World
+type (
+	MinimapPosition = typicalapi.OaklandsMinimapPosition
+	MinimapLayer    = typicalapi.OaklandsMinimapLayer
+	Minimap         = typicalapi.OaklandsMinimap
+)
