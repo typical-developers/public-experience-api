@@ -91,8 +91,8 @@ func (c *Client) NewGETRequest(uStr string) (*http.Request, error) {
 	return req, nil
 }
 
-func (c *Client) send(_ context.Context, req *http.Request) (*Response, error) {
-	resp, err := c.http.Do(req)
+func (c *Client) send(ctx context.Context, req *http.Request) (*Response, error) {
+	resp, err := c.http.Do(req.WithContext(ctx))
 	if err != nil {
 		return nil, err
 	}
