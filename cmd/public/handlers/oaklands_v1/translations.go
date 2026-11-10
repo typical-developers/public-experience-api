@@ -3,6 +3,7 @@ package oaklands_v1
 import (
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
@@ -45,6 +46,21 @@ func (o *OaklandsV1Routes) GetTranslations(w http.ResponseWriter, r *http.Reques
 	if err != nil {
 		rest.WriteRESTError(w, err)
 		return
+	}
+
+	// Hide the name and description (i.e. `ItemName` and `ItemName_description`)
+	// of items that aren't viewable yet, e.g. what an unopened gift unboxes into.
+	now := time.Now()
+	for id, unlockTime := range o.store.ItemUnlockTimes.Entries(ctx) {
+		if !now.Before(unlockTime) {
+			continue
+		}
+
+		for key := range translations {
+			if key == id || strings.HasPrefix(key, id+"_") {
+				delete(translations, key)
+			}
+		}
 	}
 
 	if len(prefix) > 0 {
