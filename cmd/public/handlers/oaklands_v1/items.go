@@ -149,8 +149,9 @@ func (o OaklandsV1Routes) GetItem(w http.ResponseWriter, r *http.Request) {
 
 			for _, unboxType := range info.UnboxTypes {
 				result.UnboxTypes = append(result.UnboxTypes, ItemFormUnboxType{
-					Type:  unboxType,
-					Image: assets.OaklandsItemAssetExists(o.s3, resultID, unboxType),
+					Type:        unboxType.FormType,
+					Image:       assets.OaklandsItemAssetExists(o.s3, resultID, unboxType.FormType),
+					ConvertType: unboxType.ConvertType,
 				})
 			}
 

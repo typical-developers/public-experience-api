@@ -180,10 +180,15 @@ type ItemFormItemData struct {
 	Stats map[string]any `json:"Stats"`
 }
 
+type ItemFormUnboxType struct {
+	FormType    string  `json:"FormType"`
+	ConvertType *string `json:"ConvertType,omitempty"`
+}
+
 type ItemFormGiftData struct {
-	UnboxTime  int64    `json:"UnboxTime"`
-	UnboxTypes []string `json:"UnboxTypes"`
-	ConvertID  *string  `json:"ConvertID"`
+	UnboxTime  int64               `json:"UnboxTime"`
+	UnboxTypes []ItemFormUnboxType `json:"UnboxTypes"`
+	ConvertID  *string             `json:"ConvertID"`
 }
 
 func (f *ItemForm) UnmarshalJSON(data []byte) error {
@@ -199,6 +204,11 @@ func (f *ItemForm) UnmarshalJSON(data []byte) error {
 
 	f.FormType = raw.FormType
 	f.ConvertType = raw.ConvertType
+
+	// Forms without any data (e.g. structure) omit it.
+	if len(raw.Data) == 0 || string(raw.Data) == "null" {
+		return nil
+	}
 
 	switch raw.FormType {
 	case "store":
@@ -221,13 +231,11 @@ func (f *ItemForm) UnmarshalJSON(data []byte) error {
 		f.Data = itemData
 	default:
 		var data map[string]any
-		if len(raw.Data) > 0 && string(raw.Data) != "null" {
-			if err := json.Unmarshal(raw.Data, &data); err != nil {
-				return err
-			}
-
-			f.Data = data
+		if err := json.Unmarshal(raw.Data, &data); err != nil {
+			return err
 		}
+
+		f.Data = data
 	}
 
 	return nil
@@ -245,9 +253,25 @@ type MinimapPosition struct {
 	Max int64 `json:"Max"`
 }
 
+type MinimapLocationPosition struct {
+	X float64 `json:"X"`
+	Y float64 `json:"Y"`
+	Z float64 `json:"Z"`
+}
+
+type MinimapLocation struct {
+	Name          string                  `json:"Name"`
+	Position      MinimapLocationPosition `json:"Position"`
+	MarkerImageID *string                 `json:"MarkerImageID"`
+	Color         string                  `json:"Color"`
+	PropertyID    *int64                  `json:"PropertyID"`
+	Conditional   bool                    `json:"Conditional"`
+}
+
 type MinimapLayer struct {
-	LayerID  string          `json:"LayerID"`
-	X        MinimapPosition `json:"X"`
-	Z        MinimapPosition `json:"Z"`
-	ImageIDs []string        `json:"ImageIDs"`
+	LayerID   string            `json:"LayerID"`
+	X         MinimapPosition   `json:"X"`
+	Z         MinimapPosition   `json:"Z"`
+	ImageIDs  []string          `json:"ImageIDs"`
+	Locations []MinimapLocation `json:"Locations"`
 }

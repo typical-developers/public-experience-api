@@ -185,10 +185,12 @@ type OaklandsStoreItem struct {
 } //	@name	Oaklands.V1.StoreItem
 
 type OaklandsItemFormUnboxType struct {
-	// The custom type that the item can unbox as.
+	// The form type that the item can unbox as.
 	Type string `json:"type"`
 	// The image of the unboxed item type.
 	Image *string `json:"image"`
+	// The type that the unboxed form will convert to.
+	ConvertType *string `json:"convert_type,omitempty"`
 } //	@name	Oaklands.V1.ItemFormUnboxType
 
 type OaklandsItemForm struct {
@@ -247,6 +249,30 @@ type OaklandsMinimapPosition struct {
 	Max int64 `json:"max"`
 } //	@name	Oaklands.V1.MinimapPosition
 
+type OaklandsMinimapLocationPosition struct {
+	// The X position in the world.
+	X float64 `json:"x"`
+	// The Y position in the world.
+	Y float64 `json:"y"`
+	// The Z position in the world.
+	Z float64 `json:"z"`
+} //	@name	Oaklands.V1.MinimapLocationPosition
+
+type OaklandsMinimapLocation struct {
+	// The name of the location.
+	Name string `json:"name"`
+	// The position of the location in the world.
+	Position OaklandsMinimapLocationPosition `json:"position"`
+	// The image ID of the location's marker.
+	MarkerImageID *string `json:"marker_image_id"`
+	// The hex color of the location's marker.
+	Color string `json:"color"`
+	// The ID of the property, if the location is a property.
+	PropertyID *int64 `json:"property_id,omitempty"`
+	// Whether the location is only shown under certain conditions (e.g. events).
+	Conditional bool `json:"conditional"`
+} //	@name	Oaklands.V1.MinimapLocation
+
 type OaklandsMinimapLayer struct {
 	// The ID of the layer.
 	LayerID string `json:"layer_id"`
@@ -257,6 +283,8 @@ type OaklandsMinimapLayer struct {
 	// The image IDs of the minimap.
 	// This is from left -> right.
 	ImageIDs []string `json:"image_ids"`
+	// The locations marked on the layer.
+	Locations []OaklandsMinimapLocation `json:"locations"`
 } //	@name	Oaklands.V1.MinimapLayer
 
 type OaklandsMinimap struct {

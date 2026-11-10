@@ -29,9 +29,14 @@ type OaklandsItemFormItem struct {
 	Stats map[string]any
 }
 
+type OaklandsItemFormUnboxType struct {
+	FormType    string
+	ConvertType *string
+}
+
 type OaklandsItemFormGift struct {
 	UnboxTime  int64
-	UnboxTypes []string
+	UnboxTypes []OaklandsItemFormUnboxType
 	ConvertID  *string
 }
 
@@ -158,11 +163,27 @@ type OaklandsMinimapPosition struct {
 	Max int64
 }
 
+type OaklandsMinimapLocationPosition struct {
+	X float64
+	Y float64
+	Z float64
+}
+
+type OaklandsMinimapLocation struct {
+	Name          string
+	Position      OaklandsMinimapLocationPosition
+	MarkerImageID *string
+	Color         string
+	PropertyID    *int64
+	Conditional   bool
+}
+
 type OaklandsMinimap struct {
-	LayerID string
-	X       OaklandsMinimapPosition
-	Z       OaklandsMinimapPosition
-	Images  []string
+	LayerID   string
+	X         OaklandsMinimapPosition
+	Z         OaklandsMinimapPosition
+	Images    []string
+	Locations []OaklandsMinimapLocation
 }
 
 type OaklandsStore struct {

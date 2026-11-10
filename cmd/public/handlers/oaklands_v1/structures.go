@@ -75,7 +75,9 @@ type VersionInfo = typicalapi.OaklandsVersionInfo
 
 // World
 type (
-	MinimapPosition = typicalapi.OaklandsMinimapPosition
-	MinimapLayer    = typicalapi.OaklandsMinimapLayer
-	Minimap         = typicalapi.OaklandsMinimap
+	MinimapPosition         = typicalapi.OaklandsMinimapPosition
+	MinimapLocationPosition = typicalapi.OaklandsMinimapLocationPosition
+	MinimapLocation         = typicalapi.OaklandsMinimapLocation
+	MinimapLayer            = typicalapi.OaklandsMinimapLayer
+	Minimap                 = typicalapi.OaklandsMinimap
 )

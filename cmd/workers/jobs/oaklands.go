@@ -353,6 +353,22 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 
 	minimap := []data.OaklandsMinimap{}
 	for _, layer := range content.Minimap {
+		locations := make([]data.OaklandsMinimapLocation, len(layer.Locations))
+		for i, location := range layer.Locations {
+			locations[i] = data.OaklandsMinimapLocation{
+				Name: location.Name,
+				Position: data.OaklandsMinimapLocationPosition{
+					X: location.Position.X,
+					Y: location.Position.Y,
+					Z: location.Position.Z,
+				},
+				MarkerImageID: location.MarkerImageID,
+				Color:         location.Color,
+				PropertyID:    location.PropertyID,
+				Conditional:   location.Conditional,
+			}
+		}
+
 		minimap = append(minimap, data.OaklandsMinimap{
 			LayerID: layer.LayerID,
 			X: data.OaklandsMinimapPosition{
@@ -363,7 +379,8 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 				Min: layer.Z.Min,
 				Max: layer.Z.Max,
 			},
-			Images: layer.ImageIDs,
+			Images:    layer.ImageIDs,
+			Locations: locations,
 		})
 	}
 	c.store.Minimap.Set(ctx, minimap)

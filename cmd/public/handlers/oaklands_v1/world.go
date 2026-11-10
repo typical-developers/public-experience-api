@@ -33,6 +33,22 @@ func (o *OaklandsV1Routes) GetMinimap(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for i, layer := range layers {
+		locations := make([]MinimapLocation, len(layer.Locations))
+		for j, location := range layer.Locations {
+			locations[j] = MinimapLocation{
+				Name: location.Name,
+				Position: MinimapLocationPosition{
+					X: location.Position.X,
+					Y: location.Position.Y,
+					Z: location.Position.Z,
+				},
+				MarkerImageID: location.MarkerImageID,
+				Color:         location.Color,
+				PropertyID:    location.PropertyID,
+				Conditional:   location.Conditional,
+			}
+		}
+
 		response.Data.Layers[i] = MinimapLayer{
 			LayerID: layer.LayerID,
 			X: MinimapPosition{
@@ -43,7 +59,8 @@ func (o *OaklandsV1Routes) GetMinimap(w http.ResponseWriter, r *http.Request) {
 				Min: layer.Z.Min,
 				Max: layer.Z.Max,
 			},
-			ImageIDs: layer.Images,
+			ImageIDs:  layer.Images,
+			Locations: locations,
 		}
 	}
 
