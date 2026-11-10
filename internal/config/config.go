@@ -18,6 +18,10 @@ type Config struct {
 	// The Opencloud API key necessary for accessing Roblox's Opencloud endpoints.
 	OpencloudKey string `env:"OPENCLOUD_KEY,required"`
 
+	// The base URL that hosted assets are served from (e.g. https://api.example.com or a CDN).
+	// Used to build the full URL of media returned by the API.
+	AssetBaseURL string `env:"ASSET_BASE_URL" envDefault:"http://localhost:8080"`
+
 	// The webhook used for logging errors and panics.
 	LogWebhookURL *string `env:"LOG_WEBHOOK_URL"`
 

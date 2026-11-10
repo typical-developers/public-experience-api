@@ -55,6 +55,9 @@ type StoreResponse struct {
 	rest.Response[[]StoreItem]
 } //	@name	Oaklands.V1.StoreResponse
 
+// Media
+type Media = typicalapi.OaklandsMedia
+
 // Items
 type (
 	ItemFormUnboxType = typicalapi.OaklandsItemFormUnboxType

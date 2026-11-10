@@ -122,6 +122,7 @@ func (o *OaklandsV1Routes) GetStore(w http.ResponseWriter, r *http.Request) {
 			}
 
 			details.Image = assets.OaklandsItemAssetExists(o.s3, item.Name, form.FormType)
+			details.Media = newMedia("", details.Image)
 			details.Currency = storeInfo.Currency
 			details.Price = storeInfo.Price
 			break

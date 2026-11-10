@@ -1,9 +1,12 @@
 package oaklands_v1
 
 import (
+	"strings"
+
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/go-chi/chi"
 	"github.com/typical-developers/goblox/opencloud"
+	"github.com/typical-developers/public-experience-api/internal/config"
 	"github.com/typical-developers/public-experience-api/internal/data"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
 )
@@ -20,6 +23,40 @@ type OaklandsV1Routes struct {
 	uc        oaklands.OaklandsUsecase
 	store     *data.OaklandsStore
 	s3        *s3.Client
+}
+
+// newMedia creates media from a Roblox asset id and/or the path to an asset hosted by the API.
+// Returns nil when neither exist.
+func newMedia(assetID string, path *string) *Media {
+	if i := strings.Index(assetID, "://"); i != -1 {
+		assetID = assetID[i+3:]
+	}
+
+	media := &Media{}
+	if assetID != "" && assetID != "0" {
+		media.AssetID = &assetID
+	}
+	if path != nil {
+		media.URL = new(strings.TrimSuffix(config.C.AssetBaseURL, "/") + *path)
+	}
+
+	if media.AssetID == nil && media.URL == nil {
+		return nil
+	}
+
+	return media
+}
+
+// newMediaList creates media for each Roblox asset id, skipping any that are empty.
+func newMediaList(assetIDs []string) []Media {
+	list := make([]Media, 0, len(assetIDs))
+	for _, id := range assetIDs {
+		if media := newMedia(id, nil); media != nil {
+			list = append(list, *media)
+		}
+	}
+
+	return list
 }
 
 // NewOaklandsV1 will create new v1 routes for Oaklands related endpoints.

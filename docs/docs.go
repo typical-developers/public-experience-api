@@ -695,8 +695,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "image": {
+                    "description": "An image preview of the item.\n\nDeprecated: Use ` + "`" + `media` + "`" + ` instead.",
+                    "type": "string",
+                    "x-deprecated": "true"
+                },
+                "media": {
                     "description": "An image preview of the item.",
-                    "type": "string"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Oaklands.V1.Media"
+                        }
+                    ]
                 },
                 "price": {
                     "description": "The price for the item if it's sold in a store.",
@@ -725,8 +734,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "image": {
+                    "description": "The image of this form.\n\nDeprecated: Use ` + "`" + `media` + "`" + ` instead.",
+                    "type": "string",
+                    "x-deprecated": "true"
+                },
+                "media": {
                     "description": "The image of this form.",
-                    "type": "string"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Oaklands.V1.Media"
+                        }
+                    ]
                 },
                 "type": {
                     "description": "The type of form of the item.",
@@ -744,12 +762,25 @@ const docTemplate = `{
         "Oaklands.V1.ItemFormUnboxType": {
             "type": "object",
             "properties": {
-                "image": {
-                    "description": "The image of the unboxed item type.",
+                "convert_type": {
+                    "description": "The type that the unboxed form will convert to.",
                     "type": "string"
                 },
+                "image": {
+                    "description": "The image of the unboxed item type.\n\nDeprecated: Use ` + "`" + `media` + "`" + ` instead.",
+                    "type": "string",
+                    "x-deprecated": "true"
+                },
+                "media": {
+                    "description": "The image of the unboxed item type.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Oaklands.V1.Media"
+                        }
+                    ]
+                },
                 "type": {
-                    "description": "The custom type that the item can unbox as.",
+                    "description": "The form type that the item can unbox as.",
                     "type": "string"
                 }
             }
@@ -799,6 +830,19 @@ const docTemplate = `{
                 }
             }
         },
+        "Oaklands.V1.Media": {
+            "type": "object",
+            "properties": {
+                "asset_id": {
+                    "description": "The Roblox asset id, if it exists.",
+                    "type": "string"
+                },
+                "url": {
+                    "description": "The URL to the hosted media file, if it exists.",
+                    "type": "string"
+                }
+            }
+        },
         "Oaklands.V1.Minimap": {
             "type": "object",
             "properties": {
@@ -831,15 +875,84 @@ const docTemplate = `{
                     ]
                 },
                 "image_ids": {
-                    "description": "The image IDs of the minimap.\nThis is from left -\u003e right.",
+                    "description": "The image IDs of the minimap.\nThis is from left -\u003e right.\n\nDeprecated: Use ` + "`" + `media` + "`" + ` instead.",
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "x-deprecated": "true"
                 },
                 "layer_id": {
                     "description": "The ID of the layer.",
                     "type": "string"
+                },
+                "locations": {
+                    "description": "The locations marked on the layer.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Oaklands.V1.MinimapLocation"
+                    }
+                },
+                "media": {
+                    "description": "The images of the minimap.\nThis is from left -\u003e right.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Oaklands.V1.Media"
+                    }
+                }
+            }
+        },
+        "Oaklands.V1.MinimapLocation": {
+            "type": "object",
+            "properties": {
+                "color": {
+                    "description": "The hex color of the location's marker.",
+                    "type": "string"
+                },
+                "conditional": {
+                    "description": "Whether the location is only shown under certain conditions (e.g. events).",
+                    "type": "boolean"
+                },
+                "marker": {
+                    "description": "The location's marker.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Oaklands.V1.Media"
+                        }
+                    ]
+                },
+                "name": {
+                    "description": "The name of the location.",
+                    "type": "string"
+                },
+                "position": {
+                    "description": "The position of the location in the world.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Oaklands.V1.MinimapLocationPosition"
+                        }
+                    ]
+                },
+                "property_id": {
+                    "description": "The ID of the property, if the location is a property.",
+                    "type": "integer"
+                }
+            }
+        },
+        "Oaklands.V1.MinimapLocationPosition": {
+            "type": "object",
+            "properties": {
+                "x": {
+                    "description": "The X position in the world.",
+                    "type": "number"
+                },
+                "y": {
+                    "description": "The Y position in the world.",
+                    "type": "number"
+                },
+                "z": {
+                    "description": "The Z position in the world.",
+                    "type": "number"
                 }
             }
         },
@@ -859,9 +972,18 @@ const docTemplate = `{
         "Oaklands.V1.Newsletter": {
             "type": "object",
             "properties": {
+                "banner": {
+                    "description": "The banner of the newsletter.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Oaklands.V1.Media"
+                        }
+                    ]
+                },
                 "banner_image_id": {
-                    "description": "The Roblox ID for the banner of the newsletter.",
-                    "type": "string"
+                    "description": "The Roblox ID for the banner of the newsletter.\n\nDeprecated: Use ` + "`" + `banner` + "`" + ` instead.",
+                    "type": "string",
+                    "x-deprecated": "true"
                 },
                 "date": {
                     "description": "The date that the newsletter was released.",
@@ -887,9 +1009,18 @@ const docTemplate = `{
         "Oaklands.V1.NewsletterEntry": {
             "type": "object",
             "properties": {
+                "banner": {
+                    "description": "The banner of the newsletter.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Oaklands.V1.Media"
+                        }
+                    ]
+                },
                 "banner_image_id": {
-                    "description": "The Roblox ID for the banner of the newsletter.",
-                    "type": "string"
+                    "description": "The Roblox ID for the banner of the newsletter.\n\nDeprecated: Use ` + "`" + `banner` + "`" + ` instead.",
+                    "type": "string",
+                    "x-deprecated": "true"
                 },
                 "date": {
                     "description": "The date that the newsletter was released.",
@@ -939,8 +1070,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "image": {
+                    "description": "The image of the item.\n\nDeprecated: Use ` + "`" + `media` + "`" + ` instead.",
+                    "type": "string",
+                    "x-deprecated": "true"
+                },
+                "media": {
                     "description": "The image of the item.",
-                    "type": "string"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Oaklands.V1.Media"
+                        }
+                    ]
                 },
                 "price": {
                     "description": "How much the item costs.",

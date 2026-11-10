@@ -84,6 +84,7 @@ func (o *OaklandsV1Routes) ListNewsletters(w http.ResponseWriter, r *http.Reques
 			ID:            id,
 			Header:        entry.Header,
 			BannerImageId: entry.BannerImageId,
+			Banner:        newMedia(entry.BannerImageId, nil),
 			Date:          entry.Date,
 		})
 	}
@@ -139,6 +140,7 @@ func (o *OaklandsV1Routes) GetNewsletter(w http.ResponseWriter, r *http.Request)
 			Subheader:     newsletter.Subheader,
 			Date:          newsletter.Date,
 			BannerImageId: newsletter.BannerImageId,
+			Banner:        newMedia(newsletter.BannerImageId, nil),
 			Sections:      make([]NewsletterSection, len(newsletter.Section)),
 		},
 	}
@@ -157,16 +159,19 @@ func (o *OaklandsV1Routes) GetNewsletter(w http.ResponseWriter, r *http.Request)
 				sectionContent[j] = NewsletterImage{
 					OaklandsNewsletterContent: NewsLetterContent{Type: "image"},
 					ImageId:                   v.ImageId,
+					Media:                     newMedia(v.ImageId, nil),
 				}
 			case oaklands.NewsletterImageCarousel:
 				sectionContent[j] = NewsletterImageCarousel{
 					OaklandsNewsletterContent: NewsLetterContent{Type: "image_carousel"},
 					ImageIds:                  v.ImageIds,
+					Media:                     newMediaList(v.ImageIds),
 				}
 			case oaklands.NewsletterVideo:
 				sectionContent[j] = NewsletterVideo{
 					OaklandsNewsletterContent: NewsLetterContent{Type: "video"},
 					VideoId:                   v.VideoId,
+					Media:                     newMedia(v.VideoId, nil),
 				}
 			case oaklands.NewsletterBaseContent:
 				sectionContent[j] = NewsLetterContent{Type: string(v.Type)}

@@ -117,6 +117,7 @@ func (o OaklandsV1Routes) GetItem(w http.ResponseWriter, r *http.Request) {
 		DisplayName: item.DisplayName,
 		Description: item.Description,
 		Image:       image,
+		Media:       newMedia("", image),
 		Forms:       make([]ItemForm, 0, len(item.Forms)),
 	}}
 
@@ -124,9 +125,11 @@ func (o OaklandsV1Routes) GetItem(w http.ResponseWriter, r *http.Request) {
 		if hasUnopenedGift && form.FormType != "store" && form.FormType != "box" && form.FormType != "gift" {
 			continue
 		}
+		formImage := assets.OaklandsItemAssetExists(o.s3, item.Name, form.FormType)
 		result := ItemForm{
 			Type:        form.FormType,
-			Image:       assets.OaklandsItemAssetExists(o.s3, item.Name, form.FormType),
+			Image:       formImage,
+			Media:       newMedia("", formImage),
 			ConvertType: form.ConvertType,
 		}
 
@@ -148,9 +151,11 @@ func (o OaklandsV1Routes) GetItem(w http.ResponseWriter, r *http.Request) {
 			}
 
 			for _, unboxType := range info.UnboxTypes {
+				unboxImage := assets.OaklandsItemAssetExists(o.s3, resultID, unboxType.FormType)
 				result.UnboxTypes = append(result.UnboxTypes, ItemFormUnboxType{
 					Type:        unboxType.FormType,
-					Image:       assets.OaklandsItemAssetExists(o.s3, resultID, unboxType.FormType),
+					Image:       unboxImage,
+					Media:       newMedia("", unboxImage),
 					ConvertType: unboxType.ConvertType,
 				})
 			}

@@ -13,3 +13,12 @@ Each service will use different environmental variables. You can refer to the `.
 
 ## API
 To run the API in development mode, enter the `/cmd/public/` directory, and run `air`.
+
+## Docs
+To generate docs, run:
+```sh
+go install github.com/swaggo/swag/cmd/swag@v1.16.6
+```
+```sh
+swag init -g cmd/public/main.go -o docs
+```
