@@ -128,7 +128,7 @@ func (o *OaklandsV1Routes) GetIndexEntry(w http.ResponseWriter, r *http.Request)
 		},
 		DisplayName: entry.DisplayName,
 		Description: entry.Description,
-		Sections:    make([]IndexSection, len(entry.Sections)),
+		Regions:     make([]IndexRegion, len(entry.Sections)),
 		Enemy:       entry.Enemy,
 		Tier:        entry.Tier,
 		Stats:       entry.Stats,
@@ -137,7 +137,7 @@ func (o *OaklandsV1Routes) GetIndexEntry(w http.ResponseWriter, r *http.Request)
 	}}
 
 	for i, section := range entry.Sections {
-		response.Data.Sections[i] = IndexSection{
+		response.Data.Regions[i] = IndexRegion{
 			ID:          section.ID,
 			DisplayName: section.DisplayName,
 		}
@@ -152,7 +152,7 @@ func (o *OaklandsV1Routes) GetIndexEntry(w http.ResponseWriter, r *http.Request)
 
 	for i, drop := range entry.Drops {
 		response.Data.Drops[i] = IndexDrop{
-			Name:        drop.Name,
+			ID:          drop.Name,
 			DisplayName: drop.DisplayName,
 			Chance:      drop.Chance,
 		}

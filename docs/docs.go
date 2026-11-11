@@ -921,8 +921,8 @@ const docTemplate = `{
                     "description": "The display name of the material that can drop.",
                     "type": "string"
                 },
-                "name": {
-                    "description": "The name of the material that can drop.",
+                "id": {
+                    "description": "The ID of the material that can drop.",
                     "type": "string"
                 }
             }
@@ -965,11 +965,11 @@ const docTemplate = `{
                         }
                     ]
                 },
-                "sections": {
-                    "description": "The sections (sub-biomes) that the entry can be found in.",
+                "regions": {
+                    "description": "The regions that the entry can be found in.",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/Oaklands.V1.IndexSection"
+                        "$ref": "#/definitions/Oaklands.V1.IndexRegion"
                     }
                 },
                 "stats": {
@@ -1011,15 +1011,15 @@ const docTemplate = `{
                 }
             }
         },
-        "Oaklands.V1.IndexSection": {
+        "Oaklands.V1.IndexRegion": {
             "type": "object",
             "properties": {
                 "display_name": {
-                    "description": "The display name of the section.",
+                    "description": "The display name of the region.",
                     "type": "string"
                 },
                 "id": {
-                    "description": "The ID of the section (e.g. FloweringMeadows, Special, Event or Unobtainable).",
+                    "description": "The ID of the region (e.g. FloweringMeadows).\nEntries that aren't tied to a region use Special, Event or Unobtainable.",
                     "type": "string"
                 }
             }

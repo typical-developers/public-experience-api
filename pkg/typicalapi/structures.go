@@ -349,12 +349,13 @@ type OaklandsIndexEntryInfo struct {
 	Media *OaklandsMedia `json:"media"`
 } //	@name	Oaklands.V1.IndexEntryInfo
 
-type OaklandsIndexSection struct {
-	// The ID of the section (e.g. FloweringMeadows, Special, Event or Unobtainable).
+type OaklandsIndexRegion struct {
+	// The ID of the region (e.g. FloweringMeadows).
+	// Entries that aren't tied to a region use Special, Event or Unobtainable.
 	ID string `json:"id"`
-	// The display name of the section.
+	// The display name of the region.
 	DisplayName string `json:"display_name"`
-} //	@name	Oaklands.V1.IndexSection
+} //	@name	Oaklands.V1.IndexRegion
 
 type OaklandsIndexVariant struct {
 	// The display name of the variant.
@@ -364,8 +365,8 @@ type OaklandsIndexVariant struct {
 } //	@name	Oaklands.V1.IndexVariant
 
 type OaklandsIndexDrop struct {
-	// The name of the material that can drop.
-	Name string `json:"name"`
+	// The ID of the material that can drop.
+	ID string `json:"id"`
 	// The display name of the material that can drop.
 	DisplayName string `json:"display_name"`
 	// The chance of the material dropping.
@@ -379,8 +380,8 @@ type OaklandsIndexEntry struct {
 	DisplayName string `json:"display_name"`
 	// The description of the entry.
 	Description string `json:"description"`
-	// The sections (sub-biomes) that the entry can be found in.
-	Sections []OaklandsIndexSection `json:"sections"`
+	// The regions that the entry can be found in.
+	Regions []OaklandsIndexRegion `json:"regions"`
 	// Whether the entry is an enemy.
 	Enemy bool `json:"enemy"`
 	// The tool tier needed to harvest the entry, if it has one.

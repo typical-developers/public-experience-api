@@ -68,7 +68,7 @@ type (
 // Index
 type (
 	IndexEntryInfo = typicalapi.OaklandsIndexEntryInfo
-	IndexSection   = typicalapi.OaklandsIndexSection
+	IndexRegion    = typicalapi.OaklandsIndexRegion
 	IndexVariant   = typicalapi.OaklandsIndexVariant
 	IndexDrop      = typicalapi.OaklandsIndexDrop
 	IndexEntry     = typicalapi.OaklandsIndexEntry
