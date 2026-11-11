@@ -77,6 +77,8 @@ func NewOaklandsV1(r *chi.Mux, opts *OaklandsV1Opts) {
 
 		r.Route("/world", func(r chi.Router) {
 			r.Get("/minimap", o.GetMinimap)
+			r.Get("/regions", o.ListRegions)
+			r.Get("/regions/{id}", o.GetRegion)
 		})
 
 		r.Route("/changelogs", func(r chi.Router) {

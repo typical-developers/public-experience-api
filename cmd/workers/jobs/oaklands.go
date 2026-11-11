@@ -435,6 +435,51 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 	if err := c.store.Index.SetMany(ctx, index); err != nil {
 		panic(err)
 	}
+
+	regions := make(map[string]data.OaklandsRegion, len(content.Regions))
+	for id, region := range content.Regions {
+		var island *data.OaklandsRegionIsland
+		if region.Island != nil {
+			island = &data.OaklandsRegionIsland{
+				ID:          region.Island.ID,
+				DisplayName: region.Island.DisplayName,
+				Tier:        region.Island.Tier,
+			}
+		}
+
+		bounds := make([]data.OaklandsRegionBound, len(region.Bounds))
+		for i, bound := range region.Bounds {
+			bounds[i] = data.OaklandsRegionBound{
+				Position: data.OaklandsRegionVector{X: bound.Position.X, Y: bound.Position.Y, Z: bound.Position.Z},
+				Size:     data.OaklandsRegionVector{X: bound.Size.X, Y: bound.Size.Y, Z: bound.Size.Z},
+				Rotation: data.OaklandsRegionVector{X: bound.Rotation.X, Y: bound.Rotation.Y, Z: bound.Rotation.Z},
+			}
+		}
+
+		// Categories are lowercased to match how index entries are stored.
+		resources := make([]data.OaklandsRegionResource, len(region.Resources))
+		for i, resource := range region.Resources {
+			resources[i] = data.OaklandsRegionResource{
+				Category: strings.ToLower(resource.Category),
+				ID:       resource.ID,
+			}
+		}
+
+		regions[id] = data.OaklandsRegion{
+			ID:              region.ID,
+			DisplayName:     region.DisplayName,
+			Description:     region.Description,
+			Island:          island,
+			Tier:            region.Tier,
+			Layer:           region.Layer,
+			DiscoveryReward: region.DiscoveryReward,
+			Bounds:          bounds,
+			Resources:       resources,
+		}
+	}
+	if err := c.store.Regions.SetMany(ctx, regions); err != nil {
+		panic(err)
+	}
 }
 
 // RefreshClassicShop will fetch and update the classic shop.

@@ -92,4 +92,9 @@ type (
 	MinimapLocation         = typicalapi.OaklandsMinimapLocation
 	MinimapLayer            = typicalapi.OaklandsMinimapLayer
 	Minimap                 = typicalapi.OaklandsMinimap
+	RegionVector            = typicalapi.OaklandsRegionVector
+	RegionBound             = typicalapi.OaklandsRegionBound
+	RegionIsland            = typicalapi.OaklandsRegionIsland
+	RegionResource          = typicalapi.OaklandsRegionResource
+	Region                  = typicalapi.OaklandsRegion
 )

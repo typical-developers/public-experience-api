@@ -216,6 +216,41 @@ type OaklandsIndexEntry struct {
 	Drops       []OaklandsIndexDrop
 }
 
+type OaklandsRegionVector struct {
+	X float64
+	Y float64
+	Z float64
+}
+
+type OaklandsRegionBound struct {
+	Position OaklandsRegionVector
+	Size     OaklandsRegionVector
+	Rotation OaklandsRegionVector
+}
+
+type OaklandsRegionIsland struct {
+	ID          string
+	DisplayName string
+	Tier        int64
+}
+
+type OaklandsRegionResource struct {
+	Category string
+	ID       string
+}
+
+type OaklandsRegion struct {
+	ID              string
+	DisplayName     string
+	Description     string
+	Island          *OaklandsRegionIsland
+	Tier            int64
+	Layer           int64
+	DiscoveryReward int64
+	Bounds          []OaklandsRegionBound
+	Resources       []OaklandsRegionResource
+}
+
 type OaklandsStore struct {
 	Config       *RedisValue[OaklandsConfig]
 	Version      *RedisValue[OaklandsVersion]
@@ -236,6 +271,8 @@ type OaklandsStore struct {
 
 	// Index entries are keyed by `<category>:<name>`, with the category lowercased.
 	Index *RedisHash[OaklandsIndexEntry]
+
+	Regions *RedisHash[OaklandsRegion]
 }
 
 func NewOaklandsStore(c redis.UniversalClient) *OaklandsStore {
@@ -258,5 +295,7 @@ func NewOaklandsStore(c redis.UniversalClient) *OaklandsStore {
 		Minimap: NewRedisValue[[]OaklandsMinimap](c, "oaklands:minimap"),
 
 		Index: NewRedisHash[OaklandsIndexEntry](c, "oaklands:index"),
+
+		Regions: NewRedisHash[OaklandsRegion](c, "oaklands:regions"),
 	}
 }

@@ -305,3 +305,38 @@ type IndexEntry struct {
 	Variants    map[string]IndexVariant `json:"Variants"`
 	Drops       []IndexDrop             `json:"Drops"`
 }
+
+type RegionVector struct {
+	X float64 `json:"X"`
+	Y float64 `json:"Y"`
+	Z float64 `json:"Z"`
+}
+
+type RegionBound struct {
+	Position RegionVector `json:"Position"`
+	Size     RegionVector `json:"Size"`
+	Rotation RegionVector `json:"Rotation"`
+}
+
+type RegionIsland struct {
+	ID          string `json:"ID"`
+	DisplayName string `json:"DisplayName"`
+	Tier        int64  `json:"Tier"`
+}
+
+type RegionResource struct {
+	Category string `json:"Category"`
+	ID       string `json:"ID"`
+}
+
+type Region struct {
+	ID              string           `json:"ID"`
+	DisplayName     string           `json:"DisplayName"`
+	Description     string           `json:"Description"`
+	Island          *RegionIsland    `json:"Island"`
+	Tier            int64            `json:"Tier"`
+	Layer           int64            `json:"Layer"`
+	DiscoveryReward int64            `json:"DiscoveryReward"`
+	Bounds          []RegionBound    `json:"Bounds"`
+	Resources       []RegionResource `json:"Resources"`
+}

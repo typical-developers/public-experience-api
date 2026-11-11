@@ -392,3 +392,55 @@ type OaklandsIndexEntry struct {
 	// The materials that the entry can drop (enemies only).
 	Drops []OaklandsIndexDrop `json:"drops,omitempty"`
 } //	@name	Oaklands.V1.IndexEntry
+
+type OaklandsRegionVector struct {
+	X float64 `json:"x"`
+	Y float64 `json:"y"`
+	Z float64 `json:"z"`
+} //	@name	Oaklands.V1.RegionVector
+
+type OaklandsRegionBound struct {
+	// The center position of the bound in the world.
+	Position OaklandsRegionVector `json:"position"`
+	// The size of the bound.
+	Size OaklandsRegionVector `json:"size"`
+	// The orientation of the bound, in degrees.
+	Rotation OaklandsRegionVector `json:"rotation"`
+} //	@name	Oaklands.V1.RegionBound
+
+type OaklandsRegionIsland struct {
+	// The ID of the island.
+	ID string `json:"id"`
+	// The display name of the island.
+	DisplayName string `json:"display_name"`
+	// The tool tier the island is meant for.
+	Tier int64 `json:"tier"`
+} //	@name	Oaklands.V1.RegionIsland
+
+type OaklandsRegionResource struct {
+	OaklandsIndexEntryInfo
+
+	// The display name of the resource.
+	DisplayName string `json:"display_name"`
+} //	@name	Oaklands.V1.RegionResource
+
+type OaklandsRegion struct {
+	// The ID of the region.
+	ID string `json:"id"`
+	// The display name of the region.
+	DisplayName string `json:"display_name"`
+	// The description of the region.
+	Description string `json:"description"`
+	// The island that the region is on.
+	Island *OaklandsRegionIsland `json:"island,omitempty"`
+	// The tool tier the region is meant for.
+	Tier int64 `json:"tier"`
+	// The layer of the region. 0 is the surface, anything higher is a cave layer.
+	Layer int64 `json:"layer"`
+	// The amount of sprouts rewarded for discovering the region.
+	DiscoveryReward int64 `json:"discovery_reward"`
+	// The bounds that make up the region in the world.
+	Bounds []OaklandsRegionBound `json:"bounds"`
+	// The material index entries that can be found in the region.
+	Resources []OaklandsRegionResource `json:"resources"`
+} //	@name	Oaklands.V1.Region

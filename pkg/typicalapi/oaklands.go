@@ -88,6 +88,14 @@ var (
 	OaklandsGetMinimap = NewEndpoint(
 		"/oaklands/v1/world/minimap",
 	)
+
+	OaklandsListRegions = NewEndpoint(
+		"/oaklands/v1/world/regions",
+	)
+
+	OaklandsGetRegion = NewEndpoint(
+		"/oaklands/v1/world/regions/{id}",
+	)
 )
 
 // ListChangelogs fetches every changelog version, without the changelog contents.
@@ -291,4 +299,26 @@ func (o *oaklands) GetMinimap(ctx context.Context) (*OaklandsMinimap, *Response,
 	}
 
 	return &minimap.Data, resp, nil
+}
+
+// ListRegions fetches the IDs of every region. Use the IDs with GetRegion.
+func (o *oaklands) ListRegions(ctx context.Context) ([]string, *Response, error) {
+	regions := new(ResponseData[[]string])
+	resp, err := o.client.Call(ctx, OaklandsListRegions.Compile(nil), nil, regions)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return regions.Data, resp, nil
+}
+
+// GetRegion fetches a region by its ID (e.g. "MagmaCave").
+func (o *oaklands) GetRegion(ctx context.Context, id string) (*OaklandsRegion, *Response, error) {
+	region := new(ResponseData[OaklandsRegion])
+	resp, err := o.client.Call(ctx, OaklandsGetRegion.Compile(nil, id), nil, region)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return &region.Data, resp, nil
 }

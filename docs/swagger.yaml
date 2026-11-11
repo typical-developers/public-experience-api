@@ -411,6 +411,94 @@ definitions:
         description: The header of the section.
         type: string
     type: object
+  Oaklands.V1.Region:
+    properties:
+      bounds:
+        description: The bounds that make up the region in the world.
+        items:
+          $ref: '#/definitions/Oaklands.V1.RegionBound'
+        type: array
+      description:
+        description: The description of the region.
+        type: string
+      discovery_reward:
+        description: The amount of sprouts rewarded for discovering the region.
+        type: integer
+      display_name:
+        description: The display name of the region.
+        type: string
+      id:
+        description: The ID of the region.
+        type: string
+      island:
+        allOf:
+        - $ref: '#/definitions/Oaklands.V1.RegionIsland'
+        description: The island that the region is on.
+      layer:
+        description: The layer of the region. 0 is the surface, anything higher is
+          a cave layer.
+        type: integer
+      resources:
+        description: The material index entries that can be found in the region.
+        items:
+          $ref: '#/definitions/Oaklands.V1.RegionResource'
+        type: array
+      tier:
+        description: The tool tier the region is meant for.
+        type: integer
+    type: object
+  Oaklands.V1.RegionBound:
+    properties:
+      position:
+        allOf:
+        - $ref: '#/definitions/Oaklands.V1.RegionVector'
+        description: The center position of the bound in the world.
+      rotation:
+        allOf:
+        - $ref: '#/definitions/Oaklands.V1.RegionVector'
+        description: The orientation of the bound, in degrees.
+      size:
+        allOf:
+        - $ref: '#/definitions/Oaklands.V1.RegionVector'
+        description: The size of the bound.
+    type: object
+  Oaklands.V1.RegionIsland:
+    properties:
+      display_name:
+        description: The display name of the island.
+        type: string
+      id:
+        description: The ID of the island.
+        type: string
+      tier:
+        description: The tool tier the island is meant for.
+        type: integer
+    type: object
+  Oaklands.V1.RegionResource:
+    properties:
+      category:
+        description: The category of the entry (trees, rocks, ores, creatures or forageables).
+        type: string
+      display_name:
+        description: The display name of the resource.
+        type: string
+      id:
+        description: The ID of the entry.
+        type: string
+      media:
+        allOf:
+        - $ref: '#/definitions/Oaklands.V1.Media'
+        description: The image of the entry.
+    type: object
+  Oaklands.V1.RegionVector:
+    properties:
+      x:
+        type: number
+      "y":
+        type: number
+      z:
+        type: number
+    type: object
   Oaklands.V1.StoreItem:
     properties:
       currency:
@@ -955,6 +1043,65 @@ paths:
             properties:
               data:
                 $ref: '#/definitions/Oaklands.V1.Minimap'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+      tags:
+      - Oaklands
+  /oaklands/v1/world/regions:
+    get:
+      description: List the IDs of every region.
+      parameters:
+      - description: ETag to validate cached response.
+        in: header
+        name: If-None-Match
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  type: string
+                type: array
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+      tags:
+      - Oaklands
+  /oaklands/v1/world/regions/{id}:
+    get:
+      description: Get information for a region.
+      parameters:
+      - description: ETag to validate cached response.
+        in: header
+        name: If-None-Match
+        type: string
+      - description: The ID of the region (e.g. `MagmaCave`).
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/Oaklands.V1.Region'
             type: object
         "500":
           description: Internal Server Error
