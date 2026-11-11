@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strings"
 	"time"
+	_ "time/tzdata" // embed zoneinfo so America/New_York always resolves
 
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
@@ -150,6 +151,8 @@ func (o *OaklandsV1Routes) GetStockMarketOres(w http.ResponseWriter, r *http.Req
 	o.writeStockMarket(w, r, o.uc.GetStockMarketOres)
 }
 
+var easternTZ, _ = time.LoadLocation("America/New_York") // always resolves: time/tzdata is embedded
+
 //	@Router			/oaklands/v1/economy/daily-material-buffs [GET]
 //	@Description	Get all of the daily material buff values (tree, rocks, ores).
 //
@@ -165,8 +168,8 @@ func (o *OaklandsV1Routes) GetDailyMaterialBuffs(w http.ResponseWriter, r *http.
 	response := MaterialBuffResponse{
 		RefreshAt: time.Date(
 			now.Year(), now.Month(), now.Day()+1,
-			4, 0, 0, 0, time.UTC,
-		),
+			0, 0, 0, 0, easternTZ,
+		).UTC(),
 		Response: rest.Response[map[string][]MaterialBuff]{
 			Data: map[string][]MaterialBuff{},
 		},

@@ -69,7 +69,9 @@ func NewOaklandsCronJobs(opts *OaklandsCronJobsOpts) {
 			JobFunc: c.RefreshClassicShop,
 		},
 		{
-			Spec: "0 4 * * *",
+			// The daily material buffs reset at 12AM Eastern.
+			// Instead of running at 4AM/5AM UTC, just force it to the timezone.
+			Spec: "CRON_TZ=America/New_York 0 0 * * *",
 			Config: JobConfig{
 				Enabled: true,
 				Retry: &RetryConfig{
