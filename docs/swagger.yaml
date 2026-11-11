@@ -38,6 +38,95 @@ definitions:
       version:
         type: string
     type: object
+  Oaklands.V1.IndexDrop:
+    properties:
+      chance:
+        description: The chance of the material dropping.
+        type: number
+      display_name:
+        description: The display name of the material that can drop.
+        type: string
+      name:
+        description: The name of the material that can drop.
+        type: string
+    type: object
+  Oaklands.V1.IndexEntry:
+    properties:
+      category:
+        description: The category of the entry (trees, rocks, ores, creatures or forageables).
+        type: string
+      description:
+        description: The description of the entry.
+        type: string
+      display_name:
+        description: The display name of the entry.
+        type: string
+      drops:
+        description: The materials that the entry can drop (enemies only).
+        items:
+          $ref: '#/definitions/Oaklands.V1.IndexDrop'
+        type: array
+      enemy:
+        description: Whether the entry is an enemy.
+        type: boolean
+      id:
+        description: The ID of the entry.
+        type: string
+      media:
+        allOf:
+        - $ref: '#/definitions/Oaklands.V1.Media'
+        description: The image of the entry.
+      sections:
+        description: The sections (sub-biomes) that the entry can be found in.
+        items:
+          $ref: '#/definitions/Oaklands.V1.IndexSection'
+        type: array
+      stats:
+        additionalProperties: {}
+        description: The stats for the entry, if it has any.
+        type: object
+      tier:
+        description: The tool tier needed to harvest the entry, if it has one.
+        type: integer
+      variants:
+        additionalProperties:
+          $ref: '#/definitions/Oaklands.V1.IndexVariant'
+        description: The variants of the entry (e.g. raw, refined, forged), if it
+          has any.
+        type: object
+    type: object
+  Oaklands.V1.IndexEntryInfo:
+    properties:
+      category:
+        description: The category of the entry (trees, rocks, ores, creatures or forageables).
+        type: string
+      id:
+        description: The ID of the entry.
+        type: string
+      media:
+        allOf:
+        - $ref: '#/definitions/Oaklands.V1.Media'
+        description: The image of the entry.
+    type: object
+  Oaklands.V1.IndexSection:
+    properties:
+      display_name:
+        description: The display name of the section.
+        type: string
+      id:
+        description: The ID of the section (e.g. FloweringMeadows, Special, Event
+          or Unobtainable).
+        type: string
+    type: object
+  Oaklands.V1.IndexVariant:
+    properties:
+      display_name:
+        description: The display name of the variant.
+        type: string
+      value:
+        description: The value of the variant, if it has one.
+        type: number
+    type: object
   Oaklands.V1.Item:
     properties:
       currency:
@@ -473,6 +562,105 @@ paths:
                 type: object
               refresh_at:
                 type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+      tags:
+      - Oaklands
+  /oaklands/v1/index:
+    get:
+      description: List the material index categories.
+      parameters:
+      - description: ETag to validate cached response.
+        in: header
+        name: If-None-Match
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  type: string
+                type: array
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+      tags:
+      - Oaklands
+  /oaklands/v1/index/{category}:
+    get:
+      description: List the material index entries in a category, without the entry
+        details.
+      parameters:
+      - description: ETag to validate cached response.
+        in: header
+        name: If-None-Match
+        type: string
+      - description: The category of the entries (trees, rocks, ores, creatures or
+          forageables).
+        in: path
+        name: category
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/Oaklands.V1.IndexEntryInfo'
+                type: array
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
+      tags:
+      - Oaklands
+  /oaklands/v1/index/{category}/{id}:
+    get:
+      description: Get a material index entry.
+      parameters:
+      - description: ETag to validate cached response.
+        in: header
+        name: If-None-Match
+        type: string
+      - description: The category of the entry (trees, rocks, ores, creatures or forageables).
+        in: path
+        name: category
+        required: true
+        type: string
+      - description: The ID of the entry (e.g. `BirchTree` or `Rose Gold`).
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/Oaklands.V1.IndexEntry'
             type: object
         "500":
           description: Internal Server Error

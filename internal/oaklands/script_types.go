@@ -275,3 +275,33 @@ type MinimapLayer struct {
 	ImageIDs  []string          `json:"ImageIDs"`
 	Locations []MinimapLocation `json:"Locations"`
 }
+
+type IndexSection struct {
+	ID          string `json:"ID"`
+	DisplayName string `json:"DisplayName"`
+}
+
+type IndexVariant struct {
+	DisplayName string   `json:"DisplayName"`
+	Value       *float64 `json:"Value"`
+}
+
+type IndexDrop struct {
+	Name        string  `json:"Name"`
+	DisplayName string  `json:"DisplayName"`
+	Chance      float64 `json:"Chance"`
+}
+
+type IndexEntry struct {
+	Name        string                  `json:"Name"`
+	Category    string                  `json:"Category"`
+	DisplayName string                  `json:"DisplayName"`
+	Description string                  `json:"Description"`
+	Image       string                  `json:"Image"`
+	Sections    []IndexSection          `json:"Sections"`
+	Enemy       bool                    `json:"Enemy"`
+	Tier        *int64                  `json:"Tier"`
+	Stats       map[string]any          `json:"Stats"`
+	Variants    map[string]IndexVariant `json:"Variants"`
+	Drops       []IndexDrop             `json:"Drops"`
+}

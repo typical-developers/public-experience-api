@@ -70,6 +70,7 @@ type ContentSyncData struct {
 	ItemDetails        map[string]ItemDetails           `json:"ItemDetails"`
 	StoreItems         map[string][]string              `json:"StoreItems"`
 	Minimap            []MinimapLayer                   `json:"Minimap"`
+	Index              map[string]map[string]IndexEntry `json:"Index"`
 }
 
 // GetConfig will get needed config values from the Oaklands experience config.

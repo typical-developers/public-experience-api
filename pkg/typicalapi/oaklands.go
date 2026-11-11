@@ -41,6 +41,18 @@ var (
 		"/oaklands/v1/economy/daily-material-buffs",
 	)
 
+	OaklandsListIndexCategories = NewEndpoint(
+		"/oaklands/v1/index",
+	)
+
+	OaklandsListIndex = NewEndpoint(
+		"/oaklands/v1/index/{category}",
+	)
+
+	OaklandsGetIndexEntry = NewEndpoint(
+		"/oaklands/v1/index/{category}/{id}",
+	)
+
 	OaklandsListItems = NewEndpoint(
 		"/oaklands/v1/items",
 	)
@@ -127,6 +139,39 @@ func (o *oaklands) GetDailyMaterialBuffs(ctx context.Context) (*OaklandsMaterial
 	}
 
 	return buffs, resp, nil
+}
+
+// ListIndexCategories fetches the material index categories (e.g. "ores"). Use them with ListIndex.
+func (o *oaklands) ListIndexCategories(ctx context.Context) ([]string, *Response, error) {
+	categories := new(ResponseData[[]string])
+	resp, err := o.client.Call(ctx, OaklandsListIndexCategories.Compile(nil), nil, categories)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return categories.Data, resp, nil
+}
+
+// ListIndex fetches the material index entries in a category (e.g. "ores"), without the entry details.
+func (o *oaklands) ListIndex(ctx context.Context, category string) ([]OaklandsIndexEntryInfo, *Response, error) {
+	entries := new(ResponseData[[]OaklandsIndexEntryInfo])
+	resp, err := o.client.Call(ctx, OaklandsListIndex.Compile(nil, category), nil, entries)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return entries.Data, resp, nil
+}
+
+// GetIndexEntry fetches a material index entry by its category (e.g. "ores") and ID (e.g. "Rose Gold").
+func (o *oaklands) GetIndexEntry(ctx context.Context, category, id string) (*OaklandsIndexEntry, *Response, error) {
+	entry := new(ResponseData[OaklandsIndexEntry])
+	resp, err := o.client.Call(ctx, OaklandsGetIndexEntry.Compile(nil, category, id), nil, entry)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return &entry.Data, resp, nil
 }
 
 // ListItems fetches the IDs of every available item.

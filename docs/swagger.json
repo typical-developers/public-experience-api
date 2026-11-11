@@ -158,6 +158,156 @@
                 }
             }
         },
+        "/oaklands/v1/index": {
+            "get": {
+                "description": "List the material index categories.",
+                "tags": [
+                    "Oaklands"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ETag to validate cached response.",
+                        "name": "If-None-Match",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/oaklands/v1/index/{category}": {
+            "get": {
+                "description": "List the material index entries in a category, without the entry details.",
+                "tags": [
+                    "Oaklands"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ETag to validate cached response.",
+                        "name": "If-None-Match",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The category of the entries (trees, rocks, ores, creatures or forageables).",
+                        "name": "category",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Oaklands.V1.IndexEntryInfo"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/oaklands/v1/index/{category}/{id}": {
+            "get": {
+                "description": "Get a material index entry.",
+                "tags": [
+                    "Oaklands"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ETag to validate cached response.",
+                        "name": "If-None-Match",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "The category of the entry (trees, rocks, ores, creatures or forageables).",
+                        "name": "category",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The ID of the entry (e.g. `BirchTree` or `Rose Gold`).",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "$ref": "#/definitions/Oaklands.V1.IndexEntry"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/oaklands/v1/items": {
             "get": {
                 "description": "Get a list of available items.",
@@ -656,6 +806,133 @@
                 },
                 "version": {
                     "type": "string"
+                }
+            }
+        },
+        "Oaklands.V1.IndexDrop": {
+            "type": "object",
+            "properties": {
+                "chance": {
+                    "description": "The chance of the material dropping.",
+                    "type": "number"
+                },
+                "display_name": {
+                    "description": "The display name of the material that can drop.",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the material that can drop.",
+                    "type": "string"
+                }
+            }
+        },
+        "Oaklands.V1.IndexEntry": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "description": "The category of the entry (trees, rocks, ores, creatures or forageables).",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "The description of the entry.",
+                    "type": "string"
+                },
+                "display_name": {
+                    "description": "The display name of the entry.",
+                    "type": "string"
+                },
+                "drops": {
+                    "description": "The materials that the entry can drop (enemies only).",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Oaklands.V1.IndexDrop"
+                    }
+                },
+                "enemy": {
+                    "description": "Whether the entry is an enemy.",
+                    "type": "boolean"
+                },
+                "id": {
+                    "description": "The ID of the entry.",
+                    "type": "string"
+                },
+                "media": {
+                    "description": "The image of the entry.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Oaklands.V1.Media"
+                        }
+                    ]
+                },
+                "sections": {
+                    "description": "The sections (sub-biomes) that the entry can be found in.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Oaklands.V1.IndexSection"
+                    }
+                },
+                "stats": {
+                    "description": "The stats for the entry, if it has any.",
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "tier": {
+                    "description": "The tool tier needed to harvest the entry, if it has one.",
+                    "type": "integer"
+                },
+                "variants": {
+                    "description": "The variants of the entry (e.g. raw, refined, forged), if it has any.",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/Oaklands.V1.IndexVariant"
+                    }
+                }
+            }
+        },
+        "Oaklands.V1.IndexEntryInfo": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "description": "The category of the entry (trees, rocks, ores, creatures or forageables).",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "The ID of the entry.",
+                    "type": "string"
+                },
+                "media": {
+                    "description": "The image of the entry.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Oaklands.V1.Media"
+                        }
+                    ]
+                }
+            }
+        },
+        "Oaklands.V1.IndexSection": {
+            "type": "object",
+            "properties": {
+                "display_name": {
+                    "description": "The display name of the section.",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "The ID of the section (e.g. FloweringMeadows, Special, Event or Unobtainable).",
+                    "type": "string"
+                }
+            }
+        },
+        "Oaklands.V1.IndexVariant": {
+            "type": "object",
+            "properties": {
+                "display_name": {
+                    "description": "The display name of the variant.",
+                    "type": "string"
+                },
+                "value": {
+                    "description": "The value of the variant, if it has one.",
+                    "type": "number"
                 }
             }
         },

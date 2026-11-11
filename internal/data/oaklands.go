@@ -186,6 +186,36 @@ type OaklandsMinimap struct {
 	Locations []OaklandsMinimapLocation
 }
 
+type OaklandsIndexSection struct {
+	ID          string
+	DisplayName string
+}
+
+type OaklandsIndexVariant struct {
+	DisplayName string
+	Value       *float64
+}
+
+type OaklandsIndexDrop struct {
+	Name        string
+	DisplayName string
+	Chance      float64
+}
+
+type OaklandsIndexEntry struct {
+	Name        string
+	Category    string
+	DisplayName string
+	Description string
+	Image       string
+	Sections    []OaklandsIndexSection
+	Enemy       bool
+	Tier        *int64
+	Stats       map[string]any
+	Variants    map[string]OaklandsIndexVariant
+	Drops       []OaklandsIndexDrop
+}
+
 type OaklandsStore struct {
 	Config       *RedisValue[OaklandsConfig]
 	Version      *RedisValue[OaklandsVersion]
@@ -203,6 +233,9 @@ type OaklandsStore struct {
 	Translations     *RedisHash[map[string]string]
 
 	Minimap *RedisValue[[]OaklandsMinimap]
+
+	// Index entries are keyed by `<category>:<name>`, with the category lowercased.
+	Index *RedisHash[OaklandsIndexEntry]
 }
 
 func NewOaklandsStore(c redis.UniversalClient) *OaklandsStore {
@@ -223,5 +256,7 @@ func NewOaklandsStore(c redis.UniversalClient) *OaklandsStore {
 		Translations:     NewRedisHash[map[string]string](c, "oaklands:translations"),
 
 		Minimap: NewRedisValue[[]OaklandsMinimap](c, "oaklands:minimap"),
+
+		Index: NewRedisHash[OaklandsIndexEntry](c, "oaklands:index"),
 	}
 }

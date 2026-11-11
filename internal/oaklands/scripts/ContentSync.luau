@@ -20,6 +20,7 @@ local DailyMaterialBuffs = require(game.ServerScriptService.PublicAPIUtility.Dai
 local Items = require(game.ServerScriptService.PublicAPIUtility.Items)
 local StoreItems = require(game.ServerScriptService.PublicAPIUtility.StoreItems)
 local Minimap = require(game.ServerScriptService.PublicAPIUtility.Minimap)
+local Index = require(game.ServerScriptService.PublicAPIUtility.Index)
 
 local BinaryOutputBuffer = PublicAPIUtility:EncodeBinaryOutput({
     Translations = Translations,
@@ -30,6 +31,7 @@ local BinaryOutputBuffer = PublicAPIUtility:EncodeBinaryOutput({
     ItemDetails = Items,
     StoreItems = StoreItems,
     Minimap = Minimap,
+    Index = Index,
 })
 
 local Result: LuauExecutionTaskOutput = {

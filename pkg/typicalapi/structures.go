@@ -339,3 +339,56 @@ type OaklandsMinimap struct {
 	// The layers of the minimap.
 	Layers []OaklandsMinimapLayer `json:"layers"`
 } //	@name	Oaklands.V1.Minimap
+
+type OaklandsIndexEntryInfo struct {
+	// The category of the entry (trees, rocks, ores, creatures or forageables).
+	Category string `json:"category"`
+	// The ID of the entry.
+	ID string `json:"id"`
+	// The image of the entry.
+	Media *OaklandsMedia `json:"media"`
+} //	@name	Oaklands.V1.IndexEntryInfo
+
+type OaklandsIndexSection struct {
+	// The ID of the section (e.g. FloweringMeadows, Special, Event or Unobtainable).
+	ID string `json:"id"`
+	// The display name of the section.
+	DisplayName string `json:"display_name"`
+} //	@name	Oaklands.V1.IndexSection
+
+type OaklandsIndexVariant struct {
+	// The display name of the variant.
+	DisplayName string `json:"display_name"`
+	// The value of the variant, if it has one.
+	Value *float64 `json:"value,omitempty"`
+} //	@name	Oaklands.V1.IndexVariant
+
+type OaklandsIndexDrop struct {
+	// The name of the material that can drop.
+	Name string `json:"name"`
+	// The display name of the material that can drop.
+	DisplayName string `json:"display_name"`
+	// The chance of the material dropping.
+	Chance float64 `json:"chance"`
+} //	@name	Oaklands.V1.IndexDrop
+
+type OaklandsIndexEntry struct {
+	OaklandsIndexEntryInfo
+
+	// The display name of the entry.
+	DisplayName string `json:"display_name"`
+	// The description of the entry.
+	Description string `json:"description"`
+	// The sections (sub-biomes) that the entry can be found in.
+	Sections []OaklandsIndexSection `json:"sections"`
+	// Whether the entry is an enemy.
+	Enemy bool `json:"enemy"`
+	// The tool tier needed to harvest the entry, if it has one.
+	Tier *int64 `json:"tier,omitempty"`
+	// The stats for the entry, if it has any.
+	Stats map[string]any `json:"stats,omitempty"`
+	// The variants of the entry (e.g. raw, refined, forged), if it has any.
+	Variants map[string]OaklandsIndexVariant `json:"variants,omitempty"`
+	// The materials that the entry can drop (enemies only).
+	Drops []OaklandsIndexDrop `json:"drops,omitempty"`
+} //	@name	Oaklands.V1.IndexEntry

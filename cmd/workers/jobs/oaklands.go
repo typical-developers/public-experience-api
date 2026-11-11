@@ -386,6 +386,55 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 		})
 	}
 	c.store.Minimap.Set(ctx, minimap)
+
+	index := map[string]data.OaklandsIndexEntry{}
+	for category, entries := range content.Index {
+		category = strings.ToLower(category)
+
+		for name, entry := range entries {
+			sections := make([]data.OaklandsIndexSection, len(entry.Sections))
+			for i, section := range entry.Sections {
+				sections[i] = data.OaklandsIndexSection{
+					ID:          section.ID,
+					DisplayName: section.DisplayName,
+				}
+			}
+
+			variants := make(map[string]data.OaklandsIndexVariant, len(entry.Variants))
+			for variantType, variant := range entry.Variants {
+				variants[variantType] = data.OaklandsIndexVariant{
+					DisplayName: variant.DisplayName,
+					Value:       variant.Value,
+				}
+			}
+
+			drops := make([]data.OaklandsIndexDrop, len(entry.Drops))
+			for i, drop := range entry.Drops {
+				drops[i] = data.OaklandsIndexDrop{
+					Name:        drop.Name,
+					DisplayName: drop.DisplayName,
+					Chance:      drop.Chance,
+				}
+			}
+
+			index[category+":"+name] = data.OaklandsIndexEntry{
+				Name:        entry.Name,
+				Category:    category,
+				DisplayName: entry.DisplayName,
+				Description: entry.Description,
+				Image:       entry.Image,
+				Sections:    sections,
+				Enemy:       entry.Enemy,
+				Tier:        entry.Tier,
+				Stats:       entry.Stats,
+				Variants:    variants,
+				Drops:       drops,
+			}
+		}
+	}
+	if err := c.store.Index.SetMany(ctx, index); err != nil {
+		panic(err)
+	}
 }
 
 // RefreshClassicShop will fetch and update the classic shop.

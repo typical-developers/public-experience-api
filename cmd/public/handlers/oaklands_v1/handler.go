@@ -89,6 +89,12 @@ func NewOaklandsV1(r *chi.Mux, opts *OaklandsV1Opts) {
 			r.Get("/{id}", o.GetNewsletter)
 		})
 
+		r.Route("/index", func(r chi.Router) {
+			r.Get("/", o.ListIndexCategories)
+			r.Get("/{category}", o.ListIndex)
+			r.Get("/{category}/{id}", o.GetIndexEntry)
+		})
+
 		r.Route("/items", func(r chi.Router) {
 			r.Get("/", o.ListItems)
 			r.Get("/{id}", o.GetItem)

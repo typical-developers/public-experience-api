@@ -65,6 +65,15 @@ type (
 	Item              = typicalapi.OaklandsItem
 )
 
+// Index
+type (
+	IndexEntryInfo = typicalapi.OaklandsIndexEntryInfo
+	IndexSection   = typicalapi.OaklandsIndexSection
+	IndexVariant   = typicalapi.OaklandsIndexVariant
+	IndexDrop      = typicalapi.OaklandsIndexDrop
+	IndexEntry     = typicalapi.OaklandsIndexEntry
+)
+
 // Economy responses
 type MaterialBuffResponse struct {
 	// The time that the daily material buffs will refresh.
