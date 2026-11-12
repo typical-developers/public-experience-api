@@ -459,9 +459,19 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 		// Categories are lowercased to match how index entries are stored.
 		resources := make([]data.OaklandsRegionResource, len(region.Resources))
 		for i, resource := range region.Resources {
+			ores := make([]data.OaklandsRegionOre, len(resource.Ores))
+			for j, ore := range resource.Ores {
+				ores[j] = data.OaklandsRegionOre{
+					ID:     ore.ID,
+					Chance: ore.Chance,
+				}
+			}
+
 			resources[i] = data.OaklandsRegionResource{
-				Category: strings.ToLower(resource.Category),
-				ID:       resource.ID,
+				Category:    strings.ToLower(resource.Category),
+				ID:          resource.ID,
+				SpawnChance: resource.SpawnChance,
+				Ores:        ores,
 			}
 		}
 

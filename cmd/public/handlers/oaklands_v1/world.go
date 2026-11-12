@@ -131,10 +131,14 @@ func (o *OaklandsV1Routes) GetRegion(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Resources reference index entries, which are keyed by `<category>:<id>`.
+	// Resources and their ores reference index entries, which are keyed by `<category>:<id>`.
+	// The first len(region.Resources) keys line up with the resources.
 	keys := make([]string, len(region.Resources))
 	for i, resource := range region.Resources {
 		keys[i] = resource.Category + ":" + resource.ID
+		for _, ore := range resource.Ores {
+			keys = append(keys, "ores:"+ore.ID)
+		}
 	}
 
 	entries, err := o.store.Index.GetMany(ctx, keys...)
@@ -176,14 +180,30 @@ func (o *OaklandsV1Routes) GetRegion(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
-		response.Data.Resources = append(response.Data.Resources, RegionResource{
+		result := RegionResource{
 			OaklandsIndexEntryInfo: IndexEntryInfo{
 				Category: resource.Category,
 				ID:       resource.ID,
 				Media:    newMedia(entry.Image, nil),
 			},
 			DisplayName: entry.DisplayName,
-		})
+			SpawnChance: resource.SpawnChance,
+		}
+
+		for _, ore := range resource.Ores {
+			oreEntry, ok := entries["ores:"+ore.ID]
+			if !ok {
+				continue
+			}
+
+			result.Ores = append(result.Ores, RegionOre{
+				ID:          ore.ID,
+				DisplayName: oreEntry.DisplayName,
+				Chance:      ore.Chance,
+			})
+		}
+
+		response.Data.Resources = append(response.Data.Resources, result)
 	}
 
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=300, stale-while-revalidate=300")

@@ -418,11 +418,25 @@ type OaklandsRegionIsland struct {
 	Tier int64 `json:"tier"`
 } //	@name	Oaklands.V1.RegionIsland
 
+type OaklandsRegionOre struct {
+	// The ID of the ore.
+	ID string `json:"id"`
+	// The display name of the ore.
+	DisplayName string `json:"display_name"`
+	// The chance of the rock containing the ore.
+	Chance float64 `json:"chance"`
+} //	@name	Oaklands.V1.RegionOre
+
 type OaklandsRegionResource struct {
 	OaklandsIndexEntryInfo
 
 	// The display name of the resource.
 	DisplayName string `json:"display_name"`
+	// Out of every tree, rock or creature the region can hold, the share expected to be this one.
+	// Averaged across the region's spawn areas. Omitted for resources without spawn data (e.g. forageables).
+	SpawnChance *float64 `json:"spawn_chance,omitempty"`
+	// For rocks, the chance of containing each ore, averaged across the region's spawn areas.
+	Ores []OaklandsRegionOre `json:"ores,omitempty"`
 } //	@name	Oaklands.V1.RegionResource
 
 type OaklandsRegion struct {

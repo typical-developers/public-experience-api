@@ -95,6 +95,7 @@ type (
 	RegionVector            = typicalapi.OaklandsRegionVector
 	RegionBound             = typicalapi.OaklandsRegionBound
 	RegionIsland            = typicalapi.OaklandsRegionIsland
+	RegionOre               = typicalapi.OaklandsRegionOre
 	RegionResource          = typicalapi.OaklandsRegionResource
 	Region                  = typicalapi.OaklandsRegion
 )

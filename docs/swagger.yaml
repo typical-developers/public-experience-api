@@ -475,6 +475,18 @@ definitions:
         description: The tool tier the island is meant for.
         type: integer
     type: object
+  Oaklands.V1.RegionOre:
+    properties:
+      chance:
+        description: The chance of the rock containing the ore.
+        type: number
+      display_name:
+        description: The display name of the ore.
+        type: string
+      id:
+        description: The ID of the ore.
+        type: string
+    type: object
   Oaklands.V1.RegionResource:
     properties:
       category:
@@ -490,6 +502,17 @@ definitions:
         allOf:
         - $ref: '#/definitions/Oaklands.V1.Media'
         description: The image of the entry.
+      ores:
+        description: For rocks, the chance of containing each ore, averaged across
+          the region's spawn areas.
+        items:
+          $ref: '#/definitions/Oaklands.V1.RegionOre'
+        type: array
+      spawn_chance:
+        description: |-
+          Out of every tree, rock or creature the region can hold, the share expected to be this one.
+          Averaged across the region's spawn areas. Omitted for resources without spawn data (e.g. forageables).
+        type: number
     type: object
   Oaklands.V1.RegionVector:
     properties:

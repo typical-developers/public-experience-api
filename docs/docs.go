@@ -1516,6 +1516,23 @@ const docTemplate = `{
                 }
             }
         },
+        "Oaklands.V1.RegionOre": {
+            "type": "object",
+            "properties": {
+                "chance": {
+                    "description": "The chance of the rock containing the ore.",
+                    "type": "number"
+                },
+                "display_name": {
+                    "description": "The display name of the ore.",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "The ID of the ore.",
+                    "type": "string"
+                }
+            }
+        },
         "Oaklands.V1.RegionResource": {
             "type": "object",
             "properties": {
@@ -1538,6 +1555,17 @@ const docTemplate = `{
                             "$ref": "#/definitions/Oaklands.V1.Media"
                         }
                     ]
+                },
+                "ores": {
+                    "description": "For rocks, the chance of containing each ore, averaged across the region's spawn areas.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Oaklands.V1.RegionOre"
+                    }
+                },
+                "spawn_chance": {
+                    "description": "Out of every tree, rock or creature the region can hold, the share expected to be this one.\nAveraged across the region's spawn areas. Omitted for resources without spawn data (e.g. forageables).",
+                    "type": "number"
                 }
             }
         },

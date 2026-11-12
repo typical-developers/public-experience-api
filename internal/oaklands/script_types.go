@@ -324,9 +324,16 @@ type RegionIsland struct {
 	Tier        int64  `json:"Tier"`
 }
 
+type RegionOre struct {
+	ID     string  `json:"ID"`
+	Chance float64 `json:"Chance"`
+}
+
 type RegionResource struct {
-	Category string `json:"Category"`
-	ID       string `json:"ID"`
+	Category    string      `json:"Category"`
+	ID          string      `json:"ID"`
+	SpawnChance *float64    `json:"SpawnChance"`
+	Ores        []RegionOre `json:"Ores"`
 }
 
 type Region struct {

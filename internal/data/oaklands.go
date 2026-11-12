@@ -234,9 +234,16 @@ type OaklandsRegionIsland struct {
 	Tier        int64
 }
 
+type OaklandsRegionOre struct {
+	ID     string
+	Chance float64
+}
+
 type OaklandsRegionResource struct {
-	Category string
-	ID       string
+	Category    string
+	ID          string
+	SpawnChance *float64
+	Ores        []OaklandsRegionOre
 }
 
 type OaklandsRegion struct {
