@@ -19,7 +19,7 @@ func main() {
     client := typicalapi.New(
         typicalapi.WithBaseURL(url.URL{
             Scheme: "https",
-            Host: "public-staging.luckfire.dev"
+            Host: "public-staging.luckfire.dev",
         })
     )
 
