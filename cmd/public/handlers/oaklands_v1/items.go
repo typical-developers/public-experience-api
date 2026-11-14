@@ -2,6 +2,7 @@ package oaklands_v1
 
 import (
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -13,43 +14,57 @@ import (
 )
 
 //	@Router			/oaklands/v1/items [GET]
-//	@Description	Get a list of available items.
+//	@Description	List the available items, without the item details.
 //
 //	@Tags			Oaklands
 //
 //	@Param			If-None-Match	header		string	false	"ETag to validate cached response."
 //
-//	@Success		200				{object}	object{data=[]string}
+//	@Success		200				{object}	object{data=[]typicalapi.OaklandsItemInfo}
 //	@Failure		500				{object}	rest.ErrorResponse
 //	@Failure		503				{object}	rest.ErrorResponse
 //
 // swagger:ignore
 func (o OaklandsV1Routes) ListItems(w http.ResponseWriter, r *http.Request) {
-	items, err := o.store.Items.Keys(r.Context())
+	ids, err := o.store.Items.Keys(r.Context())
+	if err != nil {
+		rest.WriteRESTError(w, err)
+		return
+	}
+	slices.Sort(ids)
+
+	unlockTimes, err := o.store.ItemUnlockTimes.GetMany(r.Context(), ids...)
 	if err != nil {
 		rest.WriteRESTError(w, err)
 		return
 	}
 
-	unlockTimes, err := o.store.ItemUnlockTimes.GetMany(r.Context(), items...)
+	items, err := o.store.Items.GetMany(r.Context(), ids...)
 	if err != nil {
 		rest.WriteRESTError(w, err)
 		return
 	}
 
-	visibleItems := items[:0]
+	response := rest.Response[[]ItemInfo]{
+		Data: make([]ItemInfo, 0, len(ids)),
+	}
 	now := time.Now()
-	for _, id := range items {
+	for _, id := range ids {
 		unlockTime, ok := unlockTimes[id]
 		if ok && now.Before(unlockTime) {
 			continue
 		}
 
-		visibleItems = append(visibleItems, id)
-	}
-	items = visibleItems
+		item, ok := items[id]
+		if !ok {
+			continue
+		}
 
-	response := rest.Response[[]string]{Data: items}
+		response.Data = append(response.Data, ItemInfo{
+			ID:          id,
+			DisplayName: item.DisplayName,
+		})
+	}
 
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=60")
 	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {

@@ -310,7 +310,7 @@
         },
         "/oaklands/v1/items": {
             "get": {
-                "description": "Get a list of available items.",
+                "description": "List the available items, without the item details.",
                 "tags": [
                     "Oaklands"
                 ],
@@ -331,7 +331,7 @@
                                 "data": {
                                     "type": "array",
                                     "items": {
-                                        "type": "string"
+                                        "$ref": "#/definitions/Oaklands.V1.ItemInfo"
                                     }
                                 }
                             }
@@ -988,6 +988,10 @@
                     "description": "The category of the entry (trees, rocks, ores, creatures or forageables).",
                     "type": "string"
                 },
+                "display_name": {
+                    "description": "The display name of the entry.",
+                    "type": "string"
+                },
                 "id": {
                     "description": "The ID of the entry.",
                     "type": "string"
@@ -1141,6 +1145,19 @@
                 },
                 "type": {
                     "description": "The form type that the item can unbox as.",
+                    "type": "string"
+                }
+            }
+        },
+        "Oaklands.V1.ItemInfo": {
+            "type": "object",
+            "properties": {
+                "display_name": {
+                    "description": "The display name of the item.",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "The ID of the item.",
                     "type": "string"
                 }
             }
@@ -1532,7 +1549,7 @@
                     "type": "string"
                 },
                 "display_name": {
-                    "description": "The display name of the resource.",
+                    "description": "The display name of the entry.",
                     "type": "string"
                 },
                 "id": {

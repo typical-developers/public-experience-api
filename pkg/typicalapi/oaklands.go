@@ -182,9 +182,9 @@ func (o *oaklands) GetIndexEntry(ctx context.Context, category, id string) (*Oak
 	return &entry.Data, resp, nil
 }
 
-// ListItems fetches the IDs of every available item.
-func (o *oaklands) ListItems(ctx context.Context) ([]string, *Response, error) {
-	items := new(ResponseData[[]string])
+// ListItems fetches the ID and display name of every available item, without the item details.
+func (o *oaklands) ListItems(ctx context.Context) ([]OaklandsItemInfo, *Response, error) {
+	items := new(ResponseData[[]OaklandsItemInfo])
 	resp, err := o.client.Call(ctx, OaklandsListItems.Compile(nil), nil, items)
 	if err != nil {
 		return nil, resp, err

@@ -60,6 +60,7 @@ type Media = typicalapi.OaklandsMedia
 
 // Items
 type (
+	ItemInfo          = typicalapi.OaklandsItemInfo
 	ItemFormUnboxType = typicalapi.OaklandsItemFormUnboxType
 	ItemForm          = typicalapi.OaklandsItemForm
 	Item              = typicalapi.OaklandsItem

@@ -100,6 +100,9 @@ definitions:
       category:
         description: The category of the entry (trees, rocks, ores, creatures or forageables).
         type: string
+      display_name:
+        description: The display name of the entry.
+        type: string
       id:
         description: The ID of the entry.
         type: string
@@ -219,6 +222,15 @@ definitions:
         description: The image of the unboxed item type.
       type:
         description: The form type that the item can unbox as.
+        type: string
+    type: object
+  Oaklands.V1.ItemInfo:
+    properties:
+      display_name:
+        description: The display name of the item.
+        type: string
+      id:
+        description: The ID of the item.
         type: string
     type: object
   Oaklands.V1.MaterialBuff:
@@ -493,7 +505,7 @@ definitions:
         description: The category of the entry (trees, rocks, ores, creatures or forageables).
         type: string
       display_name:
-        description: The display name of the resource.
+        description: The display name of the entry.
         type: string
       id:
         description: The ID of the entry.
@@ -786,7 +798,7 @@ paths:
       - Oaklands
   /oaklands/v1/items:
     get:
-      description: Get a list of available items.
+      description: List the available items, without the item details.
       parameters:
       - description: ETag to validate cached response.
         in: header
@@ -799,7 +811,7 @@ paths:
             properties:
               data:
                 items:
-                  type: string
+                  $ref: '#/definitions/Oaklands.V1.ItemInfo'
                 type: array
             type: object
         "500":

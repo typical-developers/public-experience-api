@@ -182,11 +182,11 @@ func (o *OaklandsV1Routes) GetRegion(w http.ResponseWriter, r *http.Request) {
 
 		result := RegionResource{
 			OaklandsIndexEntryInfo: IndexEntryInfo{
-				Category: resource.Category,
-				ID:       resource.ID,
-				Media:    newMedia(entry.Image, nil),
+				Category:    resource.Category,
+				ID:          resource.ID,
+				DisplayName: entry.DisplayName,
+				Media:       newMedia(entry.Image, nil),
 			},
-			DisplayName: entry.DisplayName,
 			SpawnChance: resource.SpawnChance,
 		}
 

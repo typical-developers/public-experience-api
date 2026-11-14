@@ -83,9 +83,10 @@ func (o *OaklandsV1Routes) ListIndex(w http.ResponseWriter, r *http.Request) {
 		}
 
 		response.Data = append(response.Data, IndexEntryInfo{
-			Category: entry.Category,
-			ID:       entry.Name,
-			Media:    newMedia(entry.Image, nil),
+			Category:    entry.Category,
+			ID:          entry.Name,
+			DisplayName: entry.DisplayName,
+			Media:       newMedia(entry.Image, nil),
 		})
 	}
 
@@ -122,11 +123,11 @@ func (o *OaklandsV1Routes) GetIndexEntry(w http.ResponseWriter, r *http.Request)
 
 	response := rest.Response[IndexEntry]{Data: IndexEntry{
 		OaklandsIndexEntryInfo: IndexEntryInfo{
-			Category: entry.Category,
-			ID:       entry.Name,
-			Media:    newMedia(entry.Image, nil),
+			Category:    entry.Category,
+			ID:          entry.Name,
+			DisplayName: entry.DisplayName,
+			Media:       newMedia(entry.Image, nil),
 		},
-		DisplayName: entry.DisplayName,
 		Description: entry.Description,
 		Regions:     make([]IndexRegion, len(entry.Sections)),
 		Enemy:       entry.Enemy,

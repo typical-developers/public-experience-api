@@ -247,6 +247,13 @@ type OaklandsItemForm struct {
 	UnboxTypes []OaklandsItemFormUnboxType `json:"unbox_types,omitempty"`
 } //	@name	Oaklands.V1.ItemForm
 
+type OaklandsItemInfo struct {
+	// The ID of the item.
+	ID string `json:"id"`
+	// The display name of the item.
+	DisplayName string `json:"display_name"`
+} //	@name	Oaklands.V1.ItemInfo
+
 type OaklandsItem struct {
 	// The ID of the item
 	ID string `json:"id"`
@@ -345,6 +352,8 @@ type OaklandsIndexEntryInfo struct {
 	Category string `json:"category"`
 	// The ID of the entry.
 	ID string `json:"id"`
+	// The display name of the entry.
+	DisplayName string `json:"display_name"`
 	// The image of the entry.
 	Media *OaklandsMedia `json:"media"`
 } //	@name	Oaklands.V1.IndexEntryInfo
@@ -376,8 +385,6 @@ type OaklandsIndexDrop struct {
 type OaklandsIndexEntry struct {
 	OaklandsIndexEntryInfo
 
-	// The display name of the entry.
-	DisplayName string `json:"display_name"`
 	// The description of the entry.
 	Description string `json:"description"`
 	// The regions that the entry can be found in.
@@ -430,8 +437,6 @@ type OaklandsRegionOre struct {
 type OaklandsRegionResource struct {
 	OaklandsIndexEntryInfo
 
-	// The display name of the resource.
-	DisplayName string `json:"display_name"`
 	// Out of every tree, rock or creature the region can hold, the share expected to be this one.
 	// Averaged across the region's spawn areas. Omitted for resources without spawn data (e.g. forageables).
 	SpawnChance *float64 `json:"spawn_chance,omitempty"`
