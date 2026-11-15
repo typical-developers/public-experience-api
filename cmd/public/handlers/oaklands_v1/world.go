@@ -111,6 +111,7 @@ func (o *OaklandsV1Routes) ListRegions(w http.ResponseWriter, r *http.Request) {
 //	@Param			id				path		string	true	"The ID of the region (e.g. `MagmaCave`)."
 //
 //	@Success		200				{object}	object{data=typicalapi.OaklandsRegion}
+//	@Failure		404				{object}	rest.ErrorResponse
 //	@Failure		500				{object}	rest.ErrorResponse
 //	@Failure		503				{object}	rest.ErrorResponse
 //
@@ -121,7 +122,7 @@ func (o *OaklandsV1Routes) GetRegion(w http.ResponseWriter, r *http.Request) {
 
 	region, err := o.store.Regions.Get(ctx, id)
 	if err != nil {
-		rest.WriteRESTError(w, r, err)
+		rest.WriteLookupError(w, r, err)
 		return
 	}
 

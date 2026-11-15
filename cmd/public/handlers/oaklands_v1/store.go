@@ -65,6 +65,7 @@ func (o *OaklandsV1Routes) sortStoreItems(items []StoreItem, sortBy, orderBy str
 //	@Param			order_by		query		string	false	"The direction to order by."	default(desc)	enums(desc, asc)
 //
 //	@Success		200				{object}	object{restock_at=time.Time,data=[]typicalapi.OaklandsStoreItem}
+//	@Failure		404				{object}	rest.ErrorResponse
 //	@Failure		500				{object}	rest.ErrorResponse
 //	@Failure		503				{object}	rest.ErrorResponse
 //
@@ -78,7 +79,7 @@ func (o *OaklandsV1Routes) GetStore(w http.ResponseWriter, r *http.Request) {
 
 	stock, err := o.store.StoreStock.Get(ctx, storeName)
 	if err != nil {
-		rest.WriteRESTError(w, r, err)
+		rest.WriteLookupError(w, r, err)
 		return
 	}
 

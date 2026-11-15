@@ -24,6 +24,7 @@ import (
 //	@Param			useId			query		string	false	"Use the changelog's id instead. You do not have to provide a value to this, you can just add it as `?useId`."
 //
 //	@Success		200				{object}	object{data=typicalapi.OaklandsChangelog}
+//	@Failure		404				{object}	rest.ErrorResponse
 //	@Failure		500				{object}	rest.ErrorResponse
 //	@Failure		503				{object}	rest.ErrorResponse
 //
@@ -41,7 +42,7 @@ func (o *OaklandsV1Routes) GetChangelog(w http.ResponseWriter, r *http.Request) 
 		if !latest {
 			id, err = strconv.ParseInt(version, 10, 32)
 			if err != nil {
-				rest.WriteRESTError(w, r, redis.Nil)
+				rest.WriteRESTError(w, r, rest.ErrNotFound)
 				return
 			}
 		}
@@ -69,7 +70,12 @@ func (o *OaklandsV1Routes) GetChangelog(w http.ResponseWriter, r *http.Request) 
 		changelog, err = o.store.Changelog.Get(ctx, version)
 	}
 	if err != nil {
-		rest.WriteRESTError(w, r, err)
+		// A missing latest changelog means nothing has been cached yet.
+		if latest {
+			rest.WriteRESTError(w, r, err)
+		} else {
+			rest.WriteLookupError(w, r, err)
+		}
 		return
 	}
 

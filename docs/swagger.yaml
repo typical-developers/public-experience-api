@@ -660,6 +660,10 @@ paths:
               data:
                 $ref: '#/definitions/Oaklands.V1.Changelog'
             type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -786,6 +790,10 @@ paths:
               data:
                 $ref: '#/definitions/Oaklands.V1.IndexEntry'
             type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -846,6 +854,10 @@ paths:
               data:
                 $ref: '#/definitions/Oaklands.V1.Item'
             type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -916,6 +928,10 @@ paths:
               data:
                 $ref: '#/definitions/Oaklands.V1.Newsletter'
             type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -996,6 +1012,10 @@ paths:
               restock_at:
                 type: string
             type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -1133,6 +1153,10 @@ paths:
               data:
                 $ref: '#/definitions/Oaklands.V1.Region'
             type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/API.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:

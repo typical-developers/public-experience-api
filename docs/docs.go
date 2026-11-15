@@ -110,6 +110,12 @@ const docTemplate = `{
                             }
                         }
                     },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -302,6 +308,12 @@ const docTemplate = `{
                             }
                         }
                     },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -392,6 +404,12 @@ const docTemplate = `{
                                     "$ref": "#/definitions/Oaklands.V1.Item"
                                 }
                             }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
                         }
                     },
                     "500": {
@@ -496,6 +514,12 @@ const docTemplate = `{
                                     "$ref": "#/definitions/Oaklands.V1.Newsletter"
                                 }
                             }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
                         }
                     },
                     "500": {
@@ -616,6 +640,12 @@ const docTemplate = `{
                                     "type": "string"
                                 }
                             }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
                         }
                     },
                     "500": {
@@ -826,6 +856,12 @@ const docTemplate = `{
                                     "$ref": "#/definitions/Oaklands.V1.Region"
                                 }
                             }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/API.ErrorResponse"
                         }
                     },
                     "500": {

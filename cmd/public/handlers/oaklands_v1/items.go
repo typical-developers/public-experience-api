@@ -7,7 +7,6 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
-	"github.com/redis/go-redis/v9"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/assets"
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/data"
@@ -79,6 +78,7 @@ func (o OaklandsV1Routes) ListItems(w http.ResponseWriter, r *http.Request) {
 //	@Param			id				path		string	true	"The id of the newsletter. For quick access to the latest newsletter, use 'latest' as the value."
 //
 //	@Success		200				{object}	object{data=typicalapi.OaklandsItem}
+//	@Failure		404				{object}	rest.ErrorResponse
 //	@Failure		500				{object}	rest.ErrorResponse
 //	@Failure		503				{object}	rest.ErrorResponse
 //
@@ -88,14 +88,13 @@ func (o OaklandsV1Routes) GetItem(w http.ResponseWriter, r *http.Request) {
 
 	item, err := o.store.Items.Get(r.Context(), id)
 	if err != nil {
-		rest.WriteRESTError(w, r, err)
+		rest.WriteLookupError(w, r, err)
 		return
 	}
 	if unlockTime, err := o.store.ItemUnlockTimes.Get(r.Context(), id); err == nil {
 		if time.Now().Before(unlockTime) {
-			// Too lazy to make a new error type for this, just
-			// throw it off as resource not cached by sending redis.Nil
-			rest.WriteRESTError(w, r, redis.Nil)
+			// Items that aren't unlocked yet are hidden from the client.
+			rest.WriteRESTError(w, r, rest.ErrNotFound)
 			return
 		}
 	}

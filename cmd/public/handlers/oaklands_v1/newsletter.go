@@ -103,6 +103,7 @@ func (o *OaklandsV1Routes) ListNewsletters(w http.ResponseWriter, r *http.Reques
 //	@Param			id				path		string	true	"The id of the newsletter. For quick access to the latest newsletter, use 'latest' as the value."	default(latest)
 //
 //	@Success		200				{object}	object{data=typicalapi.OaklandsNewsletter}
+//	@Failure		404				{object}	rest.ErrorResponse
 //	@Failure		500				{object}	rest.ErrorResponse
 //	@Failure		503				{object}	rest.ErrorResponse
 //
@@ -128,7 +129,7 @@ func (o *OaklandsV1Routes) GetNewsletter(w http.ResponseWriter, r *http.Request)
 
 	newsletter, err := o.store.Newsletter.Get(ctx, id)
 	if err != nil {
-		rest.WriteRESTError(w, r, err)
+		rest.WriteLookupError(w, r, err)
 		return
 	}
 

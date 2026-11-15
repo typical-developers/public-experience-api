@@ -101,6 +101,7 @@ func (o *OaklandsV1Routes) ListIndex(w http.ResponseWriter, r *http.Request) {
 //	@Param			id				path		string	true	"The ID of the entry (e.g. `BirchTree` or `Rose Gold`)."
 //
 //	@Success		200				{object}	object{data=typicalapi.OaklandsIndexEntry}
+//	@Failure		404				{object}	rest.ErrorResponse
 //	@Failure		500				{object}	rest.ErrorResponse
 //	@Failure		503				{object}	rest.ErrorResponse
 //
@@ -111,7 +112,7 @@ func (o *OaklandsV1Routes) GetIndexEntry(w http.ResponseWriter, r *http.Request)
 
 	entry, err := o.store.Index.Get(r.Context(), category+":"+id)
 	if err != nil {
-		rest.WriteRESTError(w, r, err)
+		rest.WriteLookupError(w, r, err)
 		return
 	}
 
