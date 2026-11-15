@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/render"
 	"github.com/redis/go-redis/v9"
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/data"
@@ -40,7 +41,7 @@ func (o *OaklandsV1Routes) GetChangelog(w http.ResponseWriter, r *http.Request) 
 		if !latest {
 			id, err = strconv.ParseInt(version, 10, 32)
 			if err != nil {
-				rest.WriteRESTError(w, redis.Nil)
+				rest.WriteRESTError(w, r, redis.Nil)
 				return
 			}
 		}
@@ -52,7 +53,7 @@ func (o *OaklandsV1Routes) GetChangelog(w http.ResponseWriter, r *http.Request) 
 			return cmp.Compare(b.ID, a.ID)
 		})
 		if fetchErr != nil {
-			rest.WriteRESTError(w, fetchErr)
+			rest.WriteRESTError(w, r, fetchErr)
 			return
 		}
 
@@ -68,7 +69,7 @@ func (o *OaklandsV1Routes) GetChangelog(w http.ResponseWriter, r *http.Request) 
 		changelog, err = o.store.Changelog.Get(ctx, version)
 	}
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
@@ -86,10 +87,7 @@ func (o *OaklandsV1Routes) GetChangelog(w http.ResponseWriter, r *http.Request) 
 		},
 	}
 
-	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+	render.JSON(w, r, response)
 }
 
 //	@Router			/oaklands/v1/changelogs [GET]
@@ -121,7 +119,7 @@ func (o *OaklandsV1Routes) ListChangelogs(w http.ResponseWriter, r *http.Request
 		return comparison
 	})
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
@@ -138,8 +136,5 @@ func (o *OaklandsV1Routes) ListChangelogs(w http.ResponseWriter, r *http.Request
 	}
 
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=300, stale-while-revalidate=300")
-	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+	render.JSON(w, r, response)
 }

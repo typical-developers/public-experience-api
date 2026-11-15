@@ -15,10 +15,10 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/go-chi/chi"
+	"github.com/go-chi/render"
 	"github.com/redis/go-redis/v9"
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/data"
-	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
 
 func ServeAssets(client *s3.Client, store *data.OaklandsStore) http.HandlerFunc {
@@ -29,30 +29,33 @@ func ServeAssets(client *s3.Client, store *data.OaklandsStore) http.HandlerFunc 
 		if id == "" || filename == "" ||
 			id == "." || id == ".." ||
 			strings.ContainsAny(id+filename, "/\\") {
-			_ = httpx.WriteJSON(w, rest.ErrorResponse{
+			render.Status(r, rest.HttpErrorNotFound.Status)
+			render.JSON(w, r, rest.ErrorResponse{
 				Type:    rest.HttpErrorNotFound.Type,
 				Message: rest.HttpErrorNotFound.Message,
-			}, rest.HttpErrorNotFound.Status)
+			})
 			return
 		}
 
 		extension := path.Ext(filename)
 		form := strings.TrimSuffix(filename, extension)
 		if form == "" {
-			_ = httpx.WriteJSON(w, rest.ErrorResponse{
+			render.Status(r, rest.HttpErrorNotFound.Status)
+			render.JSON(w, r, rest.ErrorResponse{
 				Type:    rest.HttpErrorNotFound.Type,
 				Message: rest.HttpErrorNotFound.Message,
-			}, rest.HttpErrorNotFound.Status)
+			})
 			return
 		}
 
 		switch strings.ToLower(extension) {
 		case ".png", ".jpg", ".jpeg", ".webp", ".gif", ".avif", ".svg":
 		default:
-			_ = httpx.WriteJSON(w, rest.ErrorResponse{
+			render.Status(r, rest.HttpErrorNotFound.Status)
+			render.JSON(w, r, rest.ErrorResponse{
 				Type:    rest.HttpErrorNotFound.Type,
 				Message: rest.HttpErrorNotFound.Message,
-			}, rest.HttpErrorNotFound.Status)
+			})
 			return
 		}
 
@@ -63,20 +66,22 @@ func ServeAssets(client *s3.Client, store *data.OaklandsStore) http.HandlerFunc 
 			return
 		}
 		if err == nil && time.Now().Before(unlockTime) {
-			_ = httpx.WriteJSON(w, rest.ErrorResponse{
+			render.Status(r, rest.HttpErrorNotFound.Status)
+			render.JSON(w, r, rest.ErrorResponse{
 				Type:    rest.HttpErrorNotFound.Type,
 				Message: rest.HttpErrorNotFound.Message,
-			}, rest.HttpErrorNotFound.Status)
+			})
 			return
 		}
 
 		item, err := store.Items.Get(r.Context(), id)
 		if err != nil {
 			if errors.Is(err, redis.Nil) {
-				_ = httpx.WriteJSON(w, rest.ErrorResponse{
+				render.Status(r, rest.HttpErrorNotFound.Status)
+				render.JSON(w, r, rest.ErrorResponse{
 					Type:    rest.HttpErrorNotFound.Type,
 					Message: rest.HttpErrorNotFound.Message,
-				}, rest.HttpErrorNotFound.Status)
+				})
 				return
 			}
 
@@ -92,10 +97,11 @@ func ServeAssets(client *s3.Client, store *data.OaklandsStore) http.HandlerFunc 
 		default:
 			for _, itemForm := range item.Forms {
 				if gift, ok := itemForm.Data.(data.OaklandsItemFormGift); ok && !gift.IsOpened() {
-					_ = httpx.WriteJSON(w, rest.ErrorResponse{
+					render.Status(r, rest.HttpErrorNotFound.Status)
+					render.JSON(w, r, rest.ErrorResponse{
 						Type:    rest.HttpErrorNotFound.Type,
 						Message: rest.HttpErrorNotFound.Message,
-					}, rest.HttpErrorNotFound.Status)
+					})
 					return
 				}
 			}
@@ -111,10 +117,11 @@ func ServeAssets(client *s3.Client, store *data.OaklandsStore) http.HandlerFunc 
 			var noSuchKey *types.NoSuchKey
 			var notFound *types.NotFound
 			if errors.As(err, &noSuchKey) || errors.As(err, &notFound) {
-				_ = httpx.WriteJSON(w, rest.ErrorResponse{
+				render.Status(r, rest.HttpErrorNotFound.Status)
+				render.JSON(w, r, rest.ErrorResponse{
 					Type:    rest.HttpErrorNotFound.Type,
 					Message: rest.HttpErrorNotFound.Message,
-				}, rest.HttpErrorNotFound.Status)
+				})
 				return
 			}
 

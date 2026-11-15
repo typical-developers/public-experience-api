@@ -8,6 +8,7 @@ import (
 	"time"
 	_ "time/tzdata" // embed zoneinfo so America/New_York always resolves
 
+	"github.com/go-chi/render"
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
@@ -124,7 +125,7 @@ func (o *OaklandsV1Routes) writeStockMarket(
 
 	market, err := getter(ctx)
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
@@ -133,10 +134,7 @@ func (o *OaklandsV1Routes) writeStockMarket(
 
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=300, stale-while-revalidate=300")
 	w.Header().Set("Last-Modified", market.LastSync.Format(http.TimeFormat))
-	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+	render.JSON(w, r, response)
 }
 
 func (o *OaklandsV1Routes) GetStockMarketTrees(w http.ResponseWriter, r *http.Request) {
@@ -201,8 +199,5 @@ func (o *OaklandsV1Routes) GetDailyMaterialBuffs(w http.ResponseWriter, r *http.
 	}
 
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=300, stale-while-revalidate=300")
-	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+	render.JSON(w, r, response)
 }

@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-chi/render"
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
-	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
 
 //	@Router			/oaklands/v1/translations [GET]
@@ -26,7 +26,7 @@ func (o *OaklandsV1Routes) GetTranslations(w http.ResponseWriter, r *http.Reques
 
 	translations, err := o.store.Translations.Get(ctx, "en_us")
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
@@ -49,8 +49,5 @@ func (o *OaklandsV1Routes) GetTranslations(w http.ResponseWriter, r *http.Reques
 		Data: translations,
 	}
 
-	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+	render.JSON(w, r, response)
 }

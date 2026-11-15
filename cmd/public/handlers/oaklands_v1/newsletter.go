@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/render"
 	"github.com/redis/go-redis/v9"
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
@@ -53,23 +54,23 @@ func (o *OaklandsV1Routes) ListNewsletters(w http.ResponseWriter, r *http.Reques
 
 	config, err := o.store.Config.Get(ctx)
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
 	ids, err := o.store.Newsletter.Keys(ctx)
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 	if len(ids) == 0 {
-		rest.WriteRESTError(w, redis.Nil)
+		rest.WriteRESTError(w, r, redis.Nil)
 		return
 	}
 
 	newsletters, err := o.store.Newsletter.GetMany(ctx, ids...)
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
@@ -90,10 +91,7 @@ func (o *OaklandsV1Routes) ListNewsletters(w http.ResponseWriter, r *http.Reques
 	}
 	response.Data = o.sortNewsletters(response.Data, orderBy)
 
-	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+	render.JSON(w, r, response)
 }
 
 //	@Router			/oaklands/v1/newsletters/{id} [GET]
@@ -122,7 +120,7 @@ func (o *OaklandsV1Routes) GetNewsletter(w http.ResponseWriter, r *http.Request)
 	if strings.EqualFold(id, "latest") {
 		latest, err := o.store.NewsletterLatest.Get(ctx)
 		if err != nil {
-			rest.WriteRESTError(w, err)
+			rest.WriteRESTError(w, r, err)
 			return
 		}
 		id = latest
@@ -130,7 +128,7 @@ func (o *OaklandsV1Routes) GetNewsletter(w http.ResponseWriter, r *http.Request)
 
 	newsletter, err := o.store.Newsletter.Get(ctx, id)
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
@@ -185,8 +183,5 @@ func (o *OaklandsV1Routes) GetNewsletter(w http.ResponseWriter, r *http.Request)
 	}
 
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=300, stale-while-revalidate=300")
-	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+	render.JSON(w, r, response)
 }

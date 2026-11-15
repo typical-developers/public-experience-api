@@ -10,11 +10,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-chi/render"
 	"github.com/redis/go-redis/v9"
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/apperror"
 	"github.com/typical-developers/public-experience-api/internal/data"
-	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
 
 var (
@@ -65,10 +65,11 @@ func checkForFile(uPath string) *apperror.AppError {
 func ServeStatic(store *data.OaklandsStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := checkForFile(r.URL.Path); err != nil {
-			_ = httpx.WriteJSON(w, rest.ErrorResponse{
+			render.Status(r, err.Status)
+			render.JSON(w, r, rest.ErrorResponse{
 				Type:    err.Type,
 				Message: err.Message,
-			}, err.Status)
+			})
 
 			return
 		}
@@ -112,7 +113,8 @@ func ServeStatic(store *data.OaklandsStore) http.HandlerFunc {
 		}
 		if accessError != nil {
 			w.Header().Set("Cache-Control", "no-store")
-			_ = httpx.WriteJSON(w, rest.ErrorResponse{Type: accessError.Type, Message: accessError.Message}, accessError.Status)
+			render.Status(r, accessError.Status)
+			render.JSON(w, r, rest.ErrorResponse{Type: accessError.Type, Message: accessError.Message})
 			return
 		}
 

@@ -4,9 +4,9 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/go-chi/render"
 	"github.com/redis/go-redis/v9"
 	"github.com/typical-developers/public-experience-api/internal/apperror"
-	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
 
 var (
@@ -17,7 +17,7 @@ var (
 )
 
 // WriteRESTError will write an error based on the type of error passed in.
-func WriteRESTError(w http.ResponseWriter, err error) {
+func WriteRESTError(w http.ResponseWriter, r *http.Request, err error) {
 	var restError *apperror.AppError
 
 	if errors.Is(err, redis.Nil) {
@@ -30,8 +30,9 @@ func WriteRESTError(w http.ResponseWriter, err error) {
 		restError = restError.WithError(err)
 	}
 
-	_ = httpx.WriteJSON(w, ErrorResponse{
+	render.Status(r, restError.Status)
+	render.JSON(w, r, ErrorResponse{
 		Type:    restError.Type,
 		Message: restError.Message,
-	}, restError.Status)
+	})
 }

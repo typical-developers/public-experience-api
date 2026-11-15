@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/go-chi/chi"
 	"github.com/typical-developers/goblox/opencloud"
+	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/config"
 	"github.com/typical-developers/public-experience-api/internal/data"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
@@ -71,42 +72,46 @@ func NewOaklandsV1(r *chi.Mux, opts *OaklandsV1Opts) {
 	r.Route("/oaklands/v1", func(r chi.Router) {
 		r.Get("/version-info", o.GetVersionInfo)
 
-		r.Route("/economy", func(r chi.Router) {
-			r.Get("/daily-material-buffs", o.GetDailyMaterialBuffs)
-		})
+		r.Group(func(r chi.Router) {
+			r.Use(rest.ETag)
 
-		r.Route("/world", func(r chi.Router) {
-			r.Get("/minimap", o.GetMinimap)
-			r.Get("/regions", o.ListRegions)
-			r.Get("/regions/{id}", o.GetRegion)
-		})
+			r.Route("/economy", func(r chi.Router) {
+				r.Get("/daily-material-buffs", o.GetDailyMaterialBuffs)
+			})
 
-		r.Route("/changelogs", func(r chi.Router) {
-			r.Get("/", o.ListChangelogs)
-			r.Get("/{version}", o.GetChangelog)
-		})
+			r.Route("/world", func(r chi.Router) {
+				r.Get("/minimap", o.GetMinimap)
+				r.Get("/regions", o.ListRegions)
+				r.Get("/regions/{id}", o.GetRegion)
+			})
 
-		r.Route("/newsletters", func(r chi.Router) {
-			r.Get("/", o.ListNewsletters)
-			r.Get("/{id}", o.GetNewsletter)
-		})
+			r.Route("/changelogs", func(r chi.Router) {
+				r.Get("/", o.ListChangelogs)
+				r.Get("/{version}", o.GetChangelog)
+			})
 
-		r.Route("/index", func(r chi.Router) {
-			r.Get("/", o.ListIndexCategories)
-			r.Get("/{category}", o.ListIndex)
-			r.Get("/{category}/{id}", o.GetIndexEntry)
-		})
+			r.Route("/newsletters", func(r chi.Router) {
+				r.Get("/", o.ListNewsletters)
+				r.Get("/{id}", o.GetNewsletter)
+			})
 
-		r.Route("/items", func(r chi.Router) {
-			r.Get("/", o.ListItems)
-			r.Get("/{id}", o.GetItem)
-		})
+			r.Route("/index", func(r chi.Router) {
+				r.Get("/", o.ListIndexCategories)
+				r.Get("/{category}", o.ListIndex)
+				r.Get("/{category}/{id}", o.GetIndexEntry)
+			})
 
-		r.Route("/stores", func(r chi.Router) {
-			r.Get("/", o.ListStores)
-			r.Get("/{store_name}", o.GetStore)
-		})
+			r.Route("/items", func(r chi.Router) {
+				r.Get("/", o.ListItems)
+				r.Get("/{id}", o.GetItem)
+			})
 
-		r.Get("/translations", o.GetTranslations)
+			r.Route("/stores", func(r chi.Router) {
+				r.Get("/", o.ListStores)
+				r.Get("/{store_name}", o.GetStore)
+			})
+
+			r.Get("/translations", o.GetTranslations)
+		})
 	})
 }

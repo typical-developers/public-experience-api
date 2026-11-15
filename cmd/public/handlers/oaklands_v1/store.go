@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/render"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/assets"
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/data"
@@ -77,20 +78,20 @@ func (o *OaklandsV1Routes) GetStore(w http.ResponseWriter, r *http.Request) {
 
 	stock, err := o.store.StoreStock.Get(ctx, storeName)
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
 	unlockTimes, err := o.store.ItemUnlockTimes.GetMany(ctx, stock...)
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 	now := time.Now()
 
 	items, err := o.store.Items.GetMany(ctx, stock...)
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
@@ -131,10 +132,7 @@ func (o *OaklandsV1Routes) GetStore(w http.ResponseWriter, r *http.Request) {
 	}
 	response.Data = o.sortStoreItems(response.Data, sortBy, order)
 
-	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+	render.JSON(w, r, response)
 }
 
 //	@Router			/oaklands/v1/stores [GET]
@@ -154,14 +152,11 @@ func (o *OaklandsV1Routes) ListStores(w http.ResponseWriter, r *http.Request) {
 
 	stores, err := o.store.StoreStock.Keys(ctx)
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
 	sort.Strings(stores)
 	response := rest.Response[[]string]{Data: stores}
-	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+	render.JSON(w, r, response)
 }

@@ -5,8 +5,8 @@ import (
 	"slices"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/render"
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
-	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
 
 //	@Router			/oaklands/v1/world/minimap [GET]
@@ -24,7 +24,7 @@ import (
 func (o *OaklandsV1Routes) GetMinimap(w http.ResponseWriter, r *http.Request) {
 	layers, err := o.store.Minimap.Get(r.Context())
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
@@ -73,10 +73,7 @@ func (o *OaklandsV1Routes) GetMinimap(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=300, stale-while-revalidate=300")
-	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+	render.JSON(w, r, response)
 }
 
 //	@Router			/oaklands/v1/world/regions [GET]
@@ -94,7 +91,7 @@ func (o *OaklandsV1Routes) GetMinimap(w http.ResponseWriter, r *http.Request) {
 func (o *OaklandsV1Routes) ListRegions(w http.ResponseWriter, r *http.Request) {
 	regions, err := o.store.Regions.Keys(r.Context())
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 	slices.Sort(regions)
@@ -102,10 +99,7 @@ func (o *OaklandsV1Routes) ListRegions(w http.ResponseWriter, r *http.Request) {
 	response := rest.Response[[]string]{Data: regions}
 
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=300, stale-while-revalidate=300")
-	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+	render.JSON(w, r, response)
 }
 
 //	@Router			/oaklands/v1/world/regions/{id} [GET]
@@ -127,7 +121,7 @@ func (o *OaklandsV1Routes) GetRegion(w http.ResponseWriter, r *http.Request) {
 
 	region, err := o.store.Regions.Get(ctx, id)
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
@@ -143,7 +137,7 @@ func (o *OaklandsV1Routes) GetRegion(w http.ResponseWriter, r *http.Request) {
 
 	entries, err := o.store.Index.GetMany(ctx, keys...)
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
@@ -207,8 +201,5 @@ func (o *OaklandsV1Routes) GetRegion(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=300, stale-while-revalidate=300")
-	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+	render.JSON(w, r, response)
 }

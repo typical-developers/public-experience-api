@@ -6,11 +6,11 @@ import (
 	"time"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/render"
 	"github.com/redis/go-redis/v9"
 	"github.com/typical-developers/public-experience-api/cmd/public/handlers/assets"
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/data"
-	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
 
 //	@Router			/oaklands/v1/items [GET]
@@ -28,20 +28,20 @@ import (
 func (o OaklandsV1Routes) ListItems(w http.ResponseWriter, r *http.Request) {
 	ids, err := o.store.Items.Keys(r.Context())
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 	slices.Sort(ids)
 
 	unlockTimes, err := o.store.ItemUnlockTimes.GetMany(r.Context(), ids...)
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
 	items, err := o.store.Items.GetMany(r.Context(), ids...)
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
@@ -67,10 +67,7 @@ func (o OaklandsV1Routes) ListItems(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=60")
-	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+	render.JSON(w, r, response)
 }
 
 //	@Router			/oaklands/v1/items/{id} [GET]
@@ -91,14 +88,14 @@ func (o OaklandsV1Routes) GetItem(w http.ResponseWriter, r *http.Request) {
 
 	item, err := o.store.Items.Get(r.Context(), id)
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 	if unlockTime, err := o.store.ItemUnlockTimes.Get(r.Context(), id); err == nil {
 		if time.Now().Before(unlockTime) {
 			// Too lazy to make a new error type for this, just
 			// throw it off as resource not cached by sending redis.Nil
-			rest.WriteRESTError(w, redis.Nil)
+			rest.WriteRESTError(w, r, redis.Nil)
 			return
 		}
 	}
@@ -187,8 +184,5 @@ func (o OaklandsV1Routes) GetItem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=60")
-	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+	render.JSON(w, r, response)
 }

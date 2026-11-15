@@ -7,9 +7,9 @@ import (
 	"strings"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/render"
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/data"
-	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
 
 //	@Router			/oaklands/v1/index [GET]
@@ -27,7 +27,7 @@ import (
 func (o *OaklandsV1Routes) ListIndexCategories(w http.ResponseWriter, r *http.Request) {
 	keys, err := o.store.Index.Keys(r.Context())
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
@@ -44,10 +44,7 @@ func (o *OaklandsV1Routes) ListIndexCategories(w http.ResponseWriter, r *http.Re
 	slices.Sort(response.Data)
 
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=300, stale-while-revalidate=300")
-	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+	render.JSON(w, r, response)
 }
 
 //	@Router			/oaklands/v1/index/{category} [GET]
@@ -70,7 +67,7 @@ func (o *OaklandsV1Routes) ListIndex(w http.ResponseWriter, r *http.Request) {
 		return strings.Compare(a.Name, b.Name)
 	})
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
@@ -91,10 +88,7 @@ func (o *OaklandsV1Routes) ListIndex(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=300, stale-while-revalidate=300")
-	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+	render.JSON(w, r, response)
 }
 
 //	@Router			/oaklands/v1/index/{category}/{id} [GET]
@@ -117,7 +111,7 @@ func (o *OaklandsV1Routes) GetIndexEntry(w http.ResponseWriter, r *http.Request)
 
 	entry, err := o.store.Index.Get(r.Context(), category+":"+id)
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
@@ -160,8 +154,5 @@ func (o *OaklandsV1Routes) GetIndexEntry(w http.ResponseWriter, r *http.Request)
 	}
 
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=300, stale-while-revalidate=300")
-	if err := httpx.WriteJSONWithETag(w, r, response, http.StatusOK); err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+	render.JSON(w, r, response)
 }

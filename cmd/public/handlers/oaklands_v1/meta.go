@@ -3,8 +3,8 @@ package oaklands_v1
 import (
 	"net/http"
 
+	"github.com/go-chi/render"
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
-	"github.com/typical-developers/public-experience-api/pkg/httpx"
 )
 
 //	@Router			/oaklands/v1/version-info [GET]
@@ -24,7 +24,7 @@ func (o OaklandsV1Routes) GetVersionInfo(w http.ResponseWriter, r *http.Request)
 
 	info, err := o.store.Version.Get(ctx)
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
@@ -37,10 +37,7 @@ func (o OaklandsV1Routes) GetVersionInfo(w http.ResponseWriter, r *http.Request)
 	}
 
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=60")
-	if err := httpx.WriteJSON(w, response, http.StatusOK); err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+	render.JSON(w, r, response)
 }
 
 func (o OaklandsV1Routes) GetSyncTimes(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +45,7 @@ func (o OaklandsV1Routes) GetSyncTimes(w http.ResponseWriter, r *http.Request) {
 
 	sync, err := o.uc.GetSyncTimes(ctx)
 	if err != nil {
-		rest.WriteRESTError(w, err)
+		rest.WriteRESTError(w, r, err)
 		return
 	}
 
@@ -70,8 +67,5 @@ func (o OaklandsV1Routes) GetSyncTimes(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=60")
-	if err := httpx.WriteJSON(w, response, http.StatusOK); err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
+	render.JSON(w, r, response)
 }
