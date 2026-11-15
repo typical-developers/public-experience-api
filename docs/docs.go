@@ -645,12 +645,6 @@ const docTemplate = `{
                         "description": "ETag to validate cached response.",
                         "name": "If-None-Match",
                         "in": "header"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Return a subset of keys that have a prefix (i.e. using ` + "`" + `ItemName` + "`" + ` would return values for the keys ` + "`" + `ItemName` + "`" + ` and ` + "`" + `ItemName_description` + "`" + `).\u003cbr\u003eIt is suggested to only return the keys you are needing.",
-                        "name": "prefix",
-                        "in": "query"
                     }
                 ],
                 "responses": {

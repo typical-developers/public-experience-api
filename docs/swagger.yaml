@@ -1014,12 +1014,6 @@ paths:
         in: header
         name: If-None-Match
         type: string
-      - description: Return a subset of keys that have a prefix (i.e. using `ItemName`
-          would return values for the keys `ItemName` and `ItemName_description`).<br>It
-          is suggested to only return the keys you are needing.
-        in: query
-        name: prefix
-        type: string
       responses:
         "200":
           description: OK
