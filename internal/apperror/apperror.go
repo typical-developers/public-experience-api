@@ -25,9 +25,9 @@ func NewAppError(errType, message string, status int, err error) *AppError {
 // WithError will clone the existing error and set the Err field for extra details.
 // This is used for already-initalized app errors where the error is not already provided.
 func (e *AppError) WithError(err error) *AppError {
-	c := e
+	c := *e
 	c.Err = err
-	return c
+	return &c
 }
 
 // Error will return the error.
