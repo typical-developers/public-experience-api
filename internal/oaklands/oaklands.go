@@ -5,9 +5,7 @@ import (
 	_ "embed"
 
 	"github.com/luckfire/goblox/opencloud"
-	"github.com/typical-developers/public-experience-api/internal/config"
 	"github.com/typical-developers/public-experience-api/internal/scripts"
-	"go.uber.org/zap"
 )
 
 var (
@@ -28,7 +26,6 @@ var (
 )
 
 var (
-	PlaceVersionOverride *string
 	LuauExecutionPlaceID = ProductionPlaceID
 )
 
@@ -44,11 +41,6 @@ func SetProduction() {
 // Calling this method will set it to Staging.
 func SetStaging() {
 	LuauExecutionPlaceID = StagingPlaceID
-}
-
-// SetPlaceVersionOverride will set a place version to use instead of defaulting to the most recent version.
-func SetPlaceVersionOverride(version string) {
-	PlaceVersionOverride = &version
 }
 
 type Config struct {
@@ -96,23 +88,16 @@ func GetConfig(ctx context.Context, oc *opencloud.Client) (*Config, error) {
 }
 
 // GetContentSync will run the ContentSync script to get new data (i.e. when Oaklands updates).
-func GetContentSync(ctx context.Context, oc *opencloud.Client) (*ContentSyncData, error) {
+// The script is executed in the provided place version.
+func GetContentSync(ctx context.Context, oc *opencloud.Client, version string) (*ContentSyncData, error) {
 	script := scripts.NewScript(oc, ContentSyncScript)
 
 	opts := scripts.ExecuteOptions{
 		UniverseID:         UniverseID,
 		PlaceID:            LuauExecutionPlaceID,
+		Version:            &version,
 		EnableBinaryOutput: new(true),
 	}
-	if PlaceVersionOverride != nil && !config.C.Oaklands.AlwaysExecuteInLatest {
-		zap.L().Debug("version",
-			zap.String("message", "PlaceVersionOverride is not nil, running script in specified version."),
-			zap.String("version", *PlaceVersionOverride),
-		)
-
-		opts.Version = PlaceVersionOverride
-	}
-
 	result, err := script.Execute(ctx, opts)
 	if err != nil {
 		return nil, err
@@ -129,23 +114,16 @@ func GetContentSync(ctx context.Context, oc *opencloud.Client) (*ContentSyncData
 type StockMarketData map[string][]StockMarketMaterial
 
 // GetStockMarket will run the StockMarket script to get new data.
-func GetStockMarket(ctx context.Context, oc *opencloud.Client) (*StockMarketData, error) {
+// The script is executed in the provided place version.
+func GetStockMarket(ctx context.Context, oc *opencloud.Client, version string) (*StockMarketData, error) {
 	script := scripts.NewScript(oc, StockMarketScript)
 
 	opts := scripts.ExecuteOptions{
 		UniverseID:         UniverseID,
 		PlaceID:            LuauExecutionPlaceID,
+		Version:            &version,
 		EnableBinaryOutput: new(true),
 	}
-	if PlaceVersionOverride != nil && !config.C.Oaklands.AlwaysExecuteInLatest {
-		zap.L().Debug("version",
-			zap.String("message", "PlaceVersionOverride is not nil, running script in specified version."),
-			zap.String("version", *PlaceVersionOverride),
-		)
-
-		opts.Version = PlaceVersionOverride
-	}
-
 	result, err := script.Execute(ctx, opts)
 	if err != nil {
 		return nil, err
@@ -160,22 +138,15 @@ func GetStockMarket(ctx context.Context, oc *opencloud.Client) (*StockMarketData
 }
 
 // GetClassicShop will get the current classic shop items.
-func GetClassicShop(ctx context.Context, oc *opencloud.Client) ([]string, error) {
+// The script is executed in the provided place version.
+func GetClassicShop(ctx context.Context, oc *opencloud.Client, version string) ([]string, error) {
 	script := scripts.NewScript(oc, ClassicShopScript)
 
 	opts := scripts.ExecuteOptions{
 		UniverseID: UniverseID,
 		PlaceID:    LuauExecutionPlaceID,
+		Version:    &version,
 	}
-	if PlaceVersionOverride != nil && !config.C.Oaklands.AlwaysExecuteInLatest {
-		zap.L().Debug("version",
-			zap.String("message", "PlaceVersionOverride is not nil, running script in specified version."),
-			zap.String("version", *PlaceVersionOverride),
-		)
-
-		opts.Version = PlaceVersionOverride
-	}
-
 	result, err := script.Execute(ctx, opts)
 	if err != nil {
 		return nil, err
@@ -191,23 +162,17 @@ func GetClassicShop(ctx context.Context, oc *opencloud.Client) ([]string, error)
 
 type DailyMaterialBuffsData map[string][]DailyMaterialBuff
 
-func GetDailyMaterialBuffs(ctx context.Context, oc *opencloud.Client) (*DailyMaterialBuffsData, error) {
+// GetDailyMaterialBuffs will get the current daily material buffs.
+// The script is executed in the provided place version.
+func GetDailyMaterialBuffs(ctx context.Context, oc *opencloud.Client, version string) (*DailyMaterialBuffsData, error) {
 	script := scripts.NewScript(oc, DailyMaterialBuffs)
 
 	opts := scripts.ExecuteOptions{
 		UniverseID:         UniverseID,
 		PlaceID:            LuauExecutionPlaceID,
+		Version:            &version,
 		EnableBinaryOutput: new(true),
 	}
-	if PlaceVersionOverride != nil && !config.C.Oaklands.AlwaysExecuteInLatest {
-		zap.L().Debug("version",
-			zap.String("message", "PlaceVersionOverride is not nil, running script in specified version."),
-			zap.String("version", *PlaceVersionOverride),
-		)
-
-		opts.Version = PlaceVersionOverride
-	}
-
 	result, err := script.Execute(ctx, opts)
 	if err != nil {
 		return nil, err

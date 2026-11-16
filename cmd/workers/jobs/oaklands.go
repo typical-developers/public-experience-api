@@ -108,6 +108,8 @@ func (c *OaklandsCronJobs) GetConfig(ctx context.Context) {
 	)
 }
 
+// getRecentPublishedVersion will get the most recent place version that can be fetched from.
+// Versions that are flagged dead are skipped, so this falls back to the last alive version.
 func (c *OaklandsCronJobs) getRecentPublishedVersion(ctx context.Context) (*opencloud.AssetVersion, error) {
 	opts := opencloud.Options{
 		MaxPageSize: new(50),
@@ -128,11 +130,20 @@ func (c *OaklandsCronJobs) getRecentPublishedVersion(ctx context.Context) (*open
 				continue
 			}
 
+			id := assetVersion.Path[strings.LastIndex(assetVersion.Path, "/")+1:]
+			if dead, err := c.store.DeadVersions.Get(ctx, fmt.Sprintf("%s:%s", oaklands.LuauExecutionPlaceID, id)); err == nil && dead {
+				continue
+			}
+
 			version = &assetVersion
 			break
 		}
 		if version != nil {
 			break
+		}
+
+		if versions.NextPageToken == "" {
+			return nil, errors.New("no place version available to fetch from")
 		}
 
 		opts.PageToken = &versions.NextPageToken
@@ -158,13 +169,6 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 		panic(err)
 	}
 
-	if dead, err := c.store.DeadVersions.Get(ctx, fmt.Sprintf("%s:%s", oaklands.LuauExecutionPlaceID, version)); err == nil && dead {
-		zap.L().Debug("Latest published version is flagged dead, will not fetch.",
-			zap.String("version", version),
-		)
-		return
-	}
-
 	if version == lastVersion.Version {
 		zap.L().Debug("No new published version, will not refetch.")
 
@@ -180,18 +184,12 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 		return
 	}
 
-	oaklands.SetPlaceVersionOverride(version)
-	content, err := oaklands.GetContentSync(ctx, c.opencloud)
+	content, err := oaklands.GetContentSync(ctx, c.opencloud, version)
 	if err != nil {
 		if errors.Is(err, scripts.ErrModuleErrored) {
 			zap.L().Debug("The most recently fetched version is dead.",
 				zap.String("version", version),
 			)
-
-			// set to last alive version
-			if lastVersion.Version != "" {
-				oaklands.SetPlaceVersionOverride(lastVersion.Version)
-			}
 
 			_ = c.store.DeadVersions.Set(ctx, fmt.Sprintf("%s:%s", oaklands.LuauExecutionPlaceID, version), true)
 
@@ -495,11 +493,16 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 // RefreshClassicShop will fetch and update the classic shop.
 // This happens every 12 hours.
 func (c *OaklandsCronJobs) RefreshClassicShop(ctx context.Context) {
-	if oaklands.PlaceVersionOverride == nil {
+	// Fetch from the version that the rest of the stored data was synced from.
+	synced, err := c.store.Version.Get(ctx)
+	if err != nil && err != redis.Nil {
+		panic(err)
+	}
+	if synced.Version == "" {
 		return
 	}
 
-	items, err := oaklands.GetClassicShop(context.Background(), c.opencloud)
+	items, err := oaklands.GetClassicShop(context.Background(), c.opencloud, synced.Version)
 	if err != nil {
 		panic(err)
 	}
@@ -510,11 +513,16 @@ func (c *OaklandsCronJobs) RefreshClassicShop(ctx context.Context) {
 }
 
 func (c OaklandsCronJobs) RefreshDailyMaterialBuffs(ctx context.Context) {
-	if oaklands.PlaceVersionOverride == nil {
+	// Fetch from the version that the rest of the stored data was synced from.
+	synced, err := c.store.Version.Get(ctx)
+	if err != nil && err != redis.Nil {
+		panic(err)
+	}
+	if synced.Version == "" {
 		return
 	}
 
-	materialBuffs, err := oaklands.GetDailyMaterialBuffs(context.Background(), c.opencloud)
+	materialBuffs, err := oaklands.GetDailyMaterialBuffs(context.Background(), c.opencloud, synced.Version)
 	if err != nil {
 		panic(err)
 	}
