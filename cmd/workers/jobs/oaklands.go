@@ -186,7 +186,7 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 
 	content, err := oaklands.GetContentSync(ctx, c.opencloud, version)
 	if err != nil {
-		if errors.Is(err, scripts.ErrModuleErrored) {
+		if errors.Is(err, scripts.ErrModuleErrored) || errors.Is(err, oaklands.ErrNoSections) {
 			zap.L().Debug("The most recently fetched version is dead.",
 				zap.String("version", version),
 			)
@@ -197,6 +197,14 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 		}
 
 		panic(err)
+	}
+
+	for section, reason := range content.Skipped {
+		zap.L().Warn("Section was skipped, its stored data will not be updated.",
+			zap.String("version", version),
+			zap.String("section", section),
+			zap.String("reason", reason),
+		)
 	}
 
 	place, _, err := c.opencloud.Places.GetPlace(ctx, oaklands.UniverseID, oaklands.LuauExecutionPlaceID)
@@ -383,7 +391,10 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 			Locations: locations,
 		})
 	}
-	c.store.Minimap.Set(ctx, minimap)
+	// The minimap is replaced as a whole, so it can only be set when the section was returned.
+	if _, skipped := content.Skipped["Minimap"]; !skipped {
+		c.store.Minimap.Set(ctx, minimap)
+	}
 
 	index := map[string]data.OaklandsIndexEntry{}
 	for category, entries := range content.Index {
