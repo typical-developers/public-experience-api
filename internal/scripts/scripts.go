@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/typical-developers/goblox/opencloud"
+	"github.com/luckfire/goblox/opencloud"
 	"go.uber.org/zap"
 )
 

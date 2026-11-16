@@ -4,7 +4,7 @@ import (
 	"context"
 	_ "embed"
 
-	"github.com/typical-developers/goblox/opencloud"
+	"github.com/luckfire/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/internal/config"
 	"github.com/typical-developers/public-experience-api/internal/scripts"
 	"go.uber.org/zap"

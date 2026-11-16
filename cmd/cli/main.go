@@ -7,8 +7,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/luckfire/goblox/opencloud"
 	"github.com/redis/go-redis/v9"
-	"github.com/typical-developers/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/internal/config"
 	"github.com/typical-developers/public-experience-api/internal/logger"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"

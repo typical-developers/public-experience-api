@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	"github.com/typical-developers/goblox/opencloud"
+	"github.com/luckfire/goblox/opencloud"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
 )
 

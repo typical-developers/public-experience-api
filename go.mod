@@ -12,11 +12,11 @@ require (
 	github.com/go-chi/cors v1.2.2
 	github.com/go-chi/render v1.0.3
 	github.com/joho/godotenv v1.5.1
+	github.com/luckfire/goblox v0.1.0
 	github.com/redis/go-redis/v9 v9.18.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/swaggo/swag v1.16.6
 	github.com/typical-developers/discord-webhooks-go/v2 v2.0.2
-	github.com/typical-developers/goblox v0.0.0-20261103031906-a3c0e5ce75ee
 	github.com/urfave/cli/v3 v3.7.0
 	go.uber.org/zap v1.27.1
 	golang.org/x/sync v0.13.0
