@@ -2,13 +2,11 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"strings"
 
 	"github.com/luckfire/goblox/opencloud"
-	"github.com/redis/go-redis/v9"
 	"github.com/typical-developers/public-experience-api/internal/config"
 	"github.com/typical-developers/public-experience-api/internal/logger"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
@@ -23,16 +21,8 @@ func main() {
 	}
 
 	oc := opencloud.NewClient().WithAPIKey(config.C.OpencloudKey)
-	redis := redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%d", config.C.Redis.Host, config.C.Redis.Port),
-		Password: config.C.Redis.Password,
-		DB:       config.C.Redis.DB,
-	})
-
-	oaklandsRepository := oaklands.NewOaklandsRepository(&oaklands.OaklandsRepositoryOpts{RedisClient: redis})
 	oaklandsCmdHandler := NewOaklandsHandler(OaklandsHandlerOpts{
 		OpencloudClient: oc,
-		Repository:      oaklandsRepository,
 	})
 
 	oaklandsCmds := []*cli.Command{

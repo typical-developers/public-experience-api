@@ -93,15 +93,11 @@ func main() {
 		MaxAge:           300,
 	}))
 
-	oaklandsRepository := oaklands.NewOaklandsRepository(&oaklands.OaklandsRepositoryOpts{RedisClient: redis})
-	oaklandsUsecase := oaklands.NewOaklandsUsecase(oaklandsRepository)
-
 	store := data.NewOaklandsStore(redis)
 
 	health.NewHealth(r)
 	oaklands_v1.NewOaklandsV1(r, &oaklands_v1.OaklandsV1Opts{
 		OpencloudClient: oc,
-		Usecase:         oaklandsUsecase,
 		Store:           store,
 		S3:              s3Client,
 	})

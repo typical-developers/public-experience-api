@@ -9,19 +9,16 @@ import (
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/config"
 	"github.com/typical-developers/public-experience-api/internal/data"
-	"github.com/typical-developers/public-experience-api/internal/oaklands"
 )
 
 type OaklandsV1Opts struct {
 	OpencloudClient *opencloud.Client
-	Usecase         oaklands.OaklandsUsecase
 	Store           *data.OaklandsStore
 	S3              *s3.Client
 }
 
 type OaklandsV1Routes struct {
 	opencloud *opencloud.Client
-	uc        oaklands.OaklandsUsecase
 	store     *data.OaklandsStore
 	s3        *s3.Client
 }
@@ -64,7 +61,6 @@ func newMediaList(assetIDs []string) []Media {
 func NewOaklandsV1(r *chi.Mux, opts *OaklandsV1Opts) {
 	o := &OaklandsV1Routes{
 		opencloud: opts.OpencloudClient,
-		uc:        opts.Usecase,
 		store:     opts.Store,
 		s3:        opts.S3,
 	}

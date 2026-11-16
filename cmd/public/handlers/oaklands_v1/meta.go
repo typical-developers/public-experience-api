@@ -39,33 +39,3 @@ func (o OaklandsV1Routes) GetVersionInfo(w http.ResponseWriter, r *http.Request)
 	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=60")
 	render.JSON(w, r, response)
 }
-
-func (o OaklandsV1Routes) GetSyncTimes(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-
-	sync, err := o.uc.GetSyncTimes(ctx)
-	if err != nil {
-		rest.WriteRESTError(w, r, err)
-		return
-	}
-
-	response := rest.Response[Sync]{
-		Data: Sync{
-			Meta: SyncMeta{
-				LastUpdate: sync.LastContentSync,
-				NextCheck:  sync.NextSyncCheck,
-			},
-			StockMarket: SyncdInfoWithReset{
-				LastSync: sync.StockMarket.LastSync,
-				NextSync: *sync.StockMarket.NextSync,
-			},
-			ClassicStore: SyncdInfoWithReset{
-				LastSync: sync.ClassicStore.LastSync,
-				NextSync: *sync.ClassicStore.NextSync,
-			},
-		},
-	}
-
-	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=60")
-	render.JSON(w, r, response)
-}
