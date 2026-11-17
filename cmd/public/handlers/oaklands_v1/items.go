@@ -7,7 +7,6 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
-	"github.com/typical-developers/public-experience-api/cmd/public/handlers/assets"
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/data"
 )
@@ -117,7 +116,7 @@ func (o OaklandsV1Routes) GetItem(w http.ResponseWriter, r *http.Request) {
 		if hasUnopenedGift && form != "store" && form != "box" && form != "gift" {
 			continue
 		}
-		image = assets.OaklandsItemAssetExists(o.s3, item.Name, form)
+		image = o.assets.URL(item.Name, form)
 		if image != nil {
 			break
 		}
@@ -136,7 +135,7 @@ func (o OaklandsV1Routes) GetItem(w http.ResponseWriter, r *http.Request) {
 		if hasUnopenedGift && form.FormType != "store" && form.FormType != "box" && form.FormType != "gift" {
 			continue
 		}
-		formImage := assets.OaklandsItemAssetExists(o.s3, item.Name, form.FormType)
+		formImage := o.assets.URL(item.Name, form.FormType)
 		result := ItemForm{
 			Type:        form.FormType,
 			Image:       formImage,
@@ -162,7 +161,7 @@ func (o OaklandsV1Routes) GetItem(w http.ResponseWriter, r *http.Request) {
 			}
 
 			for _, unboxType := range info.UnboxTypes {
-				unboxImage := assets.OaklandsItemAssetExists(o.s3, resultID, unboxType.FormType)
+				unboxImage := o.assets.URL(resultID, unboxType.FormType)
 				result.UnboxTypes = append(result.UnboxTypes, ItemFormUnboxType{
 					Type:        unboxType.FormType,
 					Image:       unboxImage,

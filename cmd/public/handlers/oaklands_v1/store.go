@@ -7,7 +7,6 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
-	"github.com/typical-developers/public-experience-api/cmd/public/handlers/assets"
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/data"
 	"github.com/typical-developers/public-experience-api/pkg/httpx"
@@ -123,7 +122,7 @@ func (o *OaklandsV1Routes) GetStore(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 
-			details.Image = assets.OaklandsItemAssetExists(o.s3, item.Name, form.FormType)
+			details.Image = o.assets.URL(item.Name, form.FormType)
 			details.Media = newMedia("", details.Image)
 			details.Currency = storeInfo.Currency
 			details.Price = storeInfo.Price

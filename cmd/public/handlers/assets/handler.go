@@ -1,7 +1,6 @@
 package assets
 
 import (
-	"context"
 	"errors"
 	"io"
 	"log"
@@ -147,36 +146,4 @@ func ServeAssets(client *s3.Client, store *data.OaklandsStore) http.HandlerFunc 
 			log.Printf("stream asset %q: %v", key, err)
 		}
 	}
-}
-
-func OaklandsItemAssetExists(client *s3.Client, id, form string) *string {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	prefix := "items/" + id + "/" + form + "."
-
-	paginator := s3.NewListObjectsV2Paginator(client, &s3.ListObjectsV2Input{
-		Bucket: aws.String("public-api"),
-		Prefix: aws.String(prefix),
-	})
-
-	for paginator.HasMorePages() {
-		page, err := paginator.NextPage(ctx)
-		if err != nil {
-			log.Printf("find image %q: %v", prefix, err)
-			return nil
-		}
-
-		for _, object := range page.Contents {
-			key := aws.ToString(object.Key)
-			extension := strings.ToLower(strings.TrimPrefix(key, prefix))
-
-			switch extension {
-			case "png", "jpg", "jpeg", "webp", "gif", "avif", "svg":
-				return aws.String("/assets/" + key)
-			}
-		}
-	}
-
-	return nil
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
@@ -81,6 +82,12 @@ func main() {
 			o.UsePathStyle = true
 		})
 
+	// Index of which item images exist in S3, so handlers don't call S3 per request.
+	assetIndex := assets.NewIndex(s3Client, "public-api", "items/")
+	if err := assetIndex.Start(context.Background(), 5*time.Minute); err != nil {
+		panic(err)
+	}
+
 	r := chi.NewMux()
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Logger)
@@ -99,7 +106,7 @@ func main() {
 	oaklands_v1.NewOaklandsV1(r, &oaklands_v1.OaklandsV1Opts{
 		OpencloudClient: oc,
 		Store:           store,
-		S3:              s3Client,
+		Assets:          assetIndex,
 	})
 
 	r.Get("/assets/items/{id}/{filename}", assets.ServeAssets(s3Client, store))

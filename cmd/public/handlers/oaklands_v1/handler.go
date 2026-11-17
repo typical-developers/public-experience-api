@@ -3,9 +3,9 @@ package oaklands_v1
 import (
 	"strings"
 
-	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/go-chi/chi"
 	"github.com/luckfire/goblox/opencloud"
+	"github.com/typical-developers/public-experience-api/cmd/public/handlers/assets"
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/config"
 	"github.com/typical-developers/public-experience-api/internal/data"
@@ -14,13 +14,13 @@ import (
 type OaklandsV1Opts struct {
 	OpencloudClient *opencloud.Client
 	Store           *data.OaklandsStore
-	S3              *s3.Client
+	Assets          *assets.Index
 }
 
 type OaklandsV1Routes struct {
 	opencloud *opencloud.Client
 	store     *data.OaklandsStore
-	s3        *s3.Client
+	assets    *assets.Index
 }
 
 // newMedia creates media from a Roblox asset id and/or the path to an asset hosted by the API.
@@ -62,7 +62,7 @@ func NewOaklandsV1(r *chi.Mux, opts *OaklandsV1Opts) {
 	o := &OaklandsV1Routes{
 		opencloud: opts.OpencloudClient,
 		store:     opts.Store,
-		s3:        opts.S3,
+		assets:    opts.Assets,
 	}
 
 	r.Route("/oaklands/v1", func(r chi.Router) {
