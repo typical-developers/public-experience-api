@@ -36,6 +36,6 @@ func (o OaklandsV1Routes) GetVersionInfo(w http.ResponseWriter, r *http.Request)
 		},
 	}
 
-	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=60")
+	w.Header().Set("Cache-Control", "public, max-age=0, s-maxage=15, stale-while-revalidate=5")
 	render.JSON(w, r, response)
 }
