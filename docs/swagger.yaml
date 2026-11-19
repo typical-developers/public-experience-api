@@ -151,13 +151,6 @@ definitions:
       id:
         description: The ID of the item
         type: string
-      image:
-        description: |-
-          An image preview of the item.
-
-          Deprecated: Use `media` instead.
-        type: string
-        x-deprecated: "true"
       media:
         allOf:
         - $ref: '#/definitions/Oaklands.V1.Media'
@@ -184,13 +177,6 @@ definitions:
       convert_type:
         description: The type that the itme will convert to when unboxed.
         type: string
-      image:
-        description: |-
-          The image of this form.
-
-          Deprecated: Use `media` instead.
-        type: string
-        x-deprecated: "true"
       media:
         allOf:
         - $ref: '#/definitions/Oaklands.V1.Media'
@@ -209,13 +195,6 @@ definitions:
       convert_type:
         description: The type that the unboxed form will convert to.
         type: string
-      image:
-        description: |-
-          The image of the unboxed item type.
-
-          Deprecated: Use `media` instead.
-        type: string
-        x-deprecated: "true"
       media:
         allOf:
         - $ref: '#/definitions/Oaklands.V1.Media'
@@ -292,16 +271,6 @@ definitions:
         allOf:
         - $ref: '#/definitions/Oaklands.V1.MinimapPosition'
         description: The min/max Y location in the world.
-      image_ids:
-        description: |-
-          The image IDs of the minimap.
-          This is from left -> right.
-
-          Deprecated: Use `media` instead.
-        items:
-          type: string
-        type: array
-        x-deprecated: "true"
       layer_id:
         description: The ID of the layer.
         type: string
@@ -369,13 +338,6 @@ definitions:
         allOf:
         - $ref: '#/definitions/Oaklands.V1.Media'
         description: The banner of the newsletter.
-      banner_image_id:
-        description: |-
-          The Roblox ID for the banner of the newsletter.
-
-          Deprecated: Use `banner` instead.
-        type: string
-        x-deprecated: "true"
       date:
         description: The date that the newsletter was released.
         type: string
@@ -397,13 +359,6 @@ definitions:
         allOf:
         - $ref: '#/definitions/Oaklands.V1.Media'
         description: The banner of the newsletter.
-      banner_image_id:
-        description: |-
-          The Roblox ID for the banner of the newsletter.
-
-          Deprecated: Use `banner` instead.
-        type: string
-        x-deprecated: "true"
       date:
         description: The date that the newsletter was released.
         type: string
@@ -549,13 +504,6 @@ definitions:
       id:
         description: The id  of the item.
         type: string
-      image:
-        description: |-
-          The image of the item.
-
-          Deprecated: Use `media` instead.
-        type: string
-        x-deprecated: "true"
       media:
         allOf:
         - $ref: '#/definitions/Oaklands.V1.Media'

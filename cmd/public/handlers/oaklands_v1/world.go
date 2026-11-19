@@ -66,7 +66,6 @@ func (o *OaklandsV1Routes) GetMinimap(w http.ResponseWriter, r *http.Request) {
 				Min: layer.Z.Min,
 				Max: layer.Z.Max,
 			},
-			ImageIDs:  layer.Images,
 			Media:     newMediaList(layer.Images),
 			Locations: locations,
 		}

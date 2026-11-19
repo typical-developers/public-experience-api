@@ -1097,11 +1097,6 @@ const docTemplate = `{
                     "description": "The ID of the item",
                     "type": "string"
                 },
-                "image": {
-                    "description": "An image preview of the item.\n\nDeprecated: Use ` + "`" + `media` + "`" + ` instead.",
-                    "type": "string",
-                    "x-deprecated": "true"
-                },
                 "media": {
                     "description": "An image preview of the item.",
                     "allOf": [
@@ -1136,11 +1131,6 @@ const docTemplate = `{
                     "description": "The type that the itme will convert to when unboxed.",
                     "type": "string"
                 },
-                "image": {
-                    "description": "The image of this form.\n\nDeprecated: Use ` + "`" + `media` + "`" + ` instead.",
-                    "type": "string",
-                    "x-deprecated": "true"
-                },
                 "media": {
                     "description": "The image of this form.",
                     "allOf": [
@@ -1168,11 +1158,6 @@ const docTemplate = `{
                 "convert_type": {
                     "description": "The type that the unboxed form will convert to.",
                     "type": "string"
-                },
-                "image": {
-                    "description": "The image of the unboxed item type.\n\nDeprecated: Use ` + "`" + `media` + "`" + ` instead.",
-                    "type": "string",
-                    "x-deprecated": "true"
                 },
                 "media": {
                     "description": "The image of the unboxed item type.",
@@ -1290,14 +1275,6 @@ const docTemplate = `{
                         }
                     ]
                 },
-                "image_ids": {
-                    "description": "The image IDs of the minimap.\nThis is from left -\u003e right.\n\nDeprecated: Use ` + "`" + `media` + "`" + ` instead.",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    },
-                    "x-deprecated": "true"
-                },
                 "layer_id": {
                     "description": "The ID of the layer.",
                     "type": "string"
@@ -1396,11 +1373,6 @@ const docTemplate = `{
                         }
                     ]
                 },
-                "banner_image_id": {
-                    "description": "The Roblox ID for the banner of the newsletter.\n\nDeprecated: Use ` + "`" + `banner` + "`" + ` instead.",
-                    "type": "string",
-                    "x-deprecated": "true"
-                },
                 "date": {
                     "description": "The date that the newsletter was released.",
                     "type": "string"
@@ -1432,11 +1404,6 @@ const docTemplate = `{
                             "$ref": "#/definitions/Oaklands.V1.Media"
                         }
                     ]
-                },
-                "banner_image_id": {
-                    "description": "The Roblox ID for the banner of the newsletter.\n\nDeprecated: Use ` + "`" + `banner` + "`" + ` instead.",
-                    "type": "string",
-                    "x-deprecated": "true"
                 },
                 "date": {
                     "description": "The date that the newsletter was released.",
@@ -1648,11 +1615,6 @@ const docTemplate = `{
                 "id": {
                     "description": "The id  of the item.",
                     "type": "string"
-                },
-                "image": {
-                    "description": "The image of the item.\n\nDeprecated: Use ` + "`" + `media` + "`" + ` instead.",
-                    "type": "string",
-                    "x-deprecated": "true"
                 },
                 "media": {
                     "description": "The image of the item.",

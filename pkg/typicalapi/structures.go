@@ -101,30 +101,18 @@ type OaklandsNewsletterParagraph struct {
 
 type OaklandsNewsletterImage struct {
 	OaklandsNewsletterContent
-	// The Roblox ID for the image in the section.
-	//
-	// Deprecated: Use `media` instead.
-	ImageId string `json:"image_id" extensions:"x-deprecated=true"`
 	// The image in the section.
 	Media *OaklandsMedia `json:"media"`
 } //	@name	Oaklands.V1.NewsletterImage
 
 type OaklandsNewsletterImageCarousel struct {
 	OaklandsNewsletterContent
-	// The Roblox IDs for the images in the section.
-	//
-	// Deprecated: Use `media` instead.
-	ImageIds []string `json:"image_ids" extensions:"x-deprecated=true"`
 	// The images in the section.
 	Media []OaklandsMedia `json:"media"`
 } //	@name	Oaklands.V1.NewsletterImageCarousel
 
 type OaklandsNewsletterVideo struct {
 	OaklandsNewsletterContent
-	// The Roblox ID for the video in the section.
-	//
-	// Deprecated: Use `media` instead.
-	VideoId string `json:"video_id" extensions:"x-deprecated=true"`
 	// The video in the section.
 	Media *OaklandsMedia `json:"media"`
 } //	@name	Oaklands.V1.NewsletterVideo
@@ -143,10 +131,6 @@ type OaklandsNewsletter struct {
 	Subheader string `json:"subheader"`
 	// The date that the newsletter was released.
 	Date time.Time `json:"date"`
-	// The Roblox ID for the banner of the newsletter.
-	//
-	// Deprecated: Use `banner` instead.
-	BannerImageId string `json:"banner_image_id" extensions:"x-deprecated=true"`
 	// The banner of the newsletter.
 	Banner *OaklandsMedia `json:"banner"`
 	// Sections of the newsletter.
@@ -158,10 +142,6 @@ type OaklandsNewsletterEntry struct {
 	ID string `json:"id"`
 	// The primary header of the newsletter.
 	Header string `json:"header"`
-	// The Roblox ID for the banner of the newsletter.
-	//
-	// Deprecated: Use `banner` instead.
-	BannerImageId string `json:"banner_image_id" extensions:"x-deprecated=true"`
 	// The banner of the newsletter.
 	Banner *OaklandsMedia `json:"banner"`
 	// The date that the newsletter was released.
@@ -202,10 +182,6 @@ type OaklandsStoreItem struct {
 	// The display name of the item.
 	DisplayName string `json:"display_name"`
 	// The image of the item.
-	//
-	// Deprecated: Use `media` instead.
-	Image *string `json:"image" extensions:"x-deprecated=true"`
-	// The image of the item.
 	Media *OaklandsMedia `json:"media"`
 	// The description of the item.
 	Description string `json:"description"`
@@ -219,10 +195,6 @@ type OaklandsItemFormUnboxType struct {
 	// The form type that the item can unbox as.
 	Type string `json:"type"`
 	// The image of the unboxed item type.
-	//
-	// Deprecated: Use `media` instead.
-	Image *string `json:"image" extensions:"x-deprecated=true"`
-	// The image of the unboxed item type.
 	Media *OaklandsMedia `json:"media"`
 	// The type that the unboxed form will convert to.
 	ConvertType *string `json:"convert_type,omitempty"`
@@ -231,10 +203,6 @@ type OaklandsItemFormUnboxType struct {
 type OaklandsItemForm struct {
 	// The type of form of the item.
 	Type string `json:"type"`
-	// The image of this form.
-	//
-	// Deprecated: Use `media` instead.
-	Image *string `json:"image" extensions:"x-deprecated=true"`
 	// The image of this form.
 	Media *OaklandsMedia `json:"media"`
 	// The id of the item that the object converts to.
@@ -259,10 +227,6 @@ type OaklandsItem struct {
 	ID string `json:"id"`
 	// The name of the item.
 	DisplayName string `json:"display_name"`
-	// An image preview of the item.
-	//
-	// Deprecated: Use `media` instead.
-	Image *string `json:"image" extensions:"x-deprecated=true"`
 	// An image preview of the item.
 	Media *OaklandsMedia `json:"media"`
 	// The description of the item.
@@ -330,11 +294,6 @@ type OaklandsMinimapLayer struct {
 	X OaklandsMinimapPosition `json:"X"`
 	// The min/max Y location in the world.
 	Z OaklandsMinimapPosition `json:"Z"`
-	// The image IDs of the minimap.
-	// This is from left -> right.
-	//
-	// Deprecated: Use `media` instead.
-	ImageIDs []string `json:"image_ids" extensions:"x-deprecated=true"`
 	// The images of the minimap.
 	// This is from left -> right.
 	Media []OaklandsMedia `json:"media"`

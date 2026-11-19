@@ -126,7 +126,6 @@ func (o OaklandsV1Routes) GetItem(w http.ResponseWriter, r *http.Request) {
 		ID:          item.Name,
 		DisplayName: item.DisplayName,
 		Description: item.Description,
-		Image:       image,
 		Media:       newMedia("", image),
 		Forms:       make([]ItemForm, 0, len(item.Forms)),
 	}}
@@ -138,7 +137,6 @@ func (o OaklandsV1Routes) GetItem(w http.ResponseWriter, r *http.Request) {
 		formImage := o.assets.URL(item.Name, form.FormType)
 		result := ItemForm{
 			Type:        form.FormType,
-			Image:       formImage,
 			Media:       newMedia("", formImage),
 			ConvertType: form.ConvertType,
 		}
@@ -164,7 +162,6 @@ func (o OaklandsV1Routes) GetItem(w http.ResponseWriter, r *http.Request) {
 				unboxImage := o.assets.URL(resultID, unboxType.FormType)
 				result.UnboxTypes = append(result.UnboxTypes, ItemFormUnboxType{
 					Type:        unboxType.FormType,
-					Image:       unboxImage,
 					Media:       newMedia("", unboxImage),
 					ConvertType: unboxType.ConvertType,
 				})
