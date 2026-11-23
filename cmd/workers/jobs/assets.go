@@ -100,8 +100,8 @@ func (c *AssetCronJobs) SyncRobloxAssets(ctx context.Context) {
 	}
 
 	// Every referenced image ID, along with the thumbnail size that it is fetched at. Thumbnails are fitted into
-	// the requested size, so newsletter images, which are usually wide, use the largest wide size and everything
-	// else uses the largest square size.
+	// the requested size, so newsletter banners use the largest wide size, newsletter content uses a 16:9 size,
+	// and everything else uses the largest square size.
 	referenced := map[string]legacy.ThumbnailSize{}
 	reference := func(value string, size legacy.ThumbnailSize) {
 		if i := strings.Index(value, "://"); i != -1 {
@@ -111,8 +111,9 @@ func (c *AssetCronJobs) SyncRobloxAssets(ctx context.Context) {
 			return
 		}
 
-		// An image used in a newsletter keeps the wide size, even if it is also used elsewhere.
-		if referenced[value] != legacy.ThumbnailSize1440x456 {
+		// An image used in several places keeps the banner size first, then the newsletter content size.
+		switch current := referenced[value]; {
+		case current == "", current == legacy.ThumbnailSize700x700, size == legacy.ThumbnailSize1440x456:
 			referenced[value] = size
 		}
 	}
@@ -141,10 +142,10 @@ func (c *AssetCronJobs) SyncRobloxAssets(ctx context.Context) {
 			for _, content := range section.Content {
 				switch v := content.(type) {
 				case oaklands.NewsletterImage:
-					reference(v.ImageId, legacy.ThumbnailSize1440x456)
+					reference(v.ImageId, legacy.ThumbnailSize768x432)
 				case oaklands.NewsletterImageCarousel:
 					for _, imageID := range v.ImageIds {
-						reference(imageID, legacy.ThumbnailSize1440x456)
+						reference(imageID, legacy.ThumbnailSize768x432)
 					}
 				}
 			}

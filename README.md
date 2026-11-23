@@ -71,7 +71,7 @@ flowchart LR
 Once Oaklands has been synced, the `SyncRobloxAssets` job runs every minute and only does work for new images and ones that are due for another attempt.
 1. Images referenced by newsletters, the minimap and the index are collected. Hidden newsletters are skipped, and videos are not hosted.
 2. Images that are already in the bucket are stored without being fetched again.
-3. The rest are requested from the public thumbnails API in batches of 20. Newsletter images use `1440x456` and everything else uses `700x700`. Thumbnails that are still being generated are requested again at the end of the run.
+3. The rest are requested from the public thumbnails API in batches of 20. Newsletter banners use `1440x456`, newsletter content uses `768x432` and everything else uses `700x700`. Thumbnails that are still being generated are requested again at the end of the run.
 4. Each image is downloaded, uploaded to `roblox/<asset id>/<hash>.<extension>`, and stored in the `roblox:asset` manifest in Redis.
 5. The public API keeps the hosted assets in memory, refreshing when the workers publish an update, and uses them to fill in `url` next to each `asset_id`.
 
