@@ -217,15 +217,6 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 		panic(err)
 	}
 
-	if err := c.store.Version.Set(ctx, data.OaklandsVersion{
-		Version:    version,
-		LastUpdate: updateTime,
-		LastCheck:  now,
-		NextCheck:  now.Truncate(time.Minute).Add(time.Minute),
-	}); err != nil {
-		panic(err)
-	}
-
 	translations := make(map[string]map[string]string, len(content.Translations))
 	for locale, values := range content.Translations {
 		translations[strings.ToLower(locale)] = values
@@ -497,6 +488,15 @@ func (c *OaklandsCronJobs) CheckForUpdates(ctx context.Context) {
 		}
 	}
 	if err := c.store.Regions.SetMany(ctx, regions); err != nil {
+		panic(err)
+	}
+
+	if err := c.store.Version.Set(ctx, data.OaklandsVersion{
+		Version:    version,
+		LastUpdate: updateTime,
+		LastCheck:  now,
+		NextCheck:  now.Truncate(time.Minute).Add(time.Minute),
+	}); err != nil {
 		panic(err)
 	}
 }
