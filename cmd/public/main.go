@@ -7,9 +7,6 @@ import (
 	"strings"
 	"time"
 
-	awsconfig "github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/credentials"
-	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
@@ -23,6 +20,7 @@ import (
 	"github.com/typical-developers/public-experience-api/internal/data"
 	"github.com/typical-developers/public-experience-api/internal/logger"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
+	"github.com/typical-developers/public-experience-api/internal/storage"
 )
 
 //	@Title				Typical Developers - Public Experience API
@@ -63,27 +61,13 @@ func main() {
 		DB:       config.C.Redis.DB,
 	})
 
-	s3Config, err := awsconfig.LoadDefaultConfig(
-		context.TODO(),
-		awsconfig.WithRegion(config.C.S3.Region),
-		awsconfig.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
-			config.C.S3.AccessKey,
-			config.C.S3.SecretAccessKey,
-			"",
-		)),
-	)
+	s3, err := storage.NewS3(context.Background(), config.C.S3)
 	if err != nil {
 		panic(err)
 	}
-	s3Client := s3.NewFromConfig(
-		s3Config,
-		func(o *s3.Options) {
-			o.BaseEndpoint = &config.C.S3.Endpoint
-			o.UsePathStyle = true
-		})
 
 	// Index of which item images exist in S3, so handlers don't call S3 per request.
-	assetIndex := assets.NewIndex(s3Client, config.C.S3.Bucket, "items/")
+	assetIndex := assets.NewIndex(s3, config.C.S3.Bucket, "items/")
 	if err := assetIndex.Start(context.Background(), 5*time.Minute); err != nil {
 		panic(err)
 	}
@@ -109,7 +93,7 @@ func main() {
 		Assets:          assetIndex,
 	})
 
-	r.Get("/assets/items/{id}/{filename}", assets.ServeAssets(s3Client, store))
+	r.Get("/assets/items/{id}/{filename}", assets.ServeAssets(s3, store))
 	r.NotFound(static.ServeStatic(store))
 
 	panic(http.ListenAndServe(":8080", r))

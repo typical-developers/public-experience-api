@@ -7,6 +7,14 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
+type S3 struct {
+	Endpoint        string `env:"ENDPOINT,required"`
+	Region          string `env:"REGION"`
+	Bucket          string `env:"BUCKET,required"`
+	AccessKey       string `env:"ACCESS_KEY,required"`
+	SecretAccessKey string `env:"SECRET_ACCESS_KEY,required"`
+}
+
 type Config struct {
 	// The environment that the server is currently running in.
 	// Possible values are "production" and "development"
@@ -30,13 +38,7 @@ type Config struct {
 	} `envPrefix:"OAKLANDS_"`
 
 	// The config for the S3-compatible bucket.
-	S3 struct {
-		Endpoint        string `env:"ENDPOINT,required"`
-		Region          string `env:"REGION"`
-		Bucket          string `env:"BUCKET,required"`
-		AccessKey       string `env:"ACCESS_KEY,required"`
-		SecretAccessKey string `env:"SECRET_ACCESS_KEY,required"`
-	} `envPrefix:"S3_"`
+	S3 `envPrefix:"S3_"`
 
 	// The config for the Redis instance used for ephemeral storage.
 	Redis struct {
