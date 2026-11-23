@@ -65,7 +65,7 @@ func main() {
 
 	s3Config, err := awsconfig.LoadDefaultConfig(
 		context.TODO(),
-		awsconfig.WithRegion("us-east-1"),
+		awsconfig.WithRegion(config.C.S3.Region),
 		awsconfig.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
 			config.C.S3.AccessKey,
 			config.C.S3.SecretAccessKey,
@@ -83,7 +83,7 @@ func main() {
 		})
 
 	// Index of which item images exist in S3, so handlers don't call S3 per request.
-	assetIndex := assets.NewIndex(s3Client, "public-api", "items/")
+	assetIndex := assets.NewIndex(s3Client, config.C.S3.Bucket, "items/")
 	if err := assetIndex.Start(context.Background(), 5*time.Minute); err != nil {
 		panic(err)
 	}

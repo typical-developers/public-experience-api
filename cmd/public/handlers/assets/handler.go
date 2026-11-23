@@ -17,6 +17,7 @@ import (
 	"github.com/go-chi/render"
 	"github.com/redis/go-redis/v9"
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
+	"github.com/typical-developers/public-experience-api/internal/config"
 	"github.com/typical-developers/public-experience-api/internal/data"
 )
 
@@ -109,7 +110,7 @@ func ServeAssets(client *s3.Client, store *data.OaklandsStore) http.HandlerFunc 
 		key := "items/" + id + "/" + filename
 
 		object, err := client.GetObject(r.Context(), &s3.GetObjectInput{
-			Bucket: aws.String("public-api"),
+			Bucket: aws.String(config.C.S3.Bucket),
 			Key:    aws.String(key),
 		})
 		if err != nil {
