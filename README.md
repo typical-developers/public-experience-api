@@ -44,16 +44,35 @@ swag init -g cmd/public/main.go -o docs
 ```
 
 ## Architecture
-This project consists of two different services to sync and expose experience data. A Redis instance is hosted to store data received from workers, which is then read and served by the API. [`scalarapi`](https://scalar.com/) is used to host documentation for the API.
-| Service   | Role                                                                             |
-| --------- | -------------------------------------------------------------------------------- |
-| `public`  | The HTTP API, exposed on port 8080.                                              |
-| `workers` | Jobs that sync experience data, utilizing Roblox's OpenCloud LuauExecution APIs. |
+This project consists of two different services to sync and expose experience data. A Redis instance is hosted to store data received from workers, which is then read and served by the API. Roblox images referenced by that data are hosted in an S3-compatible bucket, so responses can link to them directly. [`scalarapi`](https://scalar.com/) is used to host documentation for the API.
+| Service   | Role                                                                                                                       |
+| --------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `public`  | The HTTP API, exposed on port 8080. Serves hosted images under `/assets/` and fills in their `url` in responses.            |
+| `workers` | Jobs that sync experience data, utilizing Roblox's OpenCloud LuauExecution APIs, and host the Roblox images it references. |
+
 ```mermaid
 flowchart LR
-    W[workers] -->|fetch| OC[Roblox Open Cloud]
-    W -->|cache| R[(Redis)]
-    API[public API] -->|read| R
-    API -->|read assets| S3[(S3)]
-    C[Clients] --> API
+    RB["Roblox<br/>Open Cloud · Thumbnails · CDN"]
+    W[workers]
+    R[(Redis)]
+    S3[(S3)]
+    API[public API]
+    C[Clients]
+
+    RB -->|data and images| W
+    W -->|data and asset manifest| R
+    W -->|images| S3
+    R --> API
+    S3 -->|/assets/| API
+    API --> C
 ```
+
+### Hosting assets
+Once Oaklands has been synced, the `SyncRobloxAssets` job runs every minute and only does work for new images and ones that are due for another attempt.
+1. Images referenced by newsletters, the minimap and the index are collected. Hidden newsletters are skipped, and videos are not hosted.
+2. Images that are already in the bucket are stored without being fetched again.
+3. The rest are requested from the public thumbnails API in batches of 20. Newsletter images use `1440x456` and everything else uses `700x700`. Thumbnails that are still being generated are requested again at the end of the run.
+4. Each image is downloaded, uploaded to `roblox/<asset id>/<hash>.<extension>`, and stored in the `roblox:asset` manifest in Redis.
+5. The public API keeps the hosted assets in memory, refreshing when the workers publish an update, and uses them to fill in `url` next to each `asset_id`.
+
+Images that have not been referenced for 7 days are deleted.
