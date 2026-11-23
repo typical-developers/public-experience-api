@@ -72,6 +72,14 @@ func main() {
 		panic(err)
 	}
 
+	bucket := storage.NewBucket(s3, config.C.S3.Bucket)
+
+	// Index of which Roblox assets are hosted, so handlers can fill in their URL without calling Redis.
+	robloxAssets := assets.NewRobloxIndex(redis, data.NewAssetStore(redis))
+	if err := robloxAssets.Start(context.Background(), 5*time.Minute); err != nil {
+		panic(err)
+	}
+
 	r := chi.NewMux()
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Logger)
@@ -91,9 +99,11 @@ func main() {
 		OpencloudClient: oc,
 		Store:           store,
 		Assets:          assetIndex,
+		RobloxAssets:    robloxAssets,
 	})
 
 	r.Get("/assets/items/{id}/{filename}", assets.ServeAssets(s3, store))
+	r.Get("/assets/roblox/{id}/{filename}", assets.ServeRobloxAssets(bucket, robloxAssets))
 	r.NotFound(static.ServeStatic(store))
 
 	panic(http.ListenAndServe(":8080", r))

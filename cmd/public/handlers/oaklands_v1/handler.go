@@ -15,17 +15,20 @@ type OaklandsV1Opts struct {
 	OpencloudClient *opencloud.Client
 	Store           *data.OaklandsStore
 	Assets          *assets.Index
+	RobloxAssets    *assets.RobloxIndex
 }
 
 type OaklandsV1Routes struct {
-	opencloud *opencloud.Client
-	store     *data.OaklandsStore
-	assets    *assets.Index
+	opencloud    *opencloud.Client
+	store        *data.OaklandsStore
+	assets       *assets.Index
+	robloxAssets *assets.RobloxIndex
 }
 
 // newMedia creates media from a Roblox asset id and/or the path to an asset hosted by the API.
+// When no path is given, the hosted file of the Roblox asset is used if it exists.
 // Returns nil when neither exist.
-func newMedia(assetID string, path *string) *Media {
+func (o *OaklandsV1Routes) newMedia(assetID string, path *string) *Media {
 	if i := strings.Index(assetID, "://"); i != -1 {
 		assetID = assetID[i+3:]
 	}
@@ -33,6 +36,10 @@ func newMedia(assetID string, path *string) *Media {
 	media := &Media{}
 	if assetID != "" && assetID != "0" {
 		media.AssetID = &assetID
+
+		if asset, ok := o.robloxAssets.Get(assetID); ok && path == nil {
+			path = new("/assets/" + asset.Key)
+		}
 	}
 	if path != nil {
 		media.URL = new(strings.TrimSuffix(config.C.AssetBaseURL, "/") + *path)
@@ -46,10 +53,10 @@ func newMedia(assetID string, path *string) *Media {
 }
 
 // newMediaList creates media for each Roblox asset id, skipping any that are empty.
-func newMediaList(assetIDs []string) []Media {
+func (o *OaklandsV1Routes) newMediaList(assetIDs []string) []Media {
 	list := make([]Media, 0, len(assetIDs))
 	for _, id := range assetIDs {
-		if media := newMedia(id, nil); media != nil {
+		if media := o.newMedia(id, nil); media != nil {
 			list = append(list, *media)
 		}
 	}
@@ -63,6 +70,8 @@ func NewOaklandsV1(r *chi.Mux, opts *OaklandsV1Opts) {
 		opencloud: opts.OpencloudClient,
 		store:     opts.Store,
 		assets:    opts.Assets,
+
+		robloxAssets: opts.RobloxAssets,
 	}
 
 	r.Route("/oaklands/v1", func(r chi.Router) {

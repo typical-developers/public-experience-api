@@ -2,8 +2,6 @@ package storage
 
 import (
 	"context"
-	"fmt"
-	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
@@ -44,17 +42,4 @@ func NewS3(ctx context.Context, config config.S3) (*s3.Client, error) {
 	})
 
 	return client, nil
-}
-
-func Ping(ctx context.Context, client *s3.Client, bucket string) error {
-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
-	defer cancel()
-
-	if _, err := client.HeadBucket(ctx, &s3.HeadBucketInput{
-		Bucket: aws.String(bucket),
-	}); err != nil {
-		return fmt.Errorf("reach bucket %q: %w", bucket, err)
-	}
-
-	return nil
 }

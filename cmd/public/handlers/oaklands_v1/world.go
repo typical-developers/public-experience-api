@@ -49,7 +49,7 @@ func (o *OaklandsV1Routes) GetMinimap(w http.ResponseWriter, r *http.Request) {
 					Y: location.Position.Y,
 					Z: location.Position.Z,
 				},
-				Marker:      newMedia(markerID, nil),
+				Marker:      o.newMedia(markerID, nil),
 				Color:       location.Color,
 				PropertyID:  location.PropertyID,
 				Conditional: location.Conditional,
@@ -66,7 +66,7 @@ func (o *OaklandsV1Routes) GetMinimap(w http.ResponseWriter, r *http.Request) {
 				Min: layer.Z.Min,
 				Max: layer.Z.Max,
 			},
-			Media:     newMediaList(layer.Images),
+			Media:     o.newMediaList(layer.Images),
 			Locations: locations,
 		}
 	}
@@ -179,7 +179,7 @@ func (o *OaklandsV1Routes) GetRegion(w http.ResponseWriter, r *http.Request) {
 				Category:    resource.Category,
 				ID:          resource.ID,
 				DisplayName: entry.DisplayName,
-				Media:       newMedia(entry.Image, nil),
+				Media:       o.newMedia(entry.Image, nil),
 			},
 			SpawnChance: resource.SpawnChance,
 		}

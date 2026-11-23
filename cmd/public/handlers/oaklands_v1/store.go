@@ -122,7 +122,7 @@ func (o *OaklandsV1Routes) GetStore(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 
-			details.Media = newMedia("", o.assets.URL(item.Name, form.FormType))
+			details.Media = o.newMedia("", o.assets.URL(item.Name, form.FormType))
 			details.Currency = storeInfo.Currency
 			details.Price = storeInfo.Price
 			break

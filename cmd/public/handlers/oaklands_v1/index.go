@@ -83,7 +83,7 @@ func (o *OaklandsV1Routes) ListIndex(w http.ResponseWriter, r *http.Request) {
 			Category:    entry.Category,
 			ID:          entry.Name,
 			DisplayName: entry.DisplayName,
-			Media:       newMedia(entry.Image, nil),
+			Media:       o.newMedia(entry.Image, nil),
 		})
 	}
 
@@ -121,7 +121,7 @@ func (o *OaklandsV1Routes) GetIndexEntry(w http.ResponseWriter, r *http.Request)
 			Category:    entry.Category,
 			ID:          entry.Name,
 			DisplayName: entry.DisplayName,
-			Media:       newMedia(entry.Image, nil),
+			Media:       o.newMedia(entry.Image, nil),
 		},
 		Description: entry.Description,
 		Regions:     make([]IndexRegion, len(entry.Sections)),

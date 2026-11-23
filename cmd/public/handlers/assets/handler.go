@@ -19,6 +19,7 @@ import (
 	"github.com/typical-developers/public-experience-api/cmd/public/rest"
 	"github.com/typical-developers/public-experience-api/internal/config"
 	"github.com/typical-developers/public-experience-api/internal/data"
+	"github.com/typical-developers/public-experience-api/internal/storage"
 )
 
 func ServeAssets(client *s3.Client, store *data.OaklandsStore) http.HandlerFunc {
@@ -145,6 +146,56 @@ func ServeAssets(client *s3.Client, store *data.OaklandsStore) http.HandlerFunc 
 
 		if _, err := io.Copy(w, object.Body); err != nil {
 			log.Printf("stream asset %q: %v", key, err)
+		}
+	}
+}
+
+// ServeRobloxAssets will serve the hosted file of a Roblox asset.
+func ServeRobloxAssets(bucket *storage.Bucket, index *RobloxIndex) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		id := chi.URLParam(r, "id")
+		filename := chi.URLParam(r, "filename")
+
+		// Only the current file of a hosted asset is served, which also rejects any other path.
+		asset, ok := index.Get(id)
+		if !ok || asset.Key != "roblox/"+id+"/"+filename {
+			render.Status(r, rest.HttpErrorNotFound.Status)
+			render.JSON(w, r, rest.ErrorResponse{
+				Type:    rest.HttpErrorNotFound.Type,
+				Message: rest.HttpErrorNotFound.Message,
+			})
+			return
+		}
+
+		body, info, err := bucket.Get(r.Context(), asset.Key)
+		if err != nil {
+			if errors.Is(err, storage.ErrNotFound) {
+				render.Status(r, rest.HttpErrorNotFound.Status)
+				render.JSON(w, r, rest.ErrorResponse{
+					Type:    rest.HttpErrorNotFound.Type,
+					Message: rest.HttpErrorNotFound.Message,
+				})
+				return
+			}
+
+			log.Printf("fetch asset %q: %v", asset.Key, err)
+			http.Error(w, "Unable to fetch asset", http.StatusBadGateway)
+			return
+		}
+		defer body.Close()
+
+		contentType := info.ContentType
+		if contentType == "" {
+			contentType = asset.ContentType
+		}
+
+		w.Header().Set("Content-Type", contentType)
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		// The key contains the file's hash, so its content never changes.
+		w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+
+		if _, err := io.Copy(w, body); err != nil {
+			log.Printf("stream asset %q: %v", asset.Key, err)
 		}
 	}
 }

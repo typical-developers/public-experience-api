@@ -2,6 +2,7 @@ package config
 
 import (
 	"strings"
+	"time"
 
 	"github.com/caarlos0/env/v10"
 	_ "github.com/joho/godotenv/autoload"
@@ -39,6 +40,16 @@ type Config struct {
 
 	// The config for the S3-compatible bucket.
 	S3 `envPrefix:"S3_"`
+
+	// The config for fetching and hosting Roblox assets.
+	Assets struct {
+		// How many assets are fetched and uploaded at once.
+		Concurrency int `env:"CONCURRENCY" envDefault:"8"`
+		// How long to wait before each request to Roblox while fetching assets.
+		Cooldown time.Duration `env:"COOLDOWN" envDefault:"5s"`
+		// The largest file, in bytes, that will be downloaded for an asset.
+		MaxBytes int64 `env:"MAX_BYTES" envDefault:"52428800"`
+	} `envPrefix:"ASSETS_"`
 
 	// The config for the Redis instance used for ephemeral storage.
 	Redis struct {

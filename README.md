@@ -22,6 +22,9 @@ All services read a single `.env` file at the repo root. Copy `.env.example` to 
 | `S3_BUCKET` | ✅ | | Bucket name |
 | `S3_ACCESS_KEY` | ✅ | | Access key |
 | `S3_SECRET_ACCESS_KEY` | ✅ | | Secret key |
+| `ASSETS_CONCURRENCY` | | `8` | How many Roblox assets are fetched and uploaded at once |
+| `ASSETS_COOLDOWN` | | `1s` | How long to wait before each request to Roblox while fetching assets |
+| `ASSETS_MAX_BYTES` | | `52428800` | Largest file, in bytes, downloaded for an asset |
 | `REDIS_HOST` | | `localhost` | Redis host |
 | `REDIS_PORT` | | `6379` | Redis port |
 | `REDIS_PASSWORD` | | | Redis password |

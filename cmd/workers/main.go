@@ -1,12 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"runtime"
 	"strings"
 	"time"
 
 	"github.com/luckfire/goblox/auth"
+	"github.com/luckfire/goblox/legacy"
 	"github.com/luckfire/goblox/opencloud"
 	"github.com/redis/go-redis/v9"
 	"github.com/robfig/cron/v3"
@@ -14,6 +16,7 @@ import (
 	"github.com/typical-developers/public-experience-api/internal/config"
 	"github.com/typical-developers/public-experience-api/internal/logger"
 	"github.com/typical-developers/public-experience-api/internal/oaklands"
+	"github.com/typical-developers/public-experience-api/internal/storage"
 
 	"go.uber.org/zap"
 )
@@ -57,6 +60,15 @@ func main() {
 		DB:       config.C.Redis.DB,
 	})
 
+	s3, err := storage.NewS3(context.Background(), config.C.S3)
+	if err != nil {
+		panic(err)
+	}
+	bucket := storage.NewBucket(s3, config.C.S3.Bucket, storage.WithConcurrency(config.C.Assets.Concurrency))
+	if err := bucket.Ping(context.Background()); err != nil {
+		panic(err)
+	}
+
 	oc := opencloud.NewClient().WithCredential(auth.IntrospectedAPIKey(config.C.OpencloudKey, 10*time.Minute))
 
 	jobHandler := jobs.NewHandler(jobs.HandlerOpts{
@@ -68,6 +80,13 @@ func main() {
 		Handler:         jobHandler,
 		OpencloudClient: oc,
 		Redis:           redis,
+	})
+
+	jobs.NewAssetCronJobs(&jobs.AssetCronJobsOpts{
+		Handler:      jobHandler,
+		LegacyClient: legacy.NewClient(),
+		Redis:        redis,
+		Bucket:       bucket,
 	})
 
 	c.Start()
